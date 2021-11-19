@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 3385e8b03aa8b5f4aafc40fa32e24349
+  - enabled: 0
+    path: Assets/Scenes/Human2D.unity
+    guid: 0d613475aadbdb84d9ea3c28add0fff5
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Scenes/Sim.unity
+    guid: 81f7fbcfe1c6dcb4ea9cf29033e7c6c5
+  - enabled: 0
+    path: Assets/Scenes/Human Arena.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/MonkeyGaze.unity
+    guid: d33b1b97f3699874ea078bb58d4b6d71
+  - enabled: 1
+    path: Assets/Scenes/Monkey2D.unity
+    guid: fe965ae97e655fb499175a106645979e
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: c236a3e8c78349342866ba071005a016,
+      type: 2}
+    Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: 21f422801ec7f2a468b61768336fc13e,
+      type: 2}
+    com.htc.upm.wave.xrsdk.xrsettings: {fileID: 11400000, guid: 0f2a39cf86660ba498757a03272e4455,
+      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 350c14d9ccdcb0246a03e0aa88e82969,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a792cf3da36eef34b8de277f9855caf5,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 40d9b288308588346b2dda4554be3aee,
+      type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 3a3b0c2ecf246c4408518dc6046b570a,
+      type: 2}

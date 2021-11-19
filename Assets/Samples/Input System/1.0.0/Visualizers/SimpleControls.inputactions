@@ -1,0 +1,159 @@
+{
+    "name": "SimpleControls",
+    "maps": [
+        {
+            "name": "gameplay",
+            "id": "265c38f5-dd18-4d34-b198-aec58e1627ff",
+            "actions": [
+                {
+                    "name": "fire",
+                    "type": "Button",
+                    "id": "1077f913-a9f9-41b1-acb3-b9ee0adbc744",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "move",
+                    "type": "Value",
+                    "id": "50fd2809-3aa3-4a90-988e-1facf6773553",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "look",
+                    "type": "Value",
+                    "id": "c60e0974-d140-4597-a40e-9862193067e9",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "abb776f3-f329-4f7b-bbf8-b577d13be018",
+                    "path": "*/{PrimaryAction}",
+                    "interactions": "Tap,SlowTap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1b8c4dd-7b3a-4db6-a93a-0889b59b1afc",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Dpad",
+                    "id": "cefc16fc-557a-44b0-939f-2ad792876b07",
+                    "path": "Dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "07244659-79df-461d-b329-defbe2fbc5f6",
+                    "path": "<HID::8F1-C>/stick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "f0ec75cb-f02c-40d2-a33f-1fd6eab2ae0b",
+                    "path": "<HID::8F1-C>/stick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c106d6e6-2780-47ff-b318-396171bd54cc",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Dpad",
+                    "id": "ecabcce6-1fe1-4929-83d3-3c13b5f3f1d7",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "92b6a3fe-eabb-4f0e-97b0-614c87e837cf",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "ed685045-b326-489e-b800-9e4871e88dd4",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "1be5a288-0452-40b7-99dd-95701d070712",
+                    "path": "<HID::8F1-C>/stick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "8f63c98e-9f41-4371-9a2f-6d69be1501ea",
+                    "path": "<HID::8F1-C>/stick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

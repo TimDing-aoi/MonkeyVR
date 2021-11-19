@@ -1,0 +1,602 @@
+Using pre-set license
+Built from '2020.2/staging' branch; Version is '2020.2.0b14 (dc0b50340a64) revision 14420816'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10  (10.0.0) 64bit' Language: 'en' Physical Memory: 32677 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\2020.2.0b14\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/Users/jc10487/wkspaces/vrsuite/VR_Suite
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+55764
+Successfully changed project path to: C:/Users/jc10487/wkspaces/vrsuite/VR_Suite
+C:/Users/jc10487/wkspaces/vrsuite/VR_Suite
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 100.83 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 9.49 ms.
+Initialize engine version: 2020.2.0b14 (dc0b50340a64)
+[Subsystems] Discovering subsystems at path C:/Program Files/2020.2.0b14/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/jc10487/wkspaces/vrsuite/VR_Suite/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2080 Ti (ID=0x1e07)
+    Vendor:   
+    VRAM:     11048 MB
+    Driver:   27.21.14.5182
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Initialize mono
+Mono path[0] = 'C:/Program Files/2020.2.0b14/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/2020.2.0b14/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/2020.2.0b14/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56948
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/2020.2.0b14/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002351 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 80.34 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.13 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.822 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.015867 seconds.
+Begin MonoManager ReloadAssembly
+Error: Could not load signature of Codice.AutoRefresh:PendingChangesView due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebaf98b (Unity) ScanForAttributesAndInterfaceImplementations
+0x00007ff70ebc30ca (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff70f8f5916 (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:ShowUpdateReport due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetUpdateReportResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:UpdateUpdateReportList due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetErrorDetailsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:DoErrorDetailsTextArea due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:BuildComponents due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:IncludeDependencies due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.FilterRulesConfirmationDialog:AskForConfirmation due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePath due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:BuildGetRestorePathResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePathResultType due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:RequestCredentials due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:BuildCredentialsDialogData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:ChangeOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsDirty due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:GetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:SetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:CheckFsWatcher due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsFileSystemWatcherEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Build due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:GetConflictsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Merge due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Unloading broken assembly Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff70f8f5916 (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Unloading broken assembly Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff70f8f5916 (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 79.13 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.09 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+[XR] OculusXRPlugin: registering subsystems
+[XR] Unable to register display lifecyle provider: [1]
+[XR] Oculus Input lifecycle provider registered.
+[XR] Unable to register input lifecyle provider: [1]
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:242 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:227 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.6.1/Runtime/OculusLoader.cs Line: 242)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  2.126 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Refreshing native plugins compatible for Editor in 1.33 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.09 ms.
+Unloading 3471 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 160.4 MB.
+System memory in use after: 160.2 MB.
+
+Unloading 49 unused Assets to reduce memory usage. Loaded Objects now: 3891.
+Total: 2.710700 ms (FindLiveObjects: 0.470100 ms CreateObjectMapping: 0.093100 ms MarkObjects: 1.895900 ms  DeleteObjects: 0.250600 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/Tree.prefab
+  artifactKey: Guid(efbb11fe61b91db41a0a45f50c42df49) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Tree.prefab using Guid(efbb11fe61b91db41a0a45f50c42df49) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b9d7b3fe6ac9027a9a21c681c58116b9') in 0.633540 seconds
+  Import took 0.638962 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000353 seconds.
+  path: Assets/New Terrain.asset
+  artifactKey: Guid(e3151ea7865413346b5b12548295c0b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/New Terrain.asset using Guid(e3151ea7865413346b5b12548295c0b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fe1184dd2c30885f5f00785e80c80095') in 0.089770 seconds
+  Import took 0.095795 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000368 seconds.
+  path: Assets/Inputs.inputactions
+  artifactKey: Guid(24777242475d4694e84fc4550b3a0e9e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Inputs.inputactions using Guid(24777242475d4694e84fc4550b3a0e9e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0b24ab1f7b2e40c72588950b57c7fe19') in 0.011286 seconds
+  Import took 0.016998 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000308 seconds.
+  path: Assets/Scripts/ParticleSystem.preset
+  artifactKey: Guid(b653104713ff74a4e998f2da555e5bfe) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/ParticleSystem.preset using Guid(b653104713ff74a4e998f2da555e5bfe) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b80b2c760bc6e28b94e1e0fd212628c7') in 0.173797 seconds
+  Import took 0.179347 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000353 seconds.
+  path: Assets/XR/XRGeneralSettings.asset
+  artifactKey: Guid(a792cf3da36eef34b8de277f9855caf5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/XR/XRGeneralSettings.asset using Guid(a792cf3da36eef34b8de277f9855caf5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '714826736576f605cb01b81b221d9c9c') in 0.007822 seconds
+  Import took 0.012925 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000329 seconds.
+  path: Assets/Scripts
+  artifactKey: Guid(8c63986749640f74980ef56200589353) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts using Guid(8c63986749640f74980ef56200589353) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b719bcd157b921db0e8dc9290e21169c') in 0.002685 seconds
+  Import took 0.007027 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 7.112589 seconds.
+  path: Assets/Scenes
+  artifactKey: Guid(72fcf45e9797e2748b7ec4e22514f870) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes using Guid(72fcf45e9797e2748b7ec4e22514f870) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '67f1af1b2d01a544e1c958b58b6b08dc') in 0.002804 seconds
+  Import took 0.008366 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.001004 seconds.
+  path: Assets/Scenes
+  artifactKey: Guid(72fcf45e9797e2748b7ec4e22514f870) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes using Guid(72fcf45e9797e2748b7ec4e22514f870) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '67f1af1b2d01a544e1c958b58b6b08dc') in 0.002225 seconds
+  Import took 0.007294 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.881925 seconds.
+  path: Assets/Scenes/Mouse Arena.unity
+  artifactKey: Guid(8e74d3c52a3c06b44bb93cb332dfbe2e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Mouse Arena.unity using Guid(8e74d3c52a3c06b44bb93cb332dfbe2e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '00507811acecb7f4f6eee7814a519af2') in 0.003757 seconds
+  Import took 0.009227 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.003640 seconds.
+  path: Assets/Scenes/Mouse Arena.unity
+  artifactKey: Guid(8e74d3c52a3c06b44bb93cb332dfbe2e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Mouse Arena.unity using Guid(8e74d3c52a3c06b44bb93cb332dfbe2e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '00507811acecb7f4f6eee7814a519af2') in 0.003085 seconds
+  Import took 0.008630 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 14.058633 seconds.
+  path: Assets/Scripts/RewardArena.cs
+  artifactKey: Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/RewardArena.cs using Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ca025fc639c4cd7e889f4bee71ea9641') in 0.009178 seconds
+  Import took 0.014706 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.014248 seconds.
+  path: Assets/Scripts/RewardArena.cs
+  artifactKey: Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/RewardArena.cs using Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ca025fc639c4cd7e889f4bee71ea9641') in 0.002733 seconds
+  Import took 0.007704 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.013146 seconds.
+Could not load signature of Codice.UI.Message.PlasticAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Merge due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:ChangeOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsDirty due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:GetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:SetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:CheckFsWatcher due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsFileSystemWatcherEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Build due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.FilterRulesConfirmationDialog:AskForConfirmation due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:RequestCredentials due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:BuildCredentialsDialogData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:ShowUpdateReport due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetUpdateReportResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:UpdateUpdateReportList due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetErrorDetailsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:DoErrorDetailsTextArea due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:BuildComponents due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePath due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:BuildGetRestorePathResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePathResultType due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:IncludeDependencies due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:GetConflictsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Begin MonoManager ReloadAssembly
+Error: Could not load signature of Codice.AutoRefresh:PendingChangesView due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebaf98b (Unity) ScanForAttributesAndInterfaceImplementations
+0x00007ff70ebc30ca (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:ShowUpdateReport due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetUpdateReportResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:UpdateUpdateReportList due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetErrorDetailsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:DoErrorDetailsTextArea due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:BuildComponents due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:GetConflictsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Merge due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:IncludeDependencies due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:ChangeOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsDirty due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:GetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:SetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:CheckFsWatcher due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsFileSystemWatcherEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Build due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:RequestEncryptionPassword due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:BuildEncryptionConfigurationData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePath due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:BuildGetRestorePathResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePathResultType due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:RequestCredentials due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:BuildCredentialsDialogData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.FilterRulesConfirmationDialog:AskForConfirmation due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Unloading broken assembly Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Unloading broken assembly Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.47 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.09 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:242 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:227 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.6.1/Runtime/OculusLoader.cs Line: 242)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  0.869 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.35 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.09 ms.
+Unloading 3331 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 156.8 MB.
+System memory in use after: 156.8 MB.
+
+Unloading 43 unused Assets to reduce memory usage. Loaded Objects now: 3946.
+Total: 2.565800 ms (FindLiveObjects: 0.380700 ms CreateObjectMapping: 0.080100 ms MarkObjects: 1.866500 ms  DeleteObjects: 0.237700 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.011304 seconds.
+Could not load signature of Codice.UI.Message.PlasticAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Merge due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:ChangeOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsDirty due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:GetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:SetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:CheckFsWatcher due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsFileSystemWatcherEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Build due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.FilterRulesConfirmationDialog:AskForConfirmation due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:RequestCredentials due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:BuildCredentialsDialogData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:ShowUpdateReport due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetUpdateReportResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:UpdateUpdateReportList due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetErrorDetailsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:DoErrorDetailsTextArea due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:BuildComponents due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePath due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:BuildGetRestorePathResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePathResultType due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:IncludeDependencies due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:GetConflictsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:RequestEncryptionPassword due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:BuildEncryptionConfigurationData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Begin MonoManager ReloadAssembly
+Error: Could not load signature of Codice.AutoRefresh:PendingChangesView due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebaf98b (Unity) ScanForAttributesAndInterfaceImplementations
+0x00007ff70ebc30ca (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Merge due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinMergeNeededDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticQuestionAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:RequestCredentials due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.CredentialsDialog:BuildCredentialsDialogData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.FilterRulesConfirmationDialog:AskForConfirmation due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.CheckinConflictsDialog:GetConflictsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Show due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.UI.Message.PlasticAlert:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:IncludeDependencies due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.DependenciesDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:RequestEncryptionPassword due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Configuration.EncryptionConfigurationDialog:BuildEncryptionConfigurationData due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePath due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:BuildGetRestorePathResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.Diff.Dialogs.GetRestorePathDialog:GetRestorePathResultType due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:ChangeOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsDirty due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:GetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:SetOptions due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:CheckFsWatcher due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:IsFileSystemWatcherEnabled due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Build due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Views.PendingChanges.Dialogs.PendingChangesOptionsDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:ShowUpdateReport due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetUpdateReportResult due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:UpdateUpdateReportList due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:GetErrorDetailsText due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:DoErrorDetailsTextArea due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:BuildComponents due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Could not load signature of Codice.Gluon.UpdateReport.UpdateReportDialog:Create due to: Could not load file or assembly 'unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876' or one of its dependencies. assembly:unityplastic, Version=9.0.16.4582, Culture=neutral, PublicKeyToken=a107c9c6e34c8876 type:<unknown type> member:(null) signature:<none>
+Unloading broken assembly Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Unloading broken assembly Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll, this assembly can cause crashes in the runtime
+0x00007ff70ed88d9c (Unity) StackWalker::GetCurrentCallstack
+0x00007ff70ed91179 (Unity) StackWalker::ShowCallstack
+0x00007ff71025e7ec (Unity) GetStacktrace
+0x00007ff711316483 (Unity) DebugStringToFile
+0x00007ff70ebcc020 (Unity) MonoManager::SetupLoadedEditorAssemblies
+0x00007ff70ebc341c (Unity) MonoManager::EndReloadAssembly
+0x00007ff70ebca449 (Unity) MonoManager::ReloadAssembly
+0x00007ff70ff6d7c1 (Unity) LoadDomainAndUserAssemblies
+0x00007ff70ff6dc77 (Unity) LoadUserAssemblies
+0x00007ff710390b58 (Unity) <lambda_7a4e346ad56c093be607e8c3dc54f69c>::operator()
+0x00007ff7104550a2 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007ff710457200 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007ff71045a98e (Unity) asio::io_service::run
+0x00007ff7103d6e40 (Unity) RunAssetImportWorkerClientV2
+0x00007ff7103d6e90 (Unity) RunAssetImporterV2
+0x00007ff70f8f591b (Unity) Application::InitializeProject
+0x00007ff71026bd82 (Unity) WinMain
+0x00007ff7120aac56 (Unity) __scrt_common_main_seh
+0x00007ffbd01c7034 (KERNEL32) BaseThreadInitThunk
+0x00007ffbd219d0d1 (ntdll) RtlUserThreadStart
+
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.31 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.10 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:242 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Users\jc10487\wkspaces\vrsuite\VR_Suite\Library\PackageCache\com.unity.xr.oculus@1.6.1\Runtime\OculusLoader.cs:227 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.6.1/Runtime/OculusLoader.cs Line: 242)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  0.787 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.35 ms, found 18 plugins.
+Preloading 1 native plugins for Editor in 0.09 ms.
+Unloading 3331 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 157.9 MB.
+System memory in use after: 157.9 MB.
+
+Unloading 43 unused Assets to reduce memory usage. Loaded Objects now: 3949.
+Total: 3.416300 ms (FindLiveObjects: 0.538900 ms CreateObjectMapping: 0.089000 ms MarkObjects: 2.468700 ms  DeleteObjects: 0.318500 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 74799.476079 seconds.
+  path: Assets/Scripts/RewardArena.cs
+  artifactKey: Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/RewardArena.cs using Guid(a7cb466cd4b8e8c47b51abb5385f1025) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '837ecccab1cfb32ad5a574116f977797') in 0.007048 seconds
+  Import took 0.012346 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 10.047308 seconds.
+  path: Assets/Scenes/Exp2D.unity
+  artifactKey: Guid(fe965ae97e655fb499175a106645979e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Exp2D.unity using Guid(fe965ae97e655fb499175a106645979e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1cb8f4df3de02a96f0d083aeca071323') in 0.009918 seconds
+  Import took 0.015166 seconds .
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
