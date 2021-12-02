@@ -15,7 +15,7 @@ public class JoystickMonke : MonoBehaviour
     public bool usingArduino;
 
     [Tooltip("SerialPort of your device.")]
-    public string portName = "COM3";
+    public string portName = "COM1";
 
     [Tooltip("Baudrate")]
     public int baudRate = 1000000;
@@ -97,17 +97,19 @@ public class JoystickMonke : MonoBehaviour
     [HideInInspector]
     public float timeConstant;
     [HideInInspector]
-    public float filterTau;
+    public float NoiseTau;
+    [HideInInspector]
+    public float NoiseTauTau;
     [HideInInspector]
     public float velFilterGain;
     [HideInInspector]
     public float rotFilterGain;
     [HideInInspector]
-    public float gamma;
+    public float kappa;
     [HideInInspector]
-    public float meanNoise;
+    public float meanTau;
     [HideInInspector]
-    public float stdDevNoise;
+    public float stdDevTau;
     [HideInInspector]
     public float logSample = 1f;
 
@@ -183,7 +185,8 @@ public class JoystickMonke : MonoBehaviour
         maxTau = PlayerPrefs.GetFloat("Max Tau");
         numTau = (int)PlayerPrefs.GetFloat("NumTau");
         timeConstant = PlayerPrefs.GetFloat("TauTau");
-        filterTau = PlayerPrefs.GetFloat("FilterTau");
+        NoiseTau = PlayerPrefs.GetFloat("NoiseTau");
+        NoiseTauTau = PlayerPrefs.GetFloat("NoiseTauTau");
         velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
         rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
 
@@ -214,7 +217,7 @@ public class JoystickMonke : MonoBehaviour
         xcomp[count - 1] = 0;
 
         //Akis PTB set up
-        gamma = Mathf.Exp(-1f / timeConstant);
+        kappa = Mathf.Exp(-1f / timeConstant);
 
         switch (flagPTBType)
         {
@@ -237,10 +240,10 @@ public class JoystickMonke : MonoBehaviour
                 break;
 
             case 1:
-                meanNoise = 0.5f * (Mathf.Log(minTau) + Mathf.Log(maxTau));
-                stdDevNoise = 0.5f * (meanNoise - Mathf.Log(minTau));
-                meanLogSpace = meanNoise * (1.0f - gamma);
-                stdDevLogSpace = stdDevNoise * Mathf.Sqrt(1.0f - (gamma * gamma));
+                meanTau = 0.5f * (Mathf.Log(minTau) + Mathf.Log(maxTau));
+                stdDevTau = 0.5f * (meanTau - Mathf.Log(minTau));
+                meanLogSpace = meanTau * (1.0f - kappa);
+                stdDevLogSpace = stdDevTau * Mathf.Sqrt(1.0f - (kappa * kappa));
                 //print(string.Format("muPhi = {0}, sigPhi = {1}, muEta = {2}, sigEta = {3}", meanNoise, stdDevNoise, meanLogSpace, stdDevLogSpace));
                 break;
 
@@ -317,8 +320,8 @@ public class JoystickMonke : MonoBehaviour
             prevY = moveY;
 
             //save filtered joystick X & Y
-            rawX = moveX;
-            rawY = moveY;
+            rawX = moveY;
+            rawY = -moveX;
 
             //Akis PTB noise
             if (ptb)
@@ -418,7 +421,7 @@ public class JoystickMonke : MonoBehaviour
 
     public void DiscreteTau()
     {
-        if (rand.NextDouble() > gamma)
+        if (rand.NextDouble() > kappa)
         {
             var temp = currentTau;
 
@@ -435,7 +438,7 @@ public class JoystickMonke : MonoBehaviour
 
     public void ContinuousTau()
     {
-        logSample = gamma * logSample + ((stdDevLogSpace * BoxMullerGaussianSample()) + meanLogSpace);
+        logSample = kappa * logSample + ((stdDevLogSpace * BoxMullerGaussianSample()) + meanLogSpace);
         currentTau = Mathf.Exp(logSample);
 
         //print(currentTau);
@@ -459,24 +462,33 @@ public class JoystickMonke : MonoBehaviour
 
     private void ProcessNoise()
     {
+        float gamma;
+        if (NoiseTau == 0)
+        {
+            gamma = 0;
+        }
+        else
+        {
+
+            gamma = Mathf.Exp(-Time.fixedDeltaTime / NoiseTau);
+        }
+
         float alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
         float beta = (1.0f - alpha);
-        float gamma = Mathf.Exp(-Time.fixedDeltaTime / filterTau);
         float delta = (1.0f - gamma);
-
         //print(string.Format("{0},{1},{2},{3}", alpha, beta, delta, gamma));
         //print(currentTau);
 
         velKsi = gamma * prevVelKsi + delta * BoxMullerGaussianSample();
         velEta = gamma * prevVelEta + delta * velFilterGain * velKsi;
-        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * moveY;
+        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
         prevCleanVel = cleanVel;
         prevVelKsi = velKsi;
         prevVelEta = velEta;
 
         rotKsi = gamma * prevRotKsi + delta * BoxMullerGaussianSample();
         rotEta = gamma * prevRotEta + delta * rotFilterGain * rotKsi;
-        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveX;
+        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
         prevCleanRot = cleanRot;
         prevRotKsi = rotKsi;
         prevRotEta = rotEta;

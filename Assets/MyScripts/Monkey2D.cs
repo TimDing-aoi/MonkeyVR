@@ -803,8 +803,8 @@ public class Monkey2D : MonoBehaviour
                 default:
                     break;
             }
-            tautau.Add(SharedJoystick.currentTau);
-            filterTau.Add(SharedJoystick.filterTau);
+            //tautau.Add(SharedJoystick.currentTau);
+            //filterTau.Add(SharedJoystick.filterTau);
             max_v.Add(SharedJoystick.MaxSpeed);
             max_w.Add(SharedJoystick.RotSpeed);
         }
