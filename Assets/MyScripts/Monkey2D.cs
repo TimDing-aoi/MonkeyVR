@@ -316,6 +316,13 @@ public class Monkey2D : MonoBehaviour
     bool isReward;
     string ffPosStr = "";
 
+    //Perturbation
+    int ptb;
+    float velocityThreshold;
+    float rotationThreshold;
+    readonly List<float> rawX = new List<float>();
+    readonly List<float> rawY = new List<float>();
+
     private void Awake()
     {
         gazeVisualizer = GameObject.Find("Gaze Visualizer").GetComponent<GazeVisualizer>();
@@ -394,6 +401,17 @@ public class Monkey2D : MonoBehaviour
         separation = PlayerPrefs.GetFloat("Separation");
         minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
+        ptb = (int)PlayerPrefs.GetFloat("PTBType");
+        if (ptb != 2)
+        {
+            velocityThreshold = PlayerPrefs.GetFloat("VelocityThreshold");
+            rotationThreshold = PlayerPrefs.GetFloat("RotationThreshold");
+        }
+        else
+        {
+            velocityThreshold = 1.0f;
+            rotationThreshold = 1.0f;
+        }
 
         if (nFF > 1 && multiMode == 1)
         {
@@ -769,8 +787,33 @@ public class Monkey2D : MonoBehaviour
 
         SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
         SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);
-        max_v.Add(SharedJoystick.MaxSpeed);
-        max_w.Add(SharedJoystick.RotSpeed);
+
+        if (ptb != 2)
+        {
+            switch (ptb)
+            {
+                case 0:
+                    SharedJoystick.DiscreteTau();
+                    break;
+
+                case 1:
+                    SharedJoystick.ContinuousTau();
+                    break;
+
+                default:
+                    break;
+            }
+            tautau.Add(SharedJoystick.currentTau);
+            filterTau.Add(SharedJoystick.filterTau);
+            max_v.Add(SharedJoystick.MaxSpeed);
+            max_w.Add(SharedJoystick.RotSpeed);
+        }
+        else
+        {
+            max_v.Add(SharedJoystick.MaxSpeed);
+            max_w.Add(SharedJoystick.RotSpeed);
+        }
+
         loopCount = 0;
 
         float density = particles.SwitchDensity();
@@ -1086,25 +1129,48 @@ public class Monkey2D : MonoBehaviour
 
         source = new CancellationTokenSource();
 
-        var t = Task.Run(async () => {
-            await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
-        }, source.Token);
-
-        var t1 = Task.Run(async () => {
-            await new WaitForSeconds(timeout);
-        }, source.Token);
-
-        if (await Task.WhenAny(t, t1) == t || player == null)
+        if (ptb != 2)
         {
-            await new WaitUntil(() => ((SharedJoystick.currentSpeed == 0.0f && SharedJoystick.currentRot == 0.0f && !SharedJoystick.ptb) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
-            if (t1.IsCompleted) isTimeout = true;
+            var t = Task.Run(async () => {
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velocityThreshold); // Used to be rb.velocity.magnitude
+            }, source.Token);
+
+            var t1 = Task.Run(async () => {
+                await new WaitForSeconds(timeout); // Used to be rb.velocity.magnitude
+            }, source.Token);
+
+            if (await Task.WhenAny(t, t1) == t)
+            {
+                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold && (SharedJoystick.moveX == 0.0f && SharedJoystick.moveY == 0.0f)) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+            }
+            else
+            {
+                //print("Timed out");
+                isTimeout = true;
+            }
         }
         else
         {
-            //print("Timed out");
-            isTimeout = true;
-        }
+            var t = Task.Run(async () => {
+                await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
+            }, source.Token);
 
+            var t1 = Task.Run(async () => {
+                await new WaitForSeconds(timeout);
+            }, source.Token);
+
+            if (await Task.WhenAny(t, t1) == t || player == null)
+            {
+                await new WaitUntil(() => ((SharedJoystick.currentSpeed == 0.0f && SharedJoystick.currentRot == 0.0f && !SharedJoystick.ptb) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                if (t1.IsCompleted) isTimeout = true;
+            }
+            else
+            {
+                //print("Timed out");
+                isTimeout = true;
+            }
+        }
+        
         source.Cancel();
 
         if (mode == Modes.Flash)
@@ -1189,6 +1255,10 @@ public class Monkey2D : MonoBehaviour
             float delay = c_lambda * Mathf.Exp(-c_lambda * ((float)rand.NextDouble() * (c_max - c_min) + c_min));
             // Debug.Log("firefly delay: " + delay);
             checkWait.Add(delay);
+            if (ptb != 2)
+            {
+                await new WaitForSeconds(delay);
+            }
         }
         else
         {

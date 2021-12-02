@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.IO.Ports;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 using UnityEngine.InputSystem.LowLevel;
 
 public class JoystickMonke : MonoBehaviour
@@ -65,6 +70,78 @@ public class JoystickMonke : MonoBehaviour
 
     public bool ptb = false;
 
+    //Akis PTB vars
+    [HideInInspector]
+    public float gainVel = 0.0f;
+    [HideInInspector]
+    public float gainRot = 0.0f;
+
+    [HideInInspector]
+    public float meanDist;
+    [HideInInspector]
+    public float meanTime;
+    [HideInInspector]
+    public float meanAngle;
+    [HideInInspector]
+    public int flagPTBType;
+    [HideInInspector]
+    public float minTau;
+    [HideInInspector]
+    public float maxTau;
+    [HideInInspector]
+    public float numTau;
+    [HideInInspector]
+    public float meanLogSpace;
+    [HideInInspector]
+    public float stdDevLogSpace;
+    [HideInInspector]
+    public float timeConstant;
+    [HideInInspector]
+    public float filterTau;
+    [HideInInspector]
+    public float velFilterGain;
+    [HideInInspector]
+    public float rotFilterGain;
+    [HideInInspector]
+    public float gamma;
+    [HideInInspector]
+    public float meanNoise;
+    [HideInInspector]
+    public float stdDevNoise;
+    [HideInInspector]
+    public float logSample = 1f;
+
+    [HideInInspector]
+    public float velKsi = 0.0f;
+    [HideInInspector]
+    public float prevVelKsi = 0.0f;
+    [HideInInspector]
+    public float rotKsi = 0.0f;
+    [HideInInspector]
+    public float prevRotKsi = 0.0f;
+    [HideInInspector]
+    public float velEta = 0.0f;
+    [HideInInspector]
+    public float prevVelEta = 0.0f;
+    [HideInInspector]
+    public float rotEta = 0.0f;
+    [HideInInspector]
+    public float prevRotEta = 0.0f;
+    [HideInInspector]
+    public float cleanVel = 0.0f;
+    [HideInInspector]
+    public float prevCleanVel = 0.0f;
+    [HideInInspector]
+    public float cleanRot = 0.0f;
+    [HideInInspector]
+    public float prevCleanRot = 0.0f;
+
+    public float currentTau;
+    public List<float> taus = new List<float>();
+
+    public float rawX;
+    public float rawY;
+
     CTIJoystick USBJoystick;
     float prevX = 0.0f;
     float prevY = 0.0f;
@@ -85,6 +162,7 @@ public class JoystickMonke : MonoBehaviour
         ptbRotMax = PlayerPrefs.GetFloat("Perturb Rotation Max");
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
+
         if (usingArduino)
         {
             joystick.set(portName, baudRate, ReadTimeout, QueueLength);
@@ -94,6 +172,20 @@ public class JoystickMonke : MonoBehaviour
         {
             USBJoystick = CTIJoystick.current;
         }
+
+        //load Akis PTB vars
+        ptb = (int)PlayerPrefs.GetFloat("PTBType") != 2;
+        meanDist = PlayerPrefs.GetFloat("Mean Distance");
+        meanTime = PlayerPrefs.GetFloat("Mean Time");
+        meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
+        flagPTBType = (int)PlayerPrefs.GetFloat("PTBType");
+        minTau = PlayerPrefs.GetFloat("MinTau");
+        maxTau = PlayerPrefs.GetFloat("Max Tau");
+        numTau = (int)PlayerPrefs.GetFloat("NumTau");
+        timeConstant = PlayerPrefs.GetFloat("TauTau");
+        filterTau = PlayerPrefs.GetFloat("FilterTau");
+        velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+        rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
 
         x[0] = R;
         y[0] = GaussianPDFDenorm(R);
@@ -120,6 +212,41 @@ public class JoystickMonke : MonoBehaviour
         }
 
         xcomp[count - 1] = 0;
+
+        //Akis PTB set up
+        gamma = Mathf.Exp(-1f / timeConstant);
+
+        switch (flagPTBType)
+        {
+            case 0:
+                var linspace = (maxTau - minTau) / (numTau - 1);
+
+                for (int i = 0; i < numTau; i++)
+                {
+                    taus.Add(minTau + (i * linspace));
+                    //print(string.Format("tau{0} = {1}", i, taus[i]));
+                }
+
+                if (taus[taus.Count - 1] != maxTau)
+                {
+                    taus[taus.Count - 1] = maxTau;
+                }
+
+                currentTau = taus[rand.Next(0, taus.Count)];
+
+                break;
+
+            case 1:
+                meanNoise = 0.5f * (Mathf.Log(minTau) + Mathf.Log(maxTau));
+                stdDevNoise = 0.5f * (meanNoise - Mathf.Log(minTau));
+                meanLogSpace = meanNoise * (1.0f - gamma);
+                stdDevLogSpace = stdDevNoise * Mathf.Sqrt(1.0f - (gamma * gamma));
+                //print(string.Format("muPhi = {0}, sigPhi = {1}, muEta = {2}, sigEta = {3}", meanNoise, stdDevNoise, meanLogSpace, stdDevLogSpace));
+                break;
+
+            case 2:
+                break;
+        }
     }
 
     private void FixedUpdate()
@@ -189,35 +316,48 @@ public class JoystickMonke : MonoBehaviour
             }
             prevY = moveY;
 
-            if (moveX > 0.11f || moveX < -0.11f)
-            {
-                currentSpeed = -moveX * MaxSpeed;
-            }
-            else
-            {
-                currentSpeed = 0.0f;
-            }
+            //save filtered joystick X & Y
+            rawX = moveX;
+            rawY = moveY;
 
-            if (moveY > 0.11f || moveY < -0.11f)
+            //Akis PTB noise
+            if (ptb)
             {
-                currentRot = moveY * RotSpeed;
-                //sumx += moveX * RotSpeed;
-                //period++;
+                ProcessNoise();
+                //print(currentSpeed);
             }
             else
             {
-                currentRot = 0.0f;
-                //sumx += 0.0f;
-                //period++;
+                if (moveX > 0.11f || moveX < -0.11f)
+                {
+                    currentSpeed = -moveX * MaxSpeed;
+                }
+                else
+                {
+                    currentSpeed = 0.0f;
+                }
+                
+                if (moveY > 0.11f || moveY < -0.11f)
+                {
+                    currentRot = moveY * RotSpeed;
+                    //sumx += moveX * RotSpeed;
+                    //period++;
+                }
+                else
+                {
+                    currentRot = 0.0f;
+                    //sumx += 0.0f;
+                    //period++;
+                }
+                //if (period == 4)
+                //{
+                //    currentRot = sumx / period;
+                //    sumx = 0.0f;
+                //    period = 0;
+                //}
+                currentSpeedPtb = currentSpeed;
+                currentRotPtb = currentRot;
             }
-            //if (period == 4)
-            //{
-            //    currentRot = sumx / period;
-            //    sumx = 0.0f;
-            //    period = 0;
-            //}
-            currentSpeedPtb = currentSpeed;
-            currentRotPtb = currentRot;
             transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
             transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
             //print(string.Format("{0},{1}",moveX, moveY));
@@ -276,72 +416,76 @@ public class JoystickMonke : MonoBehaviour
         return t;
     }
 
-    public float[] DiscreteTau(int n, int n_stay, float min, float max)
+    public void DiscreteTau()
     {
-        float gamma = Mathf.Exp(-1.0f / n_stay);
-        List<float> list = new List<float>();
-        List<float> taus = new List<float>();
-
-
-        list.Add(min);
-
-        float step = (max - min) / n;
-        for (int i = 1; i < n; i++)
+        if (rand.NextDouble() > gamma)
         {
-            list.Add(list[i - 1] + step);
+            var temp = currentTau;
+
+            do
+            {
+                currentTau = taus[rand.Next(0, taus.Count)];
+            } while (temp == currentTau);
         }
 
-        taus.Add(list[rand.Next(0, n - 1)]);
+        //print(currentTau);
 
-        for (int i = 1; i < n; i++)
-        {
-            float tau;
-            int idx;
-            if (rand.NextDouble() > gamma)
-            {
-                tau = taus[i - 1];
-            }
-            else
-            {
-                idx = rand.Next(i, n - 1);
-                tau = list[idx];
-                list.RemoveAt(idx);
-            }
-            taus.Add(tau);
-        }
-
-        return taus.ToArray();
+        CalculateMaxValues();
     }
 
-    public float[] ContinuousTau(int n, int n_stay, float min, float max)
+    public void ContinuousTau()
     {
-        List<float> temp = new List<float>();
-        List<float> etas = new List<float>();
-        List<float> taus = new List<float>();
-        float c = Mathf.Exp(-1.0f / n_stay);
-        float mean = 0.5f * (Mathf.Log(min) + Mathf.Log(max));
-        float sd = 0.5f * (mean - Mathf.Log(min));
-        float mu = (1 - c) * mean;
-        float sig = sd * Mathf.Sqrt(1 - Mathf.Pow(c, 2.0f));
+        logSample = gamma * logSample + ((stdDevLogSpace * BoxMullerGaussianSample()) + meanLogSpace);
+        currentTau = Mathf.Exp(logSample);
 
-        temp.Add((sd * ZigguratGaussianSample()) + mean);
+        //print(currentTau);
 
-        for (int i = 0; i < n; i++)
-        {
-            etas.Add((sig * ZigguratGaussianSample()) + mu);
-        }
+        CalculateMaxValues();
+    }
 
-        for (int i = 1; i < n; i++)
-        {
-            temp.Add((c * temp[i - 1]) + etas[i - 1]);
-        }
+    private void CalculateMaxValues()
+    {
+        MaxSpeed = (meanDist / meanTime) * (1.0f / (-1.0f + (2 * (currentTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / currentTau)) / 2.0f)));
+        RotSpeed = (meanAngle / meanTime) * (1.0f / (-1.0f + (2 * (currentTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / currentTau)) / 2.0f)));
+    }
 
-        for (int i = 0; i < n; i++)
-        {
-            taus.Add(Mathf.Exp(temp[i]));
-        }
+    public void ResetValues()
+    {
+        prevVelEta = 0f;
+        prevVelKsi = 0f;
+        prevRotEta = 0f;
+        prevRotKsi = 0f;
+    }
 
-        return taus.ToArray();
+    private void ProcessNoise()
+    {
+        float alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
+        float beta = (1.0f - alpha);
+        float gamma = Mathf.Exp(-Time.fixedDeltaTime / filterTau);
+        float delta = (1.0f - gamma);
+
+        //print(string.Format("{0},{1},{2},{3}", alpha, beta, delta, gamma));
+        //print(currentTau);
+
+        velKsi = gamma * prevVelKsi + delta * BoxMullerGaussianSample();
+        velEta = gamma * prevVelEta + delta * velFilterGain * velKsi;
+        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * moveY;
+        prevCleanVel = cleanVel;
+        prevVelKsi = velKsi;
+        prevVelEta = velEta;
+
+        rotKsi = gamma * prevRotKsi + delta * BoxMullerGaussianSample();
+        rotEta = gamma * prevRotEta + delta * rotFilterGain * rotKsi;
+        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveX;
+        prevCleanRot = cleanRot;
+        prevRotKsi = rotKsi;
+        prevRotEta = rotEta;
+
+        //currentSpeed = Mathf.Sign(velEta) * Mathf.Abs((1.0f + velEta) * cleanVel);
+        //currentRot = Mathf.Sign(velEta) * Mathf.Abs((1.0f + rotEta) * cleanRot);
+
+        currentSpeed = cleanVel + Mathf.Sign(velEta) * Mathf.Abs(velEta * cleanVel);
+        currentRot = cleanRot + Mathf.Sign(velEta) * Mathf.Abs(rotEta * cleanRot);
     }
 
     public float BoxMullerGaussianSample()

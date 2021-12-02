@@ -430,12 +430,12 @@ public class GoToSettings : MonoBehaviour
         
         if (regularMenu.activeInHierarchy)
         {
-            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "firefly";
+            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calib/PTB";
         }
 
         if (calibrationMenu.activeInHierarchy)
         {
-            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calibration";
+            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "FF/JoyStk";
         }
     }
 
