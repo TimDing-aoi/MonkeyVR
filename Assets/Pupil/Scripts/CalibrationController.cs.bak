@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Ports;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +13,6 @@ namespace PupilLabs
         [Header("Pupil Labs Connection")]
         public SubscriptionsController subsCtrl;
         public TimeSync timeSync;
-        public DataController dataController;
 
         [Header("Scene References")]
         public new Camera camera;
@@ -24,12 +21,10 @@ namespace PupilLabs
         public GameObject rightMask;
         public GazeVisualizer gazeVisualizer;
         public GameObject window;
-        public GameObject plane;
 
         [Header("Settings")]
         public CalibrationSettings settings;
-        [HideInInspector] public CalibrationTargets fuseTestTargets;
-        public CalibrationTargets[] fuseTestTargetOptions;
+        public CalibrationTargets fuseTestTargets;
         public CalibrationTargets targets;
         public bool showPreview;
 
@@ -67,18 +62,11 @@ namespace PupilLabs
         float tStartITI = 0;
         float tTotalFix = 0;
         List<GameObject> previewMarkers = new List<GameObject>();
-        int[] indices = new int[225];
-        int[] trialMode = new int[225];
-        [HideInInspector] public int numCorrect;
+        int[] indices = new int[198];
+        int[] trialMode = new int[198];
+        [HideInInspector] public int numCorrect = 0;
         [HideInInspector] public int trialNum = 0;
         [HideInInspector] public int mode = 3;
-
-        //saving discrete data
-        int runNumber = PlayerPrefs.GetInt("Fusion Run Number");
-        static List<int> trialNumber = new List<int>();
-        static List<bool> rewarded = new List<bool>();
-        static List<int> eyeMode = new List<int>();
-        static List<int> targetIndex = new List<int>();
 
         bool previewMarkersActive = false;
 
@@ -91,9 +79,6 @@ namespace PupilLabs
         float intertrialInterval;
         float yThreshold;
         float xThreshold;
-        [HideInInspector] public float scale = 1f;
-        float sizeX;
-        float sizeY;
 
         //flags
         bool flagCalibrating = false;
@@ -112,11 +97,12 @@ namespace PupilLabs
             test = 3
         }
         [HideInInspector] public Status status;
-        readonly static List<int> order = new List<int>()
+
+        List<int> order = new List<int>()
         {
             3, 6, 7, 8, 5, 2, 1, 0, 3, 7, 5, 1, 0, 6, 8, 2, 4
         };
-        int autoIdx = 0;
+        int autoIdx = -1;
 
         System.Random random = new System.Random();
 
@@ -125,8 +111,6 @@ namespace PupilLabs
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
-
-            fuseTestTargets = fuseTestTargetOptions[0];
 
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
@@ -137,13 +121,10 @@ namespace PupilLabs
             xAngle = PlayerPrefs.GetFloat("X Threshold");
             yAngle = PlayerPrefs.GetFloat("Y Threshold");
             xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f);
-            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f);
+            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f) - 1f;
             markerSize = PlayerPrefs.GetFloat("Marker Size");
 
-            sizeX = scale * xThreshold * (Camera.main.fieldOfView * Mathf.Deg2Rad);
-            sizeY = scale * yThreshold * (Camera.main.fieldOfView * Mathf.Deg2Rad);
-
-            window.transform.localScale = new Vector3(sizeX, sizeY + 1f, 0.0f);
+            window.transform.localScale = new Vector3(xThreshold, yThreshold, 0.0f);
             window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             //sp = new SerialPort("COM4", 2000000);
             //sp.Open();
@@ -221,19 +202,18 @@ namespace PupilLabs
 
         void Update()
         {
-            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad) * (Camera.main.fieldOfView * Mathf.Deg2Rad) * scale, Mathf.Tan(yAngle * Mathf.Deg2Rad) * (Camera.main.fieldOfView * Mathf.Deg2Rad) * scale, scale);
+            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad), Mathf.Tan(yAngle * Mathf.Deg2Rad), 1.0f);
             marker.localScale = markerSize * Vector3.one;
             foreach (GameObject marker in previewMarkers)
             {
                 marker.transform.localScale = markerSize * Vector3.one;
             }
 
-            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f) * scale * (Camera.main.fieldOfView * Mathf.Deg2Rad);
-            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f) * scale * (Camera.main.fieldOfView * Mathf.Deg2Rad);
+            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f);
+            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f);
 
             Vector3 pos = Vector3.zero;
-
-            if (calibration.IsCalibrating || flagFuseTest)
+            if (calibration.IsCalibrating)
             {
                 pos = marker.transform.position;
             }
@@ -242,9 +222,9 @@ namespace PupilLabs
                 pos = previewMarkers[targetIdx].transform.position;
             }
 
-            //print(string.Format("{0}, {1}, {2}, {3}", Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x), xThreshold, Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y) - 1f, yThreshold));
+            //print(string.Format("{0}, {1}, {2}, {3}", Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x), xThreshold, Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y + 1f), yThreshold));
 
-            if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x) > xThreshold || Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y) - 1f > yThreshold)
+            if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x) > xThreshold || Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y + 1f) > yThreshold)
             {
                 gazeVisualizer.projectionMarker.GetComponent<MeshRenderer>().material.color = Color.red;
             }
@@ -346,9 +326,14 @@ namespace PupilLabs
                     flagChangePos = !flagChangePos;
                 }
 
-                if (!calibration.IsCalibrating && !flagFuseTest)
+                window.transform.position = previewMarkers[targetIdx].transform.position;
+            }
+
+            if (flagFuseTest)
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    window.transform.position = previewMarkers[targetIdx].transform.position;
+                    flagChangePos = !flagChangePos;
                 }
             }
         }
@@ -383,7 +368,7 @@ namespace PupilLabs
 
             var idx = 0;
 
-            int totalTrials = fuseTestTargets.GetTargetCount();
+            int totalTrials = 3 * fuseTestTargets.GetTargetCount();
 
             for (int i = 0; i < fuseTestTargets.GetTargetCount(); i++)
             {
@@ -448,12 +433,8 @@ namespace PupilLabs
 
             trialNum = 0;
             numCorrect = 0;
-            mode = trialMode[trialNum];
-            targetIdx = indices[trialNum];
 
-            trialNumber.Add(trialNum);
-            eyeMode.Add(mode);
-            targetIndex.Add(targetIdx);
+            targetIdx = indices[trialNum];
 
             tLastTrial = Time.time;
 
@@ -468,129 +449,83 @@ namespace PupilLabs
 
             UpdateMarker();
 
-            //marker.gameObject.SetActive(flagTesting);
+            marker.gameObject.SetActive(flagTesting);
 
             float tNow = Time.time;
 
-            if (tNow - tLastTrial <= totalTime)
+            if (tNow - tLastTrial <= 2f)
             {
-                if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - marker.position.x) <= xThreshold
-                    && Mathf.Abs(gazeVisualizer.localGazeDirection.y - marker.position.y) - 1f <= yThreshold)
-                {
-                    tTotalFix += tNow - tLastSample;
-                }
-
-                tLastSample = tNow;
+                return;
             }
             else
             {
-                if (tTotalFix >= secondsPerTarget)
-                {
-                    string toSend = "ij" + juiceTime.ToString();
-                    try
-                    {
-                        flagReward = true;
-                        sp.Write(toSend);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log(e);
-                    }
-
-                    numCorrect++;
-
-                    rewarded.Add(true);
-
-                    tTotalFix = 0.0f;
-                }
-                else
-                {
-                    rewarded.Add(false);
-                }
-
                 mode = 3;
 
-                if (flagTesting)
-                {
-                    flagTesting = false;
-                    flagReward = false;
-
-                    if (isAuto) tStartITI = Time.time;
-                }
-
-                if (isAuto && tNow - tStartITI >= intertrialInterval)
-                {
-                    flagChangePos = true;
-                }
+                flagTesting = false;
 
                 leftMask.SetActive(false);
                 rightMask.SetActive(false);
-                marker.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                marker.gameObject.SetActive(false);
 
-                if (trialNum < 225 && flagChangePos)
+                if (flagChangePos)
                 {
-                    trialNum++;
-
-                    targetIdx = indices[trialNum];
-
-                    mode = trialMode[trialNum];
-
-                    trialNumber.Add(trialNum);
-                    eyeMode.Add(mode);
-                    targetIndex.Add(targetIdx);
-
-                    switch (mode)
+                    if (trialNum < 66)
                     {
-                        case 0:
-                            leftMask.SetActive(true);
-                            rightMask.SetActive(false);
-                            break;
+                        trialNum++;
 
-                        case 1:
-                            leftMask.SetActive(false);
-                            rightMask.SetActive(true);
-                            break;
+                        targetIdx = indices[trialNum];
 
-                        case 2:
-                            leftMask.SetActive(false);
-                            rightMask.SetActive(false);
-                            break;
+                        mode = trialMode[trialNum];
+
+                        switch (mode)
+                        {
+                            case 0:
+                                leftMask.SetActive(true);
+                                rightMask.SetActive(false);
+                                break;
+
+                            case 1:
+                                leftMask.SetActive(false);
+                                rightMask.SetActive(true);
+                                break;
+
+                            case 2:
+                                leftMask.SetActive(false);
+                                rightMask.SetActive(false);
+                                break;
+                        }
+
+                        tLastTrial = Time.time;
+
+                        UpdatePosition();
+
+                        flagChangePos = !flagChangePos;
+
+                        flagTesting = !flagTesting;
+
+                        flagWait = !flagWait;
                     }
-
-                    tLastTrial = Time.time;
-
-                    UpdatePosition();
-
-                    flagChangePos = !flagChangePos;
-
-                    flagTesting = !flagTesting;
-
-                    flagWait = !flagWait;
-                }
-                
-                if (trialNum >= 225)
-                {
-                    ToggleFuseTest();
+                    else
+                    {
+                        ToggleFuseTest();
+                    }
                 }
             }
         }
 
         public void StopFuseTest()
         {
+            flagFuseTest = !flagFuseTest;
+
             Debug.Log("Stopping Fuse Test.");
 
             marker.gameObject.SetActive(false);
-
-            Save();
         }
 
         public void ToggleCalibration()
         {
             if (calibration.IsCalibrating)
             {
-                scale = 1f;
-
                 flagCalibrating = false;
                 StopCalibration();
 
@@ -602,8 +537,6 @@ namespace PupilLabs
             {
                 SetPreviewMarkers(false);
 
-                scale = 1.5f;
-
                 flagCalibrating = true;
                 StartCalibration();
 
@@ -613,8 +546,6 @@ namespace PupilLabs
 
         public void StartCalibration()
         {
-            plane.transform.position = new Vector3(0, 0, scale);
-
             if (!enabled)
             {
                 Debug.LogWarning("Component not enabled!");
@@ -637,7 +568,7 @@ namespace PupilLabs
             targetIdx = 4;
             targetSampleCount = 0;
 
-            autoIdx = 0;
+            autoIdx = -1;
 
             flagReward = false;
             flagFailed = false;
@@ -660,8 +591,6 @@ namespace PupilLabs
 
         public void StopCalibration()
         {
-            plane.transform.position = new Vector3(0, 0, scale);
-
             if (!calibration.IsCalibrating)
             {
                 Debug.Log("Nothing to stop.");
@@ -699,8 +628,8 @@ namespace PupilLabs
                     return;
                 }
 
-                if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - marker.position.x) <= xThreshold 
-                    && Mathf.Abs(gazeVisualizer.localGazeDirection.y - marker.position.y) - 1f <= yThreshold
+                if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - marker.position.x) < xThreshold 
+                    && Mathf.Abs(gazeVisualizer.localGazeDirection.y - marker.position.y + 1f) < yThreshold
                     && flagCalibrating)
                 {
                     //flagCalibrating = !flagCalibrating;
@@ -758,12 +687,10 @@ namespace PupilLabs
 
                     if (isAuto && tNow - tStartITI >= intertrialInterval)
                     {
-                        if (autoIdx < 17)
+                        if (autoIdx < order.Count)
                         {
-                            print("auto");
                             autoIdx++;
-                            targetIdx = order[autoIdx]; 
-                            tStartITI = Time.time;
+                            targetIdx = order[autoIdx];
                         }
                         else
                         {
@@ -785,9 +712,9 @@ namespace PupilLabs
 
                         flagChangePos = !flagChangePos;
 
-                        trialNum++;
-
                         lastIdx = targetIdx;
+
+                        trialNum++;
 
                         flagCalibrating = !flagCalibrating;
                         flagReward = false;
@@ -848,7 +775,7 @@ namespace PupilLabs
             window.transform.position = marker.position;
             //marker.LookAt(camera.transform.position);
 
-            if (flagCalibrating || flagTesting)
+            if (flagCalibrating || flagFuseTest)
             {
                 marker.gameObject.GetComponent<SpriteRenderer>().enabled = true;
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = true;
@@ -912,44 +839,6 @@ namespace PupilLabs
             previewMarkersActive = value;
         }
 
-        private void Save()
-        {
-            string firstLine = "trial,eye,target,rewarded";
 
-            List<int> temp;
-
-            StringBuilder csvDisc = new StringBuilder();
-
-            csvDisc.AppendLine(firstLine);
-
-            temp = new List<int>()
-            {
-                trialNumber.Count,
-                eyeMode.Count,
-                targetIndex.Count,
-                rewarded.Count
-            };
-
-            temp.Sort();
-
-            for (int i = 0; i < temp[0]; i++)
-            {
-                var line = string.Format("{0},{1},{2},{3}",
-                    trialNumber[i],
-                    eyeMode[i],
-                    targetIndex[i],
-                    rewarded[i]);
-                csvDisc.AppendLine(line);
-            }
-
-            string path = PlayerPrefs.GetString("Path");
-
-            string discPath = path + "/fusion_discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + runNumber + ".txt";
-            File.WriteAllText(discPath, csvDisc.ToString());
-
-            runNumber++;
-
-            PlayerPrefs.SetInt("Fusion Run Number", runNumber);
-        }
     }
 }

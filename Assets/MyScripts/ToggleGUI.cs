@@ -14,6 +14,17 @@ public class ToggleGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        int w = Screen.width, h = Screen.height;
+
+        GUIStyle style = new GUIStyle();
+
+        Rect rect = new Rect(0, 0, w, h * 2 / 50);
+        style.alignment = TextAnchor.UpperLeft;
+        style.fontSize = h * 2 / 50;
+        style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
+        string text = string.Format("Good Trials / Total Trials: {0}/{1}", calibrationController.numCorrect, calibrationController.trialNum);
+        GUI.Label(rect, text, style);
+
         if (GUI.Button(new Rect(Screen.width - 220, Screen.height - 100, 150, 60), toggleText))
         {
             toggle = !toggle;
@@ -29,7 +40,7 @@ public class ToggleGUI : MonoBehaviour
             toggleText = "Open";
         }
 
-        if (calibrationController.flagReward || Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (calibrationController.flagReward || Keyboard.current.spaceKey.isPressed)
         {
             GUI.contentColor = Color.red;
         }
@@ -37,7 +48,7 @@ public class ToggleGUI : MonoBehaviour
         {
             GUI.contentColor = Color.black;
         }
-        GUI.Box(new Rect(0f, 65f, 50f, 50f), texture);
+        GUI.Box(new Rect(0f, 30f, 50f, 50f), texture);
     }
 
 }

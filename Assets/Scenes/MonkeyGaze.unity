@@ -357,7 +357,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -365,7 +365,7 @@ Camera:
   m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 163639
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -541,6 +541,8 @@ MonoBehaviour:
   gazeDirMod: {x: 0, y: 0, z: 0}
   xScale: 0
   yScale: 0
+  xOffset: 0
+  yOffset: 0
 --- !u!4 &880135708
 Transform:
   m_ObjectHideFlags: 0
@@ -1425,7 +1427,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 163639
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2756,6 +2758,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
+      propertyPath: fuseTestTargetOptions.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
       propertyPath: subsCtrl
       value: 
       objectReference: {fileID: 3414331457082338530}
@@ -2789,7 +2796,7 @@ PrefabInstance:
         type: 3}
       propertyPath: targets
       value: 
-      objectReference: {fileID: 11400000, guid: 5a4de7d083491e54db807cd0f8f1e0b5,
+      objectReference: {fileID: 11400000, guid: 84504448c47b6e14ea31ba15dff4a36b,
         type: 2}
     - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
@@ -2811,6 +2818,34 @@ PrefabInstance:
       propertyPath: sphere
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: plane
+      value: 
+      objectReference: {fileID: 1181598348}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: fuseTestTargetOptions.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: c06b866f781aff84a863f48293c3abc0,
+        type: 2}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: fuseTestTargetOptions.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f40bb01abfb1e1542a16805910db5aff,
+        type: 2}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: fuseTestTargetOptions.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2830d071c3b1d5447b9e3d30b45c4102,
+        type: 2}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: dataController
+      value: 
+      objectReference: {fileID: 880135707}
     - target: {fileID: 3202356220036375677, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
       propertyPath: subsCtrl

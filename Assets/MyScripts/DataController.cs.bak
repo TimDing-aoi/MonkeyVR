@@ -41,10 +41,8 @@ namespace PupilLabs
         bool flagMultiFF = false;
         double timeProgStart = 0.0f;
         [HideInInspector] public Vector3 gazeDirMod;
-        [HideInInspector] public float xScale = 1f;
-        [HideInInspector] public float yScale = 1f;
-        [HideInInspector] public float xOffset = 0f;
-        [HideInInspector] public float yOffset = 0f;
+        [HideInInspector] public float xScale;
+        [HideInInspector] public float yScale;
         void OnEnable()
         {
             dataController = this;
@@ -253,11 +251,11 @@ namespace PupilLabs
         {
             if (binocularOnly && gazeData.MappingContext != GazeData.GazeMappingContext.Binocular) return;
 
-            gazeDataNow = gazeData;
+            if (!calibrationController.IsCalibrating) gazeDataNow = gazeData;
 
             Vector3 tempGaze = gazeDataNow.GazeDirection;
 
-            gazeDirMod = new Vector3(tempGaze.x * xScale + xOffset, tempGaze.y * yScale + yOffset, tempGaze.z);
+            gazeDirMod = new Vector3(tempGaze.x * xScale, tempGaze.y * yScale, tempGaze.z);
             // If you need to correct the position of the Gaze Direction in all termsz (x,y,z) then use this:
             //gazeDataNow.GazeDirection = gazeDataNow.GazeDirection * correctionFactor;
 
