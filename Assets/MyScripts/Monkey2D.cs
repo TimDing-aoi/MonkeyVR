@@ -632,7 +632,7 @@ public class Monkey2D : MonoBehaviour
     void Update()
     {
         particleSystem.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
-
+        print(particleSystem.transform.position);
         if (playing && Time.realtimeSinceStartup - programT0 > 0.3f)
         {
             switch (phase)
@@ -2141,6 +2141,63 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteStartElement("CalibrationJuiceTime");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("Calibration Juice Time").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Perturbation Settings");
+
+            xmlWriter.WriteStartElement("PTBType");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("PTBType").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Mean Distance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean Distance").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Mean Time");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean Time").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MinTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Max Tau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Tau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NumTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NumTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TauTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("TauTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RotationThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VelocityThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NoiseTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NoiseTauTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTauTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VelocityNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RotationNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseGain").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement();
