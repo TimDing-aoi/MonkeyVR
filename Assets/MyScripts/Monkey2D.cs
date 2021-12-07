@@ -61,7 +61,7 @@ public class Monkey2D : MonoBehaviour
     //wrmhl juiceBox = new wrmhl();
 
     [Tooltip("SerialPort of your device.")]
-    [HideInInspector] public string portName = "COM3";
+    [HideInInspector] public string portName;
 
     [Tooltip("Baudrate")]
     [HideInInspector] public int baudRate = 2000000;
@@ -196,6 +196,9 @@ public class Monkey2D : MonoBehaviour
     // Player linear and angular velocity
     readonly List<float> max_v = new List<float>();
     readonly List<float> max_w = new List<float>();
+
+    //PTBTau
+    readonly List<float> TauTau = new List<float>();
 
     // Firefly velocity
     readonly List<float> fv = new List<float>();
@@ -351,6 +354,7 @@ public class Monkey2D : MonoBehaviour
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
+        portName = PlayerPrefs.GetString("Port");
         XRSettings.occlusionMaskScale = 10f;
         XRSettings.useOcclusionMesh = false;
         Lcam.ResetProjectionMatrix();
@@ -632,7 +636,7 @@ public class Monkey2D : MonoBehaviour
     void Update()
     {
         particleSystem.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
-        print(particleSystem.transform.position);
+        //print(particleSystem.transform.position);
         if (playing && Time.realtimeSinceStartup - programT0 > 0.3f)
         {
             switch (phase)
@@ -788,6 +792,7 @@ public class Monkey2D : MonoBehaviour
         SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
         SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);
 
+        //print(ptb);
         if (ptb != 2)
         {
             switch (ptb)
@@ -807,6 +812,7 @@ public class Monkey2D : MonoBehaviour
             //filterTau.Add(SharedJoystick.filterTau);
             max_v.Add(SharedJoystick.MaxSpeed);
             max_w.Add(SharedJoystick.RotSpeed);
+            TauTau.Add(SharedJoystick.NoiseTau);
         }
         else
         {
@@ -1620,12 +1626,49 @@ public class Monkey2D : MonoBehaviour
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait", ffPosStr, distStr);
                 }
             }
+            else if(ptb != 2)
+            {
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TauTau,PTBType,SessionTauTau,FilteredTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+            }
             else
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
 
             csvDisc.AppendLine(firstLine);
+            
+            if (ptb != 2)
+            {
+                int i = 0;
+                print(TauTau.Count);
+                var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
+                        n[i],
+                        max_v[i],
+                        max_w[i],
+                        fv[i],
+                        onDur[i],
+                        densities[i],
+                        origin[i],
+                        heading[i],
+                        ffPos[i],
+                        cPos[i],
+                        cRot[i],
+                        dist[i],
+                        score[i],
+                        timedout[i],
+                        juiceDuration[i],
+                        beginTime[i],
+                        checkTimeStrList[i],
+                        rewardTime[i],
+                        endTime[i],
+                        checkWait[i],
+                        interWait[i],
+                        TauTau[i]);
+                var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.currentTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
+                csvDisc.AppendLine(secondline);
+            }
 
             temp = new List<int>()
             {
@@ -1668,10 +1711,21 @@ public class Monkey2D : MonoBehaviour
             temp.Sort();
 
             var totalScore = 0;
+            int j;
+
+            if (ptb != 2)
+            {
+                j = 1;
+                temp.Add(TauTau.Count);
+            }
+            else
+            {
+                j = 0;
+            }
 
             if (multiMode == 1)
             {
-                for (int i = 0; i < temp[0]; i++)
+                for (int i = j; i < temp[0]; i++)
                 {
                     var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
                         n[i],
@@ -1695,6 +1749,12 @@ public class Monkey2D : MonoBehaviour
                         endTime[i],
                         checkWait[i],
                         interWait[i]);
+
+                    if (ptb != 2)
+                    {
+                        line = line + "," + TauTau[i];
+                    }
+
                     csvDisc.AppendLine(line);
 
                     totalScore += score[i];
@@ -1702,7 +1762,7 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < temp[0]; i++)
+                for (int i = j; i < temp[0]; i++)
                 {
                     var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
                         n[i],
@@ -1726,6 +1786,12 @@ public class Monkey2D : MonoBehaviour
                         endTime[i],
                         checkWait[i],
                         interWait[i]);
+
+                    if (ptb != 2)
+                    {
+                        line = line + "," + TauTau[i];
+                    }
+
                     csvDisc.AppendLine(line);
 
                     totalScore += score[i];
@@ -2149,23 +2215,23 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteAttributeString("Type", "Perturbation Settings");
 
             xmlWriter.WriteStartElement("PTBType");
-            xmlWriter.WriteString(PlayerPrefs.GetInt("PTBType").ToString());
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("PTBType").ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("Mean Distance");
-            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean Distance").ToString());
+            xmlWriter.WriteStartElement("MeanDistance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanDistance").ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("Mean Time");
-            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean Time").ToString());
+            xmlWriter.WriteStartElement("MeanTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanTime").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("MinTau");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("MinTau").ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("Max Tau");
-            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Tau").ToString());
+            xmlWriter.WriteStartElement("MaxTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MaxTau").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("NumTau");

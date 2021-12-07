@@ -8174,7 +8174,7 @@ GameObject:
   - component: {fileID: 212739298}
   - component: {fileID: 212739297}
   m_Layer: 5
-  m_Name: Mean Distance
+  m_Name: MeanDistance
   m_TagString: Setting
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23788,7 +23788,7 @@ GameObject:
   - component: {fileID: 566077802}
   - component: {fileID: 566077801}
   m_Layer: 5
-  m_Name: Min Tau
+  m_Name: MinTau
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32577,7 +32577,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1833678862}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -34545,7 +34545,7 @@ GameObject:
   - component: {fileID: 862705791}
   - component: {fileID: 862705790}
   m_Layer: 5
-  m_Name: Mean Time
+  m_Name: MeanTime
   m_TagString: Setting
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55437,7 +55437,7 @@ GameObject:
   - component: {fileID: 1443661153}
   - component: {fileID: 1443661152}
   m_Layer: 5
-  m_Name: Max Tau
+  m_Name: MaxTau
   m_TagString: Setting
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77473,7 +77473,7 @@ GameObject:
   - component: {fileID: 2075619102}
   - component: {fileID: 2075619101}
   m_Layer: 5
-  m_Name: Max Tau
+  m_Name: MaxTau
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

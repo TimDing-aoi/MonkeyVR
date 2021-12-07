@@ -15,7 +15,7 @@ public class JoystickMonke : MonoBehaviour
     public bool usingArduino;
 
     [Tooltip("SerialPort of your device.")]
-    public string portName = "COM1";
+    public string portName;
 
     [Tooltip("Baudrate")]
     public int baudRate = 1000000;
@@ -156,6 +156,7 @@ public class JoystickMonke : MonoBehaviour
 
     void Start()
     {
+        portName = PlayerPrefs.GetString("Port");
         //MaxSpeed = 0.0f;
         //RotSpeed = 0.0f;
         ptbVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
@@ -177,12 +178,12 @@ public class JoystickMonke : MonoBehaviour
 
         //load Akis PTB vars
         ptb = (int)PlayerPrefs.GetFloat("PTBType") != 2;
-        meanDist = PlayerPrefs.GetFloat("Mean Distance");
-        meanTime = PlayerPrefs.GetFloat("Mean Time");
+        meanDist = PlayerPrefs.GetFloat("MeanDistance");
+        meanTime = PlayerPrefs.GetFloat("MeanTime");
         meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
         flagPTBType = (int)PlayerPrefs.GetFloat("PTBType");
         minTau = PlayerPrefs.GetFloat("MinTau");
-        maxTau = PlayerPrefs.GetFloat("Max Tau");
+        maxTau = PlayerPrefs.GetFloat("MaxTau");
         numTau = (int)PlayerPrefs.GetFloat("NumTau");
         timeConstant = PlayerPrefs.GetFloat("TauTau");
         NoiseTau = PlayerPrefs.GetFloat("NoiseTau");
@@ -277,6 +278,8 @@ public class JoystickMonke : MonoBehaviour
             moveX = -USBJoystick.x.ReadValue();
             moveY = -USBJoystick.y.ReadValue();
 
+            //print(moveX);
+
             if (moveX < 0.0f)
             {
                 moveX += 1.0f;
@@ -323,6 +326,7 @@ public class JoystickMonke : MonoBehaviour
             rawX = moveY;
             rawY = -moveX;
 
+            //print(ptb);
             //Akis PTB noise
             if (ptb)
             {
@@ -363,7 +367,7 @@ public class JoystickMonke : MonoBehaviour
             }
             transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
             transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
-            //print(string.Format("{0},{1}",moveX, moveY));
+            //print(string.Format("{0},{1}", currentRot, currentSpeed));
         }
     }
 
@@ -441,7 +445,7 @@ public class JoystickMonke : MonoBehaviour
         logSample = kappa * logSample + ((stdDevLogSpace * BoxMullerGaussianSample()) + meanLogSpace);
         currentTau = Mathf.Exp(logSample);
 
-        //print(currentTau);
+        //print(stdDevLogSpace);
 
         CalculateMaxValues();
     }
