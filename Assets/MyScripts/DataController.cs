@@ -169,6 +169,8 @@ namespace PupilLabs
                     var PTBRV = SharedJoystick.currentRot;
                     var RawX = SharedJoystick.rawX;
                     var RawY = SharedJoystick.rawY;
+                    var CleanLV = SharedJoystick.cleanVel;
+                    var CleanRV = SharedJoystick.prevCleanRot;
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)
@@ -229,7 +231,7 @@ namespace PupilLabs
 #else
                     if (SharedJoystick.ptb)
                     {
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
+                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
                             trial,
                             (double)Time.realtimeSinceStartup - timeProgStart,
                             epoch,
@@ -254,6 +256,8 @@ namespace PupilLabs
                             REta,
                             PTBLV,
                             PTBRV,
+                            CleanLV,
+                            CleanRV,
                             RawX,
                             RawY));
                     }
@@ -344,7 +348,7 @@ namespace PupilLabs
                     }
                     else
                     {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                     }
                 }
 

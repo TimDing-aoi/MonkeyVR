@@ -198,7 +198,7 @@ public class Monkey2D : MonoBehaviour
     readonly List<float> max_w = new List<float>();
 
     //PTBTau
-    readonly List<float> TauTau = new List<float>();
+    readonly List<float> CurrentTau = new List<float>();
 
     // Firefly velocity
     readonly List<float> fv = new List<float>();
@@ -812,7 +812,7 @@ public class Monkey2D : MonoBehaviour
             //filterTau.Add(SharedJoystick.filterTau);
             max_v.Add(SharedJoystick.MaxSpeed);
             max_w.Add(SharedJoystick.RotSpeed);
-            TauTau.Add(SharedJoystick.NoiseTau);
+            CurrentTau.Add(SharedJoystick.currentTau);
         }
         else
         {
@@ -1628,7 +1628,7 @@ public class Monkey2D : MonoBehaviour
             }
             else if(ptb != 2)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TauTau,PTBType,SessionTauTau,FilteredTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
@@ -1636,39 +1636,6 @@ public class Monkey2D : MonoBehaviour
             }
 
             csvDisc.AppendLine(firstLine);
-            
-            if (ptb != 2)
-            {
-                int i = 0;
-                print(TauTau.Count);
-                var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTimeStrList[i],
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i],
-                        TauTau[i]);
-                var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.currentTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
-                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
-                csvDisc.AppendLine(secondline);
-            }
 
             temp = new List<int>()
             {
@@ -1716,11 +1683,44 @@ public class Monkey2D : MonoBehaviour
             if (ptb != 2)
             {
                 j = 1;
-                temp.Add(TauTau.Count);
+                temp.Add(CurrentTau.Count);
             }
             else
             {
                 j = 0;
+            }
+
+            if (ptb != 2)
+            {
+                int i = 0;
+                print(temp[0]);
+                var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}",
+                        n[i],
+                        max_v[i],
+                        max_w[i],
+                        fv[i],
+                        onDur[i],
+                        densities[i],
+                        origin[i],
+                        heading[i],
+                        ffPos[i],
+                        cPos[i],
+                        cRot[i],
+                        dist[i],
+                        score[i],
+                        timedout[i],
+                        juiceDuration[i],
+                        beginTime[i],
+                        checkTime[i].ToString("F5"),
+                        rewardTime[i],
+                        endTime[i],
+                        checkWait[i],
+                        interWait[i],
+                        CurrentTau[i]);
+                var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
+                csvDisc.AppendLine(secondline);
             }
 
             if (multiMode == 1)
@@ -1752,7 +1752,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (ptb != 2)
                     {
-                        line = line + "," + TauTau[i];
+                        line = line + "," + CurrentTau[i];
                     }
 
                     csvDisc.AppendLine(line);
@@ -1789,7 +1789,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (ptb != 2)
                     {
-                        line = line + "," + TauTau[i];
+                        line = line + "," + CurrentTau[i];
                     }
 
                     csvDisc.AppendLine(line);

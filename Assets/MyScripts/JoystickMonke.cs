@@ -95,7 +95,7 @@ public class JoystickMonke : MonoBehaviour
     [HideInInspector]
     public float stdDevLogSpace;
     [HideInInspector]
-    public float timeConstant;
+    public float TauTau;
     [HideInInspector]
     public float NoiseTau;
     [HideInInspector]
@@ -185,7 +185,7 @@ public class JoystickMonke : MonoBehaviour
         minTau = PlayerPrefs.GetFloat("MinTau");
         maxTau = PlayerPrefs.GetFloat("MaxTau");
         numTau = (int)PlayerPrefs.GetFloat("NumTau");
-        timeConstant = PlayerPrefs.GetFloat("TauTau");
+        TauTau = PlayerPrefs.GetFloat("TauTau");
         NoiseTau = PlayerPrefs.GetFloat("NoiseTau");
         NoiseTauTau = PlayerPrefs.GetFloat("NoiseTauTau");
         velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
@@ -218,7 +218,7 @@ public class JoystickMonke : MonoBehaviour
         xcomp[count - 1] = 0;
 
         //Akis PTB set up
-        kappa = Mathf.Exp(-1f / timeConstant);
+        kappa = Mathf.Exp(-1f / TauTau);
 
         switch (flagPTBType)
         {
