@@ -88,25 +88,28 @@ public class ParameterGUI : MonoBehaviour
         dataController.xOffset = xOffsetSliderValue;
         dataController.yOffset = yOffsetSliderValue;
 
-        switch (selection)
+        if (!calibrationController.IsCalibrating)
         {
-            case 0:
-                calibrationController.fuseTestTargets = calibrationController.fuseTestTargetOptions[0];
-                calibrationController.plane.transform.position = new Vector3(0f, 0f, 0.25f);
-                calibrationController.scale = 0.25f;
-                break;
+            switch (selection)
+            {
+                case 0:
+                    calibrationController.plane.transform.position = new Vector3(0f, 0f, 0.25f);
+                    calibrationController.scale = 0.25f;
+                    calibrationController.UpdatePreviewMarkers();
+                    break;
 
-            case 1:
-                calibrationController.fuseTestTargets = calibrationController.fuseTestTargetOptions[1];
-                calibrationController.plane.transform.position = new Vector3(0f, 0f, 0.45f);
-                calibrationController.scale = 0.45f;
-                break;
+                case 1:
+                    calibrationController.plane.transform.position = new Vector3(0f, 0f, 0.45f);
+                    calibrationController.scale = 0.45f;
+                    calibrationController.UpdatePreviewMarkers();
+                    break;
 
-            case 2:
-                calibrationController.fuseTestTargets = calibrationController.fuseTestTargetOptions[2];
-                calibrationController.plane.transform.position = new Vector3(0f, 0f, 1f);
-                calibrationController.scale = 1f;
-                break;
+                case 2:
+                    calibrationController.plane.transform.position = new Vector3(0f, 0f, 1f);
+                    calibrationController.scale = 1f;
+                    calibrationController.UpdatePreviewMarkers();
+                    break;
+            }
         }
 
         if (calibrationController.IsCalibrating)

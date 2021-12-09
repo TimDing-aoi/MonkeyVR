@@ -28,8 +28,7 @@ namespace PupilLabs
 
         [Header("Settings")]
         public CalibrationSettings settings;
-        [HideInInspector] public CalibrationTargets fuseTestTargets;
-        public CalibrationTargets[] fuseTestTargetOptions;
+        public CalibrationTargets fuseTestTargets;
         public CalibrationTargets targets;
         public bool showPreview;
 
@@ -72,6 +71,7 @@ namespace PupilLabs
         [HideInInspector] public int numCorrect;
         [HideInInspector] public int trialNum = 0;
         [HideInInspector] public int mode = 3;
+        [HideInInspector] public Vector3 pos;
 
         //saving discrete data
         int runNumber = PlayerPrefs.GetInt("Fusion Run Number");
@@ -89,8 +89,8 @@ namespace PupilLabs
         float ignoreInitialSeconds;
         float secondsPerTarget;
         float intertrialInterval;
-        float yThreshold;
-        float xThreshold;
+        [HideInInspector] public float yThreshold;
+        [HideInInspector] public float xThreshold;
         [HideInInspector] public float scale = 1f;
         float sizeX;
         float sizeY;
@@ -126,8 +126,6 @@ namespace PupilLabs
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
 
-            fuseTestTargets = fuseTestTargetOptions[0];
-
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
             totalTime = PlayerPrefs.GetFloat("Presentation Time");
@@ -140,10 +138,10 @@ namespace PupilLabs
             yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f);
             markerSize = PlayerPrefs.GetFloat("Marker Size");
 
-            sizeX = scale * xThreshold * (Camera.main.fieldOfView * Mathf.Deg2Rad);
-            sizeY = scale * yThreshold * (Camera.main.fieldOfView * Mathf.Deg2Rad);
+            sizeX = scale * xThreshold;
+            sizeY = scale * yThreshold;
 
-            window.transform.localScale = new Vector3(sizeX, sizeY + 1f, 0.0f);
+            window.transform.localScale = new Vector3(sizeX, sizeY, 0.0f);
             window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             //sp = new SerialPort("COM4", 2000000);
             //sp.Open();
@@ -221,17 +219,18 @@ namespace PupilLabs
 
         void Update()
         {
-            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad) * (Camera.main.fieldOfView * Mathf.Deg2Rad) * scale, Mathf.Tan(yAngle * Mathf.Deg2Rad) * (Camera.main.fieldOfView * Mathf.Deg2Rad) * scale, scale);
-            marker.localScale = markerSize * Vector3.one;
-            foreach (GameObject marker in previewMarkers)
-            {
-                marker.transform.localScale = markerSize * Vector3.one;
-            }
+            float gazeX = gazeVisualizer.projectionMarker.position.x;
+            float gazeY = gazeVisualizer.projectionMarker.position.y;
 
-            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f) * scale * (Camera.main.fieldOfView * Mathf.Deg2Rad);
-            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f) * scale * (Camera.main.fieldOfView * Mathf.Deg2Rad);
+            //print(fov);
 
-            Vector3 pos = Vector3.zero;
+            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad) * scale, Mathf.Tan(yAngle * Mathf.Deg2Rad) * scale, 1f);
+            marker.localScale = markerSize * Vector3.one * scale;
+
+            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad) / 2.0f * scale;
+            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad) / 2.0f * scale;
+
+            //Vector3 pos = Vector3.zero;
 
             if (calibration.IsCalibrating || flagFuseTest)
             {
@@ -242,15 +241,15 @@ namespace PupilLabs
                 pos = previewMarkers[targetIdx].transform.position;
             }
 
-            //print(string.Format("{0}, {1}, {2}, {3}", Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x), xThreshold, Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y) - 1f, yThreshold));
+            //print(string.Format("X: {0}, XT: {1}, Y: {2}, YT: {3}", gazeX, pos.x, gazeY, pos.y));
 
-            if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - pos.x) > xThreshold || Mathf.Abs(gazeVisualizer.localGazeDirection.y - pos.y) - 1f > yThreshold)
+            if (Mathf.Abs(gazeX - pos.x) <= xThreshold && Mathf.Abs(gazeY - pos.y) <= yThreshold)
             {
-                gazeVisualizer.projectionMarker.GetComponent<MeshRenderer>().material.color = Color.red;
+                gazeVisualizer.projectionMarker.GetComponent<MeshRenderer>().material.color = Color.green;
             }
             else
             {
-                gazeVisualizer.projectionMarker.GetComponent<MeshRenderer>().material.color = Color.green;
+                gazeVisualizer.projectionMarker.GetComponent<MeshRenderer>().material.color = Color.red;
             }
 
             if (showPreview != previewMarkersActive)
@@ -362,6 +361,9 @@ namespace PupilLabs
                 StartFuseTest();
 
                 status = Status.test;
+
+                flagFuseTest = true;
+                flagTesting = true;
             }
             else
             {
@@ -369,10 +371,10 @@ namespace PupilLabs
                 StopFuseTest();
 
                 status = Status.none;
-            }
 
-            flagFuseTest = !flagFuseTest;
-            flagTesting = !flagTesting;
+                flagFuseTest = false;
+                flagTesting = false;
+            }
         }
 
         public void StartFuseTest()
@@ -380,6 +382,11 @@ namespace PupilLabs
             Debug.Log("Starting Fuse Test.");
 
             showPreview = false;
+
+            foreach (GameObject marker in previewMarkers)
+            {
+                marker.SetActive(false);
+            }
 
             var idx = 0;
 
@@ -471,11 +478,14 @@ namespace PupilLabs
             //marker.gameObject.SetActive(flagTesting);
 
             float tNow = Time.time;
+            float gazeX = gazeVisualizer.projectionMarker.position.x;
+            float gazeY = gazeVisualizer.projectionMarker.position.y;
 
             if (tNow - tLastTrial <= totalTime)
             {
-                if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - marker.position.x) <= xThreshold
-                    && Mathf.Abs(gazeVisualizer.localGazeDirection.y - marker.position.y) - 1f <= yThreshold)
+                print("testing");
+                if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
+                    && Mathf.Abs(gazeY - marker.position.y) <= yThreshold)
                 {
                     tTotalFix += tNow - tLastSample;
                 }
@@ -484,6 +494,7 @@ namespace PupilLabs
             }
             else
             {
+                print("trial complete");
                 if (tTotalFix >= secondsPerTarget)
                 {
                     string toSend = "ij" + juiceTime.ToString();
@@ -690,6 +701,8 @@ namespace PupilLabs
             UpdateMarker();
 
             float tNow = Time.time;
+            float gazeX = gazeVisualizer.projectionMarker.position.x;
+            float gazeY = gazeVisualizer.projectionMarker.position.y;
 
             if (tNow - tLastSample >= 1f / settings.SampleRate - Time.deltaTime / 2f)
             {
@@ -699,8 +712,8 @@ namespace PupilLabs
                     return;
                 }
 
-                if (Mathf.Abs(gazeVisualizer.localGazeDirection.x - marker.position.x) <= xThreshold 
-                    && Mathf.Abs(gazeVisualizer.localGazeDirection.y - marker.position.y) - 1f <= yThreshold
+                if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold 
+                    && Mathf.Abs(gazeY - marker.position.y) <= yThreshold
                     && flagCalibrating)
                 {
                     //flagCalibrating = !flagCalibrating;
@@ -714,14 +727,16 @@ namespace PupilLabs
 
                     //if (isAuto) tStartITI = Time.time;
 
-                    //Adding the calibration reference data to the list that will be passed on, once the required sample amount is met.
-                    double sampleTimeStamp = timeSync.ConvertToPupilTime(Time.realtimeSinceStartup);
-                    AddSample(sampleTimeStamp);
-
-                    targetSampleCount++; //Increment the current calibration sample. (Default sample amount per calibration point is 120)
+                    
 
                     tTotalFix += tNow - tLastSample;
                 }
+
+                //Adding the calibration reference data to the list that will be passed on, once the required sample amount is met.
+                double sampleTimeStamp = timeSync.ConvertToPupilTime(Time.realtimeSinceStartup);
+                AddSample(sampleTimeStamp);
+
+                targetSampleCount++; //Increment the current calibration sample. (Default sample amount per calibration point is 120)
 
                 tLastSample = tNow;
 
@@ -844,7 +859,8 @@ namespace PupilLabs
 
         private void UpdateMarker()
         {
-            marker.position = camera.transform.localToWorldMatrix.MultiplyPoint(currLocalTargetPos);
+            //marker.position = camera.transform.localToWorldMatrix.MultiplyPoint(currLocalTargetPos);
+            marker.position = currLocalTargetPos * scale;
             window.transform.position = marker.position;
             //marker.LookAt(camera.transform.position);
 
@@ -899,6 +915,16 @@ namespace PupilLabs
             }
 
             previewMarkersActive = true;
+        }
+
+        public void UpdatePreviewMarkers()
+        {
+            for (int i = 0; i < targets.GetTargetCount(); ++i)
+            {
+                var target = targets.GetLocalTargetPosAt(i) * scale;
+                previewMarkers[i].transform.localScale = Vector3.one * markerSize * scale;
+                previewMarkers[i].transform.localPosition = new Vector3(target.x, target.y, scale);
+            }
         }
 
 

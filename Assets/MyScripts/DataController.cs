@@ -19,6 +19,7 @@ namespace PupilLabs
         [Header("Scene References")]
         public Transform gazeOrigin;
         public GazeController gazeController;
+        public GazeVisualizer gazeVisualizer;
         public CalibrationController calibrationController;
         public TimeSync timeSync;
         public static DataController dataController;
@@ -137,7 +138,7 @@ namespace PupilLabs
                             gazeDataNow.Confidence,
                             calibrationController.targetIdx,
                             calibrationController.mode,
-                            gazeDataNow.GazeDirection.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeDistance,
                             gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
@@ -244,7 +245,7 @@ namespace PupilLabs
                             FFlinear,
                             gazeDataNow.MappingContext,
                             gazeDataNow.Confidence,
-                            gazeDataNow.GazeDirection.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeDistance,
                             gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
@@ -277,7 +278,7 @@ namespace PupilLabs
                                 FFlinear,
                                 gazeDataNow.MappingContext,
                                 gazeDataNow.Confidence,
-                                gazeDataNow.GazeDirection.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                                gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
                                 gazeDataNow.GazeDistance,
                                 gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                                 gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
@@ -301,9 +302,14 @@ namespace PupilLabs
 
             gazeDataNow = gazeData;
 
-            Vector3 tempGaze = gazeDataNow.GazeDirection;
+            //Vector3 tempGaze = gazeDataNow.GazeDirection;
 
-            gazeDirMod = new Vector3(tempGaze.x * xScale + xOffset, tempGaze.y * yScale + yOffset, tempGaze.z);
+            //gazeDirMod = new Vector3(tempGaze.x * xScale + xOffset, tempGaze.y * yScale + yOffset, tempGaze.z);
+
+            //if (Physics.SphereCast(gazeOrigin.position, 0.05f, gazeDirMod, out RaycastHit hit, Mathf.Infinity))
+            //{
+            //    gazeDirMod = hit.point;
+            //}
             // If you need to correct the position of the Gaze Direction in all termsz (x,y,z) then use this:
             //gazeDataNow.GazeDirection = gazeDataNow.GazeDirection * correctionFactor;
 

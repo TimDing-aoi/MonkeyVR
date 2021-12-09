@@ -112,21 +112,8 @@ namespace PupilLabs
                 return;
             }
 
-            if (simulateGaze)
-            {
-                if (Time.time - timer > 0.0f)
-                {
-                    localGazeDirection = calibrationController.marker.position + new Vector3(((float)random.NextDouble() - 0.5f) / 10f, ((float)random.NextDouble() - 0.5f) / 10f - 1.0f, 0.0f);
-                    lastConfidence = (float)random.NextDouble() * 0.1f + 0.75f;
-                    timer = Time.time;
-                }
-            }
-            else
-            {
-                localGazeDirection = dataController.gazeDirMod;
-                lastConfidence = dataController.gazeDataNow.Confidence;
-            }
-
+            localGazeDirection = dataController.gazeDirMod;
+            lastConfidence = dataController.gazeDataNow.Confidence;
 
             VisualizeConfidence();
 
@@ -234,16 +221,35 @@ namespace PupilLabs
 
             if (Physics.SphereCast(origin, sphereCastRadius, direction, out RaycastHit hit, Mathf.Infinity))
             {
-                UnityEngine.Debug.DrawRay(origin, direction * hit.distance, Color.yellow);
+                float xScale = dataController.xScale;
+                float yScale = dataController.yScale;
+                float xOffset = dataController.xOffset;
+                float yOffset = dataController.yOffset;
 
-                projectionMarker.position = hit.point;
-
-                gazeDirectionMarker.position = origin + direction * hit.distance;
-                gazeDirectionMarker.LookAt(origin);
-
-                if (errorAngleBasedMarkerRadius)
+                if (simulateGaze)
                 {
-                    gazeDirectionMarker.localScale = GetErrorAngleBasedScale(origMarkerScale, hit.distance, angleErrorEstimate);
+
+                    if (Time.time - timer > 0.0f)
+                    {
+                        //localGazeDirection = calibrationController.pos + new Vector3((((float)random.NextDouble() - 0.5f) / 10f) * xScale + xOffset, (((float)random.NextDouble() - 0.5f) / 10f) * yScale + yOffset, -0.001f);
+                        projectionMarker.position = calibrationController.pos + new Vector3(calibrationController.xThreshold * xScale + xOffset, calibrationController.yThreshold * yScale + yOffset, -0.001f);
+
+                        timer = Time.time;
+                    }
+                }
+                else
+                {
+                    UnityEngine.Debug.DrawRay(origin, direction * hit.distance, Color.yellow);
+
+                    projectionMarker.position = new Vector3(hit.point.x * xScale + xOffset, hit.point.y * yScale + yOffset, hit.point.z);
+
+                    gazeDirectionMarker.position = origin + direction * hit.distance;
+                    gazeDirectionMarker.LookAt(origin);
+
+                    if (errorAngleBasedMarkerRadius)
+                    {
+                        gazeDirectionMarker.localScale = GetErrorAngleBasedScale(origMarkerScale, hit.distance, angleErrorEstimate);
+                    }
                 }
             }
             else
