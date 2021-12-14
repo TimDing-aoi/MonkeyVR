@@ -1753,6 +1753,9 @@ public class Monkey2D : MonoBehaviour
                     if (ptb != 2)
                     {
                         line = line + "," + CurrentTau[i];
+                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
                     }
 
                     csvDisc.AppendLine(line);
@@ -1790,6 +1793,9 @@ public class Monkey2D : MonoBehaviour
                     if (ptb != 2)
                     {
                         line = line + "," + CurrentTau[i];
+                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
                     }
 
                     csvDisc.AppendLine(line);

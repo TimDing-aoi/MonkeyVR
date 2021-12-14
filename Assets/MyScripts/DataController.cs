@@ -40,6 +40,7 @@ namespace PupilLabs
         bool flagFFSceneLoaded = false;
         bool flagPlaying = false;
         bool flagMultiFF = false;
+        bool flagRecording = false;
         double timeProgStart = 0.0f;
         [HideInInspector] public Vector3 gazeDirMod;
         [HideInInspector] public float xScale = 1f;
@@ -232,15 +233,14 @@ namespace PupilLabs
 #else
                     if (SharedJoystick.ptb)
                     {
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+                        flagRecording = true;
+                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
                             trial,
                             (double)Time.realtimeSinceStartup - timeProgStart,
                             epoch,
                             onoff,
                             position,
                             rotation,
-                            linear,
-                            angular,
                             FFposition,
                             FFlinear,
                             gazeDataNow.MappingContext,
@@ -264,7 +264,7 @@ namespace PupilLabs
                     }
                     else
                     {
-
+                        flagRecording = true;
                         sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
                                 trial,
                                 (double)Time.realtimeSinceStartup - timeProgStart,
@@ -354,15 +354,17 @@ namespace PupilLabs
                     }
                     else
                     {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                     }
                 }
 
                 timeSync.UpdateTimeSync();
             }
-            else if (next.name == "MainMenu")
+            else if (next.name == "MainMenu" && flagRecording)
             {
                 flagPlaying = false;
+
+                print("saving");
 
                 var path = PlayerPrefs.GetString("Path") + "\\continuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
                 File.AppendAllText(path, sb.ToString());
@@ -371,6 +373,8 @@ namespace PupilLabs
                 PlayerPrefs.SetInt("Run Number", num);
 
                 Destroy(this);
+
+                flagRecording = false;
             }
             else if (next.name == "MonkeyGaze")
             {
