@@ -2720,7 +2720,7 @@ PrefabInstance:
     - target: {fileID: 3202356218662239119, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
       propertyPath: simulateGaze
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3202356218662239119, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}

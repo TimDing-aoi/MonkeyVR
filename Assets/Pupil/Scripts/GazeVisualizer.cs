@@ -83,7 +83,7 @@ namespace PupilLabs
             origMarkerScale = gazeDirectionMarker.localScale;
             targetRenderer = gazeDirectionMarker.GetComponent<MeshRenderer>();
 
-            projectionMarker.localScale = Vector3.one * 0.01f;
+            projectionMarker.localScale = Vector3.one * 0.025f;
 #if UNITY_EDITOR
             EditorSceneManager.activeSceneChanged += ChangedActiveScene;
 #else
@@ -107,12 +107,14 @@ namespace PupilLabs
 
         void Update()
         {
+            projectionMarker.localScale = Vector3.one * 0.025f * calibrationController.scale;
+
             if (!isGazing)
             {
                 return;
             }
 
-            localGazeDirection = dataController.gazeDirMod;
+            localGazeDirection = dataController.gazeDataNow.GazeDirection;
             lastConfidence = dataController.gazeDataNow.Confidence;
 
             VisualizeConfidence();

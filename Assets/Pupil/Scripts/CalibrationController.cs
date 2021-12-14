@@ -224,11 +224,11 @@ namespace PupilLabs
 
             //print(fov);
 
-            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad) * scale, Mathf.Tan(yAngle * Mathf.Deg2Rad) * scale, 1f);
+            window.transform.localScale = new Vector3(Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f) * 2.0f * scale, Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f) * 2.0f * scale, 1f);
             marker.localScale = markerSize * Vector3.one * scale;
 
-            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad) / 2.0f * scale;
-            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad) / 2.0f * scale;
+            xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f ) * scale;
+            yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f ) * scale;
 
             //Vector3 pos = Vector3.zero;
 
@@ -483,10 +483,11 @@ namespace PupilLabs
 
             if (tNow - tLastTrial <= totalTime)
             {
-                print("testing");
+                //print("testing");
                 if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
                     && Mathf.Abs(gazeY - marker.position.y) <= yThreshold)
                 {
+                    //print("in");
                     tTotalFix += tNow - tLastSample;
                 }
 
@@ -494,12 +495,12 @@ namespace PupilLabs
             }
             else
             {
-                print("trial complete");
                 if (tTotalFix >= secondsPerTarget)
                 {
                     string toSend = "ij" + juiceTime.ToString();
                     try
                     {
+                        print("rewarded");
                         flagReward = true;
                         sp.Write(toSend);
                     }
@@ -509,14 +510,6 @@ namespace PupilLabs
                     }
 
                     numCorrect++;
-
-                    rewarded.Add(true);
-
-                    tTotalFix = 0.0f;
-                }
-                else
-                {
-                    rewarded.Add(false);
                 }
 
                 mode = 3;
@@ -524,7 +517,12 @@ namespace PupilLabs
                 if (flagTesting)
                 {
                     flagTesting = false;
-                    flagReward = false;
+                    rewarded.Add(flagReward);
+
+                    print(string.Format("trial {0} complete", trialNum));
+                    print(string.Format("Total Time: {0}, Target Time: {1}", tTotalFix, secondsPerTarget));
+
+                    tTotalFix = 0.0f;
 
                     if (isAuto) tStartITI = Time.time;
                 }
@@ -572,6 +570,8 @@ namespace PupilLabs
                     tLastTrial = Time.time;
 
                     UpdatePosition();
+
+                    flagReward = false;
 
                     flagChangePos = !flagChangePos;
 
