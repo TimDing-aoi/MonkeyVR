@@ -1147,7 +1147,8 @@ public class Monkey2D : MonoBehaviour
 
             if (await Task.WhenAny(t, t1) == t)
             {
-                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold && (SharedJoystick.moveX == 0.0f && SharedJoystick.moveY == 0.0f)) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
+                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold && ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT)) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
             }
             else
             {
@@ -2254,6 +2255,10 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteStartElement("VelocityThreshold");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("JoystickThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickThreshold").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("NoiseTau");
