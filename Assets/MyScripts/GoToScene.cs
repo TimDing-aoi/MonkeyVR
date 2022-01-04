@@ -25,7 +25,7 @@ public class GoToScene : MonoBehaviour
             switch (PlayerPrefs.GetInt("Scene"))
             {
                 case 0:
-                    SceneManager.LoadScene("Human2D");
+                    SceneManager.LoadScene("Monkey2D");
                     break;
                 case 1:
                     SceneManager.LoadScene("Human Arena");

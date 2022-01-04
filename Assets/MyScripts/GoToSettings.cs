@@ -160,6 +160,11 @@ public class GoToSettings : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    public void BeginGame()
+    {
+        SceneManager.LoadScene(2);
+    }
+
     public async void LoadingAnimation()
     {
         while (panel.activeInHierarchy)
