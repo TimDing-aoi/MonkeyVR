@@ -328,7 +328,10 @@ public class Monkey2D : MonoBehaviour
 
     private void Awake()
     {
-        gazeVisualizer = GameObject.Find("Gaze Visualizer").GetComponent<GazeVisualizer>();
+        if(PlayerPrefs.GetFloat("calib") == 1)
+        {
+            gazeVisualizer = GameObject.Find("Gaze Visualizer").GetComponent<GazeVisualizer>();
+        }
     }
 
     // Start is called before the first frame update

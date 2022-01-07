@@ -157,11 +157,13 @@ public class GoToSettings : MonoBehaviour
 
     public void BeginCalibration()
     {
+        PlayerPrefs.SetFloat("calib", 1);
         SceneManager.LoadScene(1);
     }
 
     public void BeginGame()
     {
+        PlayerPrefs.SetFloat("calib", 0);
         SceneManager.LoadScene(2);
     }
 

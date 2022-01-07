@@ -11586,7 +11586,7 @@ MonoBehaviour:
   taskSelectMenu: {fileID: 0}
   human2DMenu: {fileID: 0}
   humanArenaMenu: {fileID: 0}
-  obj: {fileID: 0}
+  obj: {fileID: 290716406}
   settingMenu1: {fileID: 0}
   settingMenu2: {fileID: 0}
   saveButton: {fileID: 0}
