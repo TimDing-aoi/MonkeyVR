@@ -612,7 +612,7 @@ public class Monkey2D : MonoBehaviour
             if (flagMultiFF)
             {
                 var str = "";
-                for (int i = 0; i < SharedMonkey.nFF; i++)
+                for (int i = 0; i < nFF; i++)
                 {
                     str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                 }
@@ -814,7 +814,7 @@ public class Monkey2D : MonoBehaviour
             var rotation = player.transform.rotation.ToString("F5").Trim('(', ')').Replace(" ", "");
             var linear = SharedJoystick.currentSpeed;
             var angular = SharedJoystick.currentRot;
-            var FFlinear = SharedMonkey.velocity;
+            var FFlinear = velocity;
             var FFposition = string.Empty;
             var VKsi = SharedJoystick.velKsi;
             var VEta = SharedJoystick.velEta;
@@ -828,7 +828,7 @@ public class Monkey2D : MonoBehaviour
             var CleanRV = SharedJoystick.prevCleanRot;
             if (flagMultiFF)
             {
-                foreach (Vector3 pos in SharedMonkey.ffPositions)
+                foreach (Vector3 pos in ffPositions)
                 {
                     FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
                 }
@@ -852,10 +852,10 @@ public class Monkey2D : MonoBehaviour
                     0,
                     "0,0,0",
                     0,
-                    0,
-                    0,
-                    0,
-                    0,
+                    "0,0,0",
+                    "0,0,0",
+                    "0,0,0",
+                    "0,0,0",
                     VKsi,
                     VEta,
                     RKsi,
