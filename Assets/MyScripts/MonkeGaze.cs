@@ -73,7 +73,7 @@ public class MonkeGaze : MonoBehaviour
     public float m01Offset = 0.0f;
 
     [Range (-1, 1)]
-    public float m02Offset = -0.3f;
+    public float m02Offset = -0.31f;
 
     [Range(-1, 1)]
     public float m03Offset = 0.0f;
