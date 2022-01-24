@@ -391,6 +391,7 @@ public class JoystickMonke : MonoBehaviour
                     || SharedMonkey.motion_toggle && !self_motion)
                 {
                     //print("out of ring");
+                    moveX = 0;
                     moveY = 0;
                     timeCounter = 0;
                     circX = 0;

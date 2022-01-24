@@ -1484,7 +1484,7 @@ public class Monkey2D : MonoBehaviour
             float delay = c_lambda * Mathf.Exp(-c_lambda * ((float)rand.NextDouble() * (c_max - c_min) + c_min));
             // Debug.Log("firefly delay: " + delay);
             checkWait.Add(delay);
-            if (ptb != 2)
+            if (ptb != 2 && PlayerPrefs.GetFloat("FixedYSpeed") == 0)
             {
                 await new WaitForSeconds(delay);
             }
@@ -1726,7 +1726,7 @@ public class Monkey2D : MonoBehaviour
             await new WaitForSeconds(wait);
 
             phase = Phases.begin;
-            // Debug.Log("Check Phase End.");
+            Debug.Log("Check Phase End.");
         }
 
         timeCounter = 0;
