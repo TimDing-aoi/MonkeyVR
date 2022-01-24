@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine.InputSystem.LowLevel;
+using static Monkey2D;
 
 public class JoystickMonke : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class JoystickMonke : MonoBehaviour
 
     public float moveX;
     public float moveY;
+    public float circX;
     public int press;
     [ShowOnly] public float currentSpeed = 0.0f;
     [ShowOnly] public float currentRot = 0.0f;
@@ -67,6 +69,10 @@ public class JoystickMonke : MonoBehaviour
     float[] y = new float[count + 1];
     ulong[] xcomp;
     float aDivY0;
+
+    private float timeCounter = 0;
+    private float stopCounter = 0;
+    public GameObject FF;
 
     public bool ptb = false;
 
@@ -322,6 +328,9 @@ public class JoystickMonke : MonoBehaviour
             }
             prevY = moveY;
 
+            float minR = PlayerPrefs.GetFloat("Minimum Firefly Distance");
+            float maxR = PlayerPrefs.GetFloat("Maximum Firefly Distance");
+
             //save filtered joystick X & Y
             rawX = moveY;
             rawY = -moveX;
@@ -331,7 +340,6 @@ public class JoystickMonke : MonoBehaviour
             if (ptb)
             {
                 ProcessNoise();
-                //print(currentSpeed);
             }
             else
             {
@@ -347,27 +355,78 @@ public class JoystickMonke : MonoBehaviour
                 if (moveY > 0.11f || moveY < -0.11f)
                 {
                     currentRot = moveY * RotSpeed;
-                    //sumx += moveX * RotSpeed;
-                    //period++;
                 }
                 else
                 {
                     currentRot = 0.0f;
-                    //sumx += 0.0f;
-                    //period++;
                 }
-                //if (period == 4)
-                //{
-                //    currentRot = sumx / period;
-                //    sumx = 0.0f;
-                //    period = 0;
-                //}
+                if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
+                {
+                    if (Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position) > (minR + maxR) / 2)
+                    {
+                        currentSpeed = 0.0f;
+                    }
+                    else
+                    {
+                        currentSpeed = 1.0f;
+                    }
+                }
                 currentSpeedPtb = currentSpeed;
                 currentRotPtb = currentRot;
             }
-            transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
-            transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
-            //print(string.Format("{0},{1}", currentRot, currentSpeed));
+            if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
+            {
+                moveY = PlayerPrefs.GetFloat("FixedYSpeed");
+                //print(Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position));
+
+                float speedMultiplier = 3 / (3 - SharedMonkey.lifeSpan);
+                if (SharedMonkey.toggle)
+                {
+                    speedMultiplier = 3 / (3 - 0.15f);
+                }
+
+                float movingFFmode = PlayerPrefs.GetFloat("MovingFFmode");
+                bool self_motion = movingFFmode < 3;
+                if (Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position) > (minR + maxR) / 2 || SharedMonkey.firefly.activeSelf && !SharedMonkey.toggle && !self_motion
+                    || SharedMonkey.motion_toggle && !self_motion)
+                {
+                    //print("out of ring");
+                    moveY = 0;
+                    timeCounter = 0;
+                    circX = 0;
+                }
+                else
+                {
+                    timeCounter += 0.005f * speedMultiplier;
+                    if (movingFFmode == 1 || movingFFmode == 3)
+                    {
+                        circX -= moveX * (float)Math.PI / 180;
+                        float x = Mathf.Cos(circX);
+                        float z = Mathf.Sin(circX);
+                        transform.position = new Vector3(moveY * timeCounter * x, 0f, moveY * timeCounter * z);
+                        FF = GameObject.Find("Firefly");
+                        Vector3 lookatpos = transform.position * 2;
+                        transform.LookAt(lookatpos);
+                        transform.position = new Vector3(moveY * timeCounter * x, 1f, moveY * timeCounter * z);
+                    }
+                    else
+                    {
+                        circX -= moveX * (float)Math.PI / (180 * timeCounter);
+                        float x = Mathf.Cos(circX);
+                        float z = Mathf.Sin(circX);
+                        transform.position = new Vector3(moveY * timeCounter * x, 0f, moveY * timeCounter * z);
+                        FF = GameObject.Find("Firefly");
+                        Vector3 lookatpos = transform.position * 2;
+                        transform.LookAt(lookatpos);
+                        transform.position = new Vector3(moveY * timeCounter * x, 1f, moveY * timeCounter * z);
+                    }
+                }
+            }
+            else
+            {
+                transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
+                transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
+            }
         }
     }
 

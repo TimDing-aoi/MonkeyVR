@@ -49,6 +49,7 @@ public class Monkey2D : MonoBehaviour
     public static Monkey2D SharedMonkey;
 
     public GameObject firefly;
+    private float timeCounter = 0;
     //public GameObject marker;
     //public GameObject panel;
     public Camera Lcam;
@@ -84,7 +85,10 @@ public class Monkey2D : MonoBehaviour
     }
     private Modes mode;
     // Toggle for whether trial is an always on trial or not
-    private bool toggle;
+    public bool toggle;
+    // Toggle for self motion
+    public bool motion_toggle = false;
+
     [Tooltip("Ratio of trials that will have fireflies always on")]
     [HideInInspector] public float ratio;
     [Tooltip("Frequency of flashing firefly (Flashing Firefly Only)")]
@@ -117,6 +121,7 @@ public class Monkey2D : MonoBehaviour
     int multiMode;
     readonly public List<float> velocities = new List<float>();
     readonly public List<float> v_ratios = new List<float>();
+    readonly public List<float> v_noises = new List<float>();
     readonly public List<Vector3> directions = new List<Vector3>()
     {
         Vector3.left,
@@ -128,6 +133,10 @@ public class Monkey2D : MonoBehaviour
     readonly public List<float> ratios = new List<float>();
     private bool isMoving;
     private bool LRFB;
+    private float movingFFmode;
+    public GameObject line;
+    [HideInInspector] public int lineOnOff = 1;
+
     private Vector3 move;
     [Tooltip("Trial timeout (how much time player can stand still before trial ends")]
     [HideInInspector] public float timeout;
@@ -282,7 +291,10 @@ public class Monkey2D : MonoBehaviour
 
     [HideInInspector] public float initialD = 0.0f;
 
+    private Vector3 direction = new Vector3();
     [HideInInspector] public float velocity;
+    [HideInInspector] public float noise_SD;
+    [HideInInspector] public float velocity_Noised;
 
     [HideInInspector] public Vector3 player_origin;
 
@@ -512,6 +524,19 @@ public class Monkey2D : MonoBehaviour
         v_ratios.Add(PlayerPrefs.GetFloat("VR11"));
         v_ratios.Add(PlayerPrefs.GetFloat("VR12"));
 
+        v_noises.Add(PlayerPrefs.GetFloat("VN1"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN2"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN3"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN4"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN5"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN6"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN7"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN8"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN9"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN10"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN11"));
+        v_noises.Add(PlayerPrefs.GetFloat("VN12"));
+
         for (int i = 1; i < 12; i++)
         {
             v_ratios[i] = v_ratios[i] + v_ratios[i - 1];
@@ -536,6 +561,28 @@ public class Monkey2D : MonoBehaviour
 
         isMoving = PlayerPrefs.GetInt("Moving ON") == 1;
         LRFB = PlayerPrefs.GetInt("VertHor") == 0;
+        movingFFmode = PlayerPrefs.GetFloat("MovingFFmode");
+
+        if (movingFFmode > 0)
+        {
+            lineOnOff = 1;//(int)PlayerPrefs.GetFloat("Line OnOff");
+        }
+        else
+        {
+            lineOnOff = 0;
+        }
+        line.transform.localScale = new Vector3(10000f, 0.125f * p_height * 10, 1);
+        if (lineOnOff == 1)
+        {
+            line.SetActive(true);
+        }
+        else
+        {
+            line.SetActive(false);
+        }
+
+        drawLine(30, 200);
+
         try
         {
             switch (PlayerPrefs.GetString("Switch Behavior"))
@@ -719,7 +766,41 @@ public class Monkey2D : MonoBehaviour
 
             if (isMoving && nFF < 2)
             {
-                firefly.transform.position += move * Time.deltaTime;
+                if(movingFFmode == 0)
+                {
+                    firefly.transform.position += move * Time.deltaTime;
+                }
+                else
+                {
+                    System.Random randNoise = new System.Random();
+                    double u1 = 1.0 - randNoise.NextDouble(); //uniform(0,1] random doubles
+                    double u2 = 1.0 - randNoise.NextDouble();
+                    double randStdNormal = noise_SD * Math.Sqrt(-2.0 * Math.Log(u1)) *
+                                 Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                                                               //double randNormal =
+                                                               //mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+                                                               //print(randStdNormal);
+                    if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
+                    {
+                        //print(timeCounter);
+                        timeCounter += velocity_Noised * 0.001f;
+                        velocity_Noised = velocity + (float)randStdNormal;
+                        float x = (minDrawDistance + maxDrawDistance) * Mathf.Cos(timeCounter) / 2;
+                        float y = 0.0001f;
+                        float z = (minDrawDistance + maxDrawDistance) * Mathf.Sin(timeCounter) / 2;
+                        //print(x);
+                        //print(z);
+                        firefly.transform.position = new Vector3(x, y, z);
+                    }
+                    else
+                    {
+                        Vector3 temp = move;
+                        move = move + (direction * (float)randStdNormal);
+                        velocity_Noised = velocity + (float)randStdNormal;
+                        firefly.transform.position += move * Time.deltaTime;
+                        move = temp;
+                    }
+                }
             }
 
             if (currentTask.IsFaulted)
@@ -1050,64 +1131,75 @@ public class Monkey2D : MonoBehaviour
             {
                 //v1
                 velocity = velocities[0];
+                noise_SD = v_noises[0];
             }
             else if (r > v_ratios[0] && r <= v_ratios[1])
             {
                 //v2
                 velocity = velocities[1];
+                noise_SD = v_noises[1];
             }
             else if (r > v_ratios[1] && r <= v_ratios[2])
             {
                 //v3
                 velocity = velocities[2];
+                noise_SD = v_noises[2];
             }
             else if (r > v_ratios[2] && r <= v_ratios[3])
             {
                 //v4
                 velocity = velocities[3];
+                noise_SD = v_noises[3];
             }
             else if (r > v_ratios[3] && r <= v_ratios[4])
             {
                 //v5
                 velocity = velocities[4];
+                noise_SD = v_noises[4];
             }
             else if (r > v_ratios[4] && r <= v_ratios[5])
             {
                 //v6
                 velocity = velocities[5];
+                noise_SD = v_noises[5];
             }
             else if (r > v_ratios[5] && r <= v_ratios[6])
             {
                 //v7
                 velocity = velocities[6];
+                noise_SD = v_noises[6];
             }
             else if (r > v_ratios[6] && r <= v_ratios[7])
             {
                 //v8
                 velocity = velocities[7];
+                noise_SD = v_noises[7];
             }
             else if (r > v_ratios[7] && r <= v_ratios[8])
             {
                 //v9
                 velocity = velocities[8];
+                noise_SD = v_noises[8];
             }
             else if (r > v_ratios[8] && r <= v_ratios[9])
             {
                 //v10
                 velocity = velocities[9];
+                noise_SD = v_noises[9];
             }
             else if (r > v_ratios[9] && r <= v_ratios[10])
             {
                 //v11
                 velocity = velocities[10];
+                noise_SD = v_noises[10];
             }
             else
             {
                 //v12
                 velocity = velocities[11];
+                noise_SD = v_noises[11];
             }
 
-            Vector3 direction;
             if (LRFB)
             {
                 direction = Vector3.right;
@@ -1257,6 +1349,13 @@ public class Monkey2D : MonoBehaviour
         float startTime = Time.realtimeSinceStartup;
 
         source = new CancellationTokenSource();
+
+        if (toggle && isMoving)
+        {
+            motion_toggle = true;
+            await new WaitForSeconds(0.15f);
+            motion_toggle = false;
+        }
 
         if (ptb != 2)
         {
@@ -1629,6 +1728,8 @@ public class Monkey2D : MonoBehaviour
             phase = Phases.begin;
             // Debug.Log("Check Phase End.");
         }
+
+        timeCounter = 0;
     }
 
     /// <summary>
@@ -2416,5 +2517,22 @@ public class Monkey2D : MonoBehaviour
         {
             UnityEngine.Debug.LogError(e);
         }
+    }
+
+    void drawLine(float radius, int segments)
+    {
+        LineRenderer lr;
+        lr = line.GetComponent<LineRenderer>();
+        Vector3[] points = new Vector3[segments + 1];
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = ((float)i / (float)segments) * 360 * Mathf.Deg2Rad;
+            float x = Mathf.Sin(angle) * radius;
+            float z = Mathf.Cos(angle) * radius;
+            points[i] = new Vector3(x, 0f, z);
+        }
+        points[segments] = points[0];
+        lr.positionCount = segments + 1;
+        lr.SetPositions(points);
     }
 }
