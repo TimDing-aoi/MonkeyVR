@@ -162,6 +162,8 @@ public class JoystickMonke : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetFloat("FixedYSpeed", 0);
+        PlayerPrefs.SetFloat("MovingFFmode", 0);
         portName = PlayerPrefs.GetString("Port");
         //MaxSpeed = 0.0f;
         //RotSpeed = 0.0f;
@@ -543,15 +545,15 @@ public class JoystickMonke : MonoBehaviour
         //print(string.Format("{0},{1},{2},{3}", alpha, beta, delta, gamma));
         //print(currentTau);
 
-        velKsi = gamma * prevVelKsi + delta * BoxMullerGaussianSample();
-        velEta = gamma * prevVelEta + delta * velFilterGain * velKsi;
+        velKsi = gamma * prevVelKsi + delta * velFilterGain * BoxMullerGaussianSample();
+        velEta = gamma * prevVelEta + delta * velKsi;
         cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
         prevCleanVel = cleanVel;
         prevVelKsi = velKsi;
         prevVelEta = velEta;
 
-        rotKsi = gamma * prevRotKsi + delta * BoxMullerGaussianSample();
-        rotEta = gamma * prevRotEta + delta * rotFilterGain * rotKsi;
+        rotKsi = gamma * prevRotKsi + delta * rotFilterGain * BoxMullerGaussianSample();
+        rotEta = gamma * prevRotEta + delta * rotKsi;
         cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
         prevCleanRot = cleanRot;
         prevRotKsi = rotKsi;

@@ -363,6 +363,8 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     void OnEnable()
     {
+        PlayerPrefs.SetFloat("FixedYSpeed", 0);
+        PlayerPrefs.SetFloat("MovingFFmode", 0);
         Application.runInBackground = true;
 
         juiceBox = serial.sp;

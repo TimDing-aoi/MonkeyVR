@@ -437,7 +437,7 @@ public class GoToSettings : MonoBehaviour
         
         if (regularMenu.activeInHierarchy)
         {
-            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calib/PTB";
+            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calib/acc control/process noise";
         }
 
         if (calibrationMenu.activeInHierarchy)
