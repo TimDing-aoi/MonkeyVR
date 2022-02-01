@@ -27,10 +27,35 @@ public class JoystickMonke : MonoBehaviour
     [Tooltip("QueueLength")]
     public int QueueLength = 1;
 
-    private float ptbVelMin;
-    private float ptbVelMax;
-    private float ptbRotMin;
-    private float ptbRotMax;
+    public float ptbJoyVelMin;
+    public float ptbJoyVelMax;
+    public float ptbJoyVelStartRange;
+    public float ptbJoyVelStart;
+    public float ptbJoyVelMu;
+    public float ptbJoyVelSigma;
+    public float ptbJoyVelGain;
+    public float ptbJoyVelEnd;
+    public float ptbJoyVelLen;
+    public float ptbJoyVelValue;
+
+
+    public float ptbJoyRotMin;
+    public float ptbJoyRotMax;
+    public float ptbJoyRotStartRange;
+    public float ptbJoyRotStart;
+    public float ptbJoyRotMu;
+    public float ptbJoyRotSigma;
+    public float ptbJoyRotGain;
+    public float ptbJoyRotEnd;
+    public float ptbJoyRotLen;
+    public float ptbJoyRotValue;
+
+    public int ptbJoyFlag;
+    public int ptbJoyFlagTrial;
+
+    public float ptbJoyRatio;
+    public int ptbJoyOn;
+    public float ptbJoyEnableTime;
 
     public static JoystickMonke SharedJoystick;
 
@@ -40,8 +65,8 @@ public class JoystickMonke : MonoBehaviour
     public int press;
     [ShowOnly] public float currentSpeed = 0.0f;
     [ShowOnly] public float currentRot = 0.0f;
-    private float currentSpeedPtb = 0.0f;
-    private float currentRotPtb = 0.0f;
+    public float speedPrePtb = 0.0f;
+    public float rotPrePtb = 0.0f;
     public float RotSpeed = 0.0f;
     public float MaxSpeed = 0.0f;
 
@@ -70,9 +95,15 @@ public class JoystickMonke : MonoBehaviour
     ulong[] xcomp;
     float aDivY0;
 
-    private float timeCounter = 0;
-    private float stopCounter = 0;
+    public float timeCounter = 0;
+    public float timeOnsetJoy = 0;
+    public float timeCounterMovement = 0;
+    public float stopCounter = 0;
+    public float timeCntSecCurr = 0;
+    public float timeCntSecStart = 0;
     public GameObject FF;
+
+    public Phases currPhase;
 
     public bool ptb = false;
 
@@ -165,12 +196,40 @@ public class JoystickMonke : MonoBehaviour
         portName = PlayerPrefs.GetString("Port");
         //MaxSpeed = 0.0f;
         //RotSpeed = 0.0f;
-        ptbVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
-        ptbVelMax = PlayerPrefs.GetFloat("Perturb Velocity Max");
-        ptbRotMin = PlayerPrefs.GetFloat("Perturb Rotation Min");
-        ptbRotMax = PlayerPrefs.GetFloat("Perturb Rotation Max");
+
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
+
+        ptbJoyOn = PlayerPrefs.GetInt("Perturbation On");
+        
+        ptbJoyVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
+        ptbJoyVelMax = PlayerPrefs.GetFloat("Perturb Velocity Max");
+
+        ptbJoyRotMin = PlayerPrefs.GetFloat("Perturb Rotation Min");
+        ptbJoyRotMax = PlayerPrefs.GetFloat("Perturb Rotation Max");
+
+        ptbJoyRatio = 0.5f;
+
+        ptbJoyVelStartRange = 1.0f;
+        ptbJoyVelSigma = 0.2f;
+        ptbJoyVelLen = 1.0f;
+
+        ptbJoyRotStartRange = 1.0f;
+        ptbJoyRotSigma = 0.2f;
+        ptbJoyRotLen = 1.0f;
+
+        ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= ptbJoyRatio);
+
+        //ptbJoyVelStart;
+        //ptbJoyVelMu;        
+        //ptbJoyVelGain;
+        //ptbJoyVelEnd;        
+        //ptbJoyVelValue;
+        //ptbJoyFlag;
+
+        calcPtbJoyTrial();
+
+
 
         if (usingArduino)
         {
@@ -242,7 +301,7 @@ public class JoystickMonke : MonoBehaviour
                     taus[taus.Count - 1] = maxTau;
                 }
 
-                currentTau = taus[rand.Next(0, taus.Count)];
+                currentTau = taus[rand.Next(0, taus.Count)]; 
 
                 break;
 
@@ -360,6 +419,8 @@ public class JoystickMonke : MonoBehaviour
                 {
                     currentRot = 0.0f;
                 }
+
+
                 if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
                 {
                     if (Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position) > (minR + maxR) / 2)
@@ -371,9 +432,75 @@ public class JoystickMonke : MonoBehaviour
                         currentSpeed = 1.0f;
                     }
                 }
-                currentSpeedPtb = currentSpeed;
-                currentRotPtb = currentRot;
+
+                speedPrePtb = currentSpeed;
+                rotPrePtb = currentRot;
+
+                if (ptbJoyOn <= 0)
+                {
+                    //print("NoptbJoy");                    
+                }
+                else
+                {
+                    //print("ptbJoy");
+                    if (SharedMonkey.phase == Phases.check)
+                    {
+                        ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= ptbJoyRatio);
+                    }
+
+                    if (ptbJoyFlagTrial > 0)
+                    {
+
+                        //Monkey2D.Phase;                
+                        if (SharedMonkey.phase == Phases.check)
+                        {
+                            moveX = 0;
+                            moveY = 0;
+                            timeCounter = 0;
+                            timeCounterMovement = 0;
+                            //timeCntSecCurr = Time.realtimeSinceStartup;
+                            timeCntSecStart = Time.realtimeSinceStartup;
+                            ptbJoyEnableTime = 0;
+
+                            calcPtbJoyTrial();
+                        }
+                        else
+                        {
+                            timeCounter += 0.005f;
+                            timeCntSecCurr = Time.realtimeSinceStartup - timeCntSecStart;
+
+                            if (currentSpeed == 0)
+                            {
+                                timeCounterMovement = 0;
+                                //timeOnsetJoy = timeCounter;
+                                ptbJoyEnableTime = timeCounter;
+                            }
+                            else 
+                            {
+                                timeCounterMovement += 0.005f;                                
+                            }
+                        }
+
+                        if (timeCounterMovement >= ptbJoyVelStart & timeCounterMovement <= ptbJoyVelEnd)
+                        {
+                            ptbJoyVelValue = ProcessJoystickNoise(timeCounterMovement, ptbJoyVelMu, ptbJoyVelSigma, ptbJoyVelGain);
+                            ptbJoyRotValue = ProcessJoystickNoise(timeCounterMovement, ptbJoyRotMu, ptbJoyRotSigma, ptbJoyRotGain);
+                            ptbJoyFlag = 1;
+                        }
+                        else
+                        {
+                            ptbJoyVelValue = 0.0f;
+                            ptbJoyRotValue = 0.0f;
+                            ptbJoyFlag = 0;
+                        }
+
+                        currentSpeed = currentSpeed + ptbJoyVelValue;
+                        currentRot = currentRot + ptbJoyRotValue;
+                    }
+                }
+                
             }
+            
             if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
             {
                 moveY = PlayerPrefs.GetFloat("FixedYSpeed");
@@ -424,7 +551,7 @@ public class JoystickMonke : MonoBehaviour
                 }
             }
             else
-            {
+            {                
                 transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
                 transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
             }
@@ -459,6 +586,29 @@ public class JoystickMonke : MonoBehaviour
         //    var line = string.Format("{0},{1},{2},{3},{4},{5},{6}", t[i], rawX[i], rawY[i], v[i], w[i], vAddPtb[i], wAddPtb[i]);
         //    File.AppendAllText("C:/Users/jc10487/Documents/joydata.csv", line + "\n");
         //}
+    }
+
+    private void calcPtbJoyTrial()
+    {
+        // Linear
+        ptbJoyVelStart = (float) rand.NextDouble() * ptbJoyVelStartRange;
+        ptbJoyVelMu = ptbJoyVelStart + (ptbJoyVelLen / 2);
+        ptbJoyVelEnd = ptbJoyVelStart + ptbJoyVelLen;
+        ptbJoyVelGain = (float) rand.NextDouble() * (ptbJoyVelMax - ptbJoyVelMin) + ptbJoyVelMin;
+
+        //Angular
+        ptbJoyRotStart = ptbJoyVelStart;// (float)rand.NextDouble() * ptbJoyRotStartRange;
+        ptbJoyRotMu = ptbJoyVelMu;// ptbJoyRotStart + (ptbJoyRotLen / 2);
+        ptbJoyRotEnd = ptbJoyVelEnd;// ptbJoyRotStart + ptbJoyRotLen;
+        ptbJoyRotGain = (float)rand.NextDouble() * (ptbJoyRotMax - ptbJoyRotMin) + ptbJoyRotMin;
+    }
+
+    private float ProcessJoystickNoise(float t, float mu, float sigma, float gain)
+    {
+        //float sigma = 0.2f;
+        //float maxNum = (1.0f / Math.Sqrt(2.0f * sigma));// * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2));
+        //return (1.0f / Math.Sqrt(2.0f * sigma)) * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2));
+        return (float) (gain * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2)));
     }
 
     public float[] MakeProfile(float x)

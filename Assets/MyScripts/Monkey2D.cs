@@ -244,6 +244,37 @@ public class Monkey2D : MonoBehaviour
     // Was Always ON?
     readonly List<bool> alwaysON = new List<bool>();
 
+    // JoyStick PTB
+    readonly List<float> ptbJoyVelMin = new List<float>();
+    readonly List<float> ptbJoyVelMax = new List<float>();
+    readonly List<float> ptbJoyVelStartRange = new List<float>();
+    readonly List<float> ptbJoyVelStart = new List<float>();
+    readonly List<float> ptbJoyVelMu = new List<float>();
+    readonly List<float> ptbJoyVelSigma = new List<float>();
+    readonly List<float> ptbJoyVelGain = new List<float>();
+    readonly List<float> ptbJoyVelEnd = new List<float>();
+    readonly List<float> ptbJoyVelLen = new List<float>();
+    readonly List<float> ptbJoyVelValue = new List<float>();
+
+    readonly List<float> ptbJoyRotMin = new List<float>();
+    readonly List<float> ptbJoyRotMax = new List<float>();
+    readonly List<float> ptbJoyRotStartRange = new List<float>();
+    readonly List<float> ptbJoyRotStart = new List<float>();
+    readonly List<float> ptbJoyRotMu = new List<float>();
+    readonly List<float> ptbJoyRotSigma = new List<float>();
+    readonly List<float> ptbJoyRotGain = new List<float>();
+    readonly List<float> ptbJoyRotEnd = new List<float>();
+    readonly List<float> ptbJoyRotLen = new List<float>();
+    readonly List<float> ptbJoyRotValue = new List<float>();
+
+    readonly List<int> ptbJoyFlag = new List<int>();
+    readonly List<int> ptbJoyFlagTrial = new List<int>();
+
+    readonly List<float> ptbJoyRatio = new List<float>();
+    readonly List<int> ptbJoyOn = new List<int>();
+    readonly List<float> ptbJoyEnableTime = new List<float>();
+    
+
     [HideInInspector] public float FrameTimeElement = 0;
 
     [HideInInspector] public float delayTime = .2f;
@@ -669,7 +700,11 @@ public class Monkey2D : MonoBehaviour
             {
                 if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
                 {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity," +
+                        "FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ," +
+                        "RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," +
+                        "ptbJoyVelValue,ptbJoyRotValue,ptbJoyFlag,currentSpeed,currentRot,speedPrePtb,rotPrePtb,RawX,RawY," +
+                        PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
                 else
                 {
@@ -907,6 +942,15 @@ public class Monkey2D : MonoBehaviour
             var RawY = SharedJoystick.rawY;
             var CleanLV = SharedJoystick.cleanVel;
             var CleanRV = SharedJoystick.prevCleanRot;
+
+            var ptbJoyVelValueTmp = SharedJoystick.ptbJoyVelValue;
+            var ptbJoyRotValueTmp = SharedJoystick.ptbJoyRotValue;
+            var ptbJoyFlagTmp = SharedJoystick.ptbJoyFlag;
+            var currentSpeedTmp = SharedJoystick.currentSpeed;
+            var currentRotTmp = SharedJoystick.currentRot;
+            var speedPrePtbTmp = SharedJoystick.speedPrePtb;
+            var rotPrePtbTmp = SharedJoystick.rotPrePtb;
+
             if (flagMultiFF)
             {
                 foreach (Vector3 pos in ffPositions)
@@ -950,25 +994,14 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
-                sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
-                        trial,
-                        (double)Time.realtimeSinceStartup - timeProgStart,
-                        epoch,
-                        onoff,
-                        position,
-                        rotation,
-                        linear,
-                        angular,
-                        FFposition,
-                        FFlinear,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0));
+                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36}",
+                        trial, (double)Time.realtimeSinceStartup - timeProgStart, epoch, onoff, position, rotation,
+                        linear, angular, FFposition, FFlinear, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, ptbJoyVelValueTmp, ptbJoyRotValueTmp, ptbJoyFlagTmp, currentSpeedTmp, currentRotTmp, speedPrePtbTmp,
+                        rotPrePtbTmp, RawX, RawY);                
+                
+                sb.AppendLine(lllin);
             }
         }
     }
@@ -1705,6 +1738,37 @@ public class Monkey2D : MonoBehaviour
             cPos.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
             cRot.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
 
+            ptbJoyVelMin.Add(SharedJoystick.ptbJoyVelMin);
+            ptbJoyVelMax.Add(SharedJoystick.ptbJoyVelMax);
+            ptbJoyVelStartRange.Add(SharedJoystick.ptbJoyVelStartRange);
+            ptbJoyVelStart.Add(SharedJoystick.ptbJoyVelStart);
+            ptbJoyVelMu.Add(SharedJoystick.ptbJoyVelMu);
+            ptbJoyVelSigma.Add(SharedJoystick.ptbJoyVelSigma);
+            ptbJoyVelGain.Add(SharedJoystick.ptbJoyVelGain);
+            ptbJoyVelEnd.Add(SharedJoystick.ptbJoyVelEnd);
+            ptbJoyVelLen.Add(SharedJoystick.ptbJoyVelLen);
+            ptbJoyVelValue.Add(SharedJoystick.ptbJoyVelValue);
+
+            ptbJoyRotMin.Add(SharedJoystick.ptbJoyRotMin);
+            ptbJoyRotMax.Add(SharedJoystick.ptbJoyRotMax);
+            ptbJoyRotStartRange.Add(SharedJoystick.ptbJoyRotStartRange);
+            ptbJoyRotStart.Add(SharedJoystick.ptbJoyRotStart);
+            ptbJoyRotMu.Add(SharedJoystick.ptbJoyRotMu);
+            ptbJoyRotSigma.Add(SharedJoystick.ptbJoyRotSigma);
+            ptbJoyRotGain.Add(SharedJoystick.ptbJoyRotGain);
+            ptbJoyRotEnd.Add(SharedJoystick.ptbJoyRotEnd);
+            ptbJoyRotLen.Add(SharedJoystick.ptbJoyRotLen);
+            ptbJoyRotValue.Add(SharedJoystick.ptbJoyRotValue);
+
+            ptbJoyFlag.Add(SharedJoystick.ptbJoyFlag);
+            ptbJoyFlagTrial.Add(SharedJoystick.ptbJoyFlagTrial);
+
+            ptbJoyRatio.Add(SharedJoystick.ptbJoyRatio);
+            ptbJoyOn.Add(SharedJoystick.ptbJoyOn);
+            ptbJoyEnableTime.Add(SharedJoystick.ptbJoyEnableTime);
+
+            
+
             ffPositions.Clear();
             distances.Clear();
             ffPosStr = "";
@@ -1851,9 +1915,18 @@ public class Monkey2D : MonoBehaviour
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait", ffPosStr, distStr);
                 }
             }
-            else if(ptb != 2)
+            else if (ptb != 2)
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+            }
+            else if (SharedJoystick.ptbJoyOn>0) 
+            {
+                //firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,"
+                   + "ptbJoyVelMin,ptbJoyVelMax,ptbJoyVelStartRange,ptbJoyVelStart,ptbJoyVelMu,ptbJoyVelSigma,ptbJoyVelGain,ptbJoyVelEnd,ptbJoyVelLen,ptbJoyVelValue," +
+                    "ptbJoyRotMin,ptbJoyRotMax,ptbJoyRotStartRange,ptbJoyRotStart,ptbJoyRotMu,ptbJoyRotSigma,ptbJoyRotGain,ptbJoyRotEnd,ptbJoyRotLen,ptbJoyRotValue," +
+                    "ptbJoyFlag,ptbJoyFlagTrial,ptbJoyRatio,ptbJoyOn,ptbJoyEnableTime," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
@@ -1992,7 +2065,8 @@ public class Monkey2D : MonoBehaviour
             {
                 for (int i = j; i < temp[0]; i++)
                 {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
+                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},"+
+                        "{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45}",
                         n[i],
                         max_v[i],
                         max_w[i],
@@ -2013,7 +2087,32 @@ public class Monkey2D : MonoBehaviour
                         rewardTime[i],
                         endTime[i],
                         checkWait[i],
-                        interWait[i]);
+                        interWait[i],
+                        ptbJoyVelMin[i],
+                        ptbJoyVelMax[i],
+                        ptbJoyVelStartRange[i],
+                        ptbJoyVelStart[i],
+                        ptbJoyVelMu[i],
+                        ptbJoyVelSigma[i],
+                        ptbJoyVelGain[i],
+                        ptbJoyVelEnd[i],
+                        ptbJoyVelLen[i],
+                        ptbJoyVelValue[i],
+                        ptbJoyRotMin[i],
+                        ptbJoyRotMax[i],
+                        ptbJoyRotStartRange[i],
+                        ptbJoyRotStart[i],
+                        ptbJoyRotMu[i],
+                        ptbJoyRotSigma[i],
+                        ptbJoyRotGain[i],
+                        ptbJoyRotEnd[i],
+                        ptbJoyRotLen[i],
+                        ptbJoyRotValue[i],
+                        ptbJoyFlag[i],
+                        ptbJoyFlagTrial[i],
+                        ptbJoyRatio[i],
+                        ptbJoyOn[i],
+                        ptbJoyEnableTime[i]);
 
                     if (ptb != 2)
                     {
