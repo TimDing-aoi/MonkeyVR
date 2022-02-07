@@ -1527,6 +1527,8 @@ MonoBehaviour:
   QueueLength: 1
   fireflySize: 0
   fireflyZoneRadius: 0
+  toggle: 0
+  motion_toggle: 0
   ratio: 0
   freq: 0
   duty: 0
@@ -1567,6 +1569,8 @@ MonoBehaviour:
   currPhase: 0
   initialD: 0
   velocity: 0
+  noise_SD: 0
+  velocity_Noised: 0
   player_origin: {x: 0, y: 0, z: 0}
   particleSystem: {fileID: 903295597}
   offset: -0.3
@@ -1586,7 +1590,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1447618677
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1627,7 +1631,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 080d652c4bb51f544b28d7e2e380b802, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.8490566, g: 0.020024916, b: 0.18310185, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -2042,6 +2046,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959553, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959553, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
         type: 3}
       propertyPath: ShapeModule.m_SpriteRenderer
@@ -2057,11 +2071,31 @@ PrefabInstance:
       propertyPath: cullingMode
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7646396383011959555, guid: ea33a426973330542aeb637a1c390467,
         type: 3}
       propertyPath: m_SortingOrder
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959555, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2d01d8c885250364bac66a45791f02e1, type: 2}
     - target: {fileID: 7646396383011959556, guid: ea33a426973330542aeb637a1c390467,
         type: 3}
       propertyPath: m_Name

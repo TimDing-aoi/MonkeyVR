@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static JoystickMonke;
 
 public class Particles : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class Particles : MonoBehaviour
     [HideInInspector] public float densityLow;
     [HideInInspector] public float densityHigh;
     [HideInInspector] public float densityLowRatio;
+    public float TauValueR = 0.0F;
+    public float TauValueG = 0.0F;
+    public float TauValueB = 0.0F;
+    public float TauValueA = 1.0F;
     float density;
     float prevDensity;
     [HideInInspector] public float t_height;
@@ -14,6 +19,7 @@ public class Particles : MonoBehaviour
     uint seed;
     [HideInInspector] public static Particles particles;
     ParticleSystem particleSystem;
+    public int counter = 0;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -67,7 +73,25 @@ public class Particles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if((int)PlayerPrefs.GetFloat("PTBType") != 2 && (int) PlayerPrefs.GetFloat("TauColoredFloor") == 1)
+        {
+            counter++;
+            var main = particleSystem.main;
+            var TauValue = SharedJoystick.currentTau/3;
+            if(TauValue > 1)
+            {
+                TauValue = 1;
+            }
+            TauValueR = TauValue;
+            TauValueG = 8/255;
+            TauValueB = 1 - TauValue;
+            main.startColor = new Color(TauValueR, TauValueG, TauValueB, TauValueA);
+            //print(TauValue);
+            //print(TauValueR);
+            //print(TauValueG);
+            //print(TauValueB);
+            //print(TauValueA);
+        }
     }
 
     public float SwitchDensity()

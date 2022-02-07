@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using static Monkey2D;
+using static JoystickMonke;
 using UnityEngine.InputSystem;
 
 public class FPSDisplay : MonoBehaviour
@@ -43,7 +44,7 @@ public class FPSDisplay : MonoBehaviour
 		style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
 		float msec = deltaTime * 1000.0f;
 		fps = 1.0f / deltaTime;
-		string text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}", msec, fps, reward.points, reward.trialNum);
+		string text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}", msec, fps, reward.points, reward.trialNum, SharedJoystick.currentTau);
 		GUI.Label(rect, text, style);
 		if (keyboard.spaceKey.isPressed)
 		{
