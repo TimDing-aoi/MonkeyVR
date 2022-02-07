@@ -2511,6 +2511,39 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Calibration Parameters");
+
+            xmlWriter.WriteStartElement("xSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ySliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ySliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("markerSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("markerSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("xScaleSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xScaleSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yScaleSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yScaleSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("xOffsetSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xOffsetSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yOffsetSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yOffsetSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
 

@@ -149,6 +149,8 @@ namespace PupilLabs
 
             //print(isAuto);
 
+            subsCtrl.SubscribeTo("calibration", CustomReceiveData);
+
             marker.localScale = markerSize * Vector3.one;
 
             bool allReferencesValid = true;
@@ -191,6 +193,11 @@ namespace PupilLabs
 
             InitPreviewMarker();
             SetPreviewMarkers(false);
+        }
+
+        void CustomReceiveData(string topic, Dictionary<string, object> dictionary, byte[] thirdFrame = null)
+        {
+            Debug.Log(dictionary["result"].ToString());
         }
 
         void OnDisable()
