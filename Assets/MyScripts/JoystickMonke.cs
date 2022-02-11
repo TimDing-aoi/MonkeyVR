@@ -247,7 +247,9 @@ public class JoystickMonke : MonoBehaviour
         ptb = (int)PlayerPrefs.GetFloat("PTBType") != 2;
         meanDist = PlayerPrefs.GetFloat("MeanDistance");
         meanTime = PlayerPrefs.GetFloat("MeanTime");
-        meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
+        //Used to be
+        //meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
+        meanAngle = PlayerPrefs.GetFloat("MeanAngle");
         flagPTBType = (int)PlayerPrefs.GetFloat("PTBType");
         minTau = PlayerPrefs.GetFloat("MinTau");
         maxTau = PlayerPrefs.GetFloat("MaxTau");
