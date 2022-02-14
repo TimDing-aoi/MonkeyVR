@@ -44,7 +44,7 @@ namespace PupilLabs
 
             subsCtrl.SubscribeTo("notify.calibration.successful", ReceiveSuccess);
             subsCtrl.SubscribeTo("notify.calibration.failed", ReceiveFailure);
-            subsCtrl.SubscribeTo("notify.calibration.results", ReceiveCalibrationData);
+            subsCtrl.SubscribeTo("notify.calibration.", ReceiveCalibrationData);
 
             requestCtrl.StartPlugin(settings.PluginName);
             publisher = new Publisher(requestCtrl);
@@ -134,19 +134,86 @@ namespace PupilLabs
 
         void ReceiveCalibrationData(string topic, Dictionary<string, object> dictionary, byte[] thirdFrame = null)
         {
-            List<string> keyList = new List<string>(dictionary.Keys);
-            List<object> objList = new List<object>(dictionary.Values);
-
-            StringBuilder builder = new StringBuilder();
-
-            foreach (var pair in keyList.Zip(objList, (key, obj) => new { A = key, B = obj }))
+            foreach (KeyValuePair<string, object> entry in dictionary)
             {
-                string output = string.Format("{0}, {1}", pair.A, pair.B);
-                builder.AppendLine(output);
-                MonoBehaviour.print(output);
-            }
+                if (entry.Key == "calib_data")
+                {
+                    Dictionary<object, object> dict = (Dictionary<object, object>)dictionary["calib_data"];
+                    object[] refList = (object[])dict["ref_list"];
+                    object[] pupilList = (object[])dict["pupil_list"];
 
-            File.WriteAllText(PlayerPrefs.GetString("Path") + "\\calibration_params_" + PlayerPrefs.GetString("Name") + ".txt", builder.ToString());
+                    foreach (object refEntry in refList)
+                    {
+                        Debug.Log(refEntry.ToString());
+                    }
+
+                    foreach (object pupilEntry in pupilList)
+                    {
+                        Debug.Log(pupilEntry.ToString());
+                    }
+                }
+
+                if (entry.Key == "params")
+                {
+                    Dictionary<object, object> secDict = (Dictionary<object, object>)dictionary["params"];
+
+                    Dictionary<object, object> leftDict = (Dictionary<object, object>)secDict["left_model"];
+                    Dictionary<object, object> rightDict = (Dictionary<object, object>)secDict["right_model"];
+                    Dictionary<object, object> biDict = (Dictionary<object, object>)secDict["binocular_model"];
+
+                    object[] leftMatrixDict = (object[])leftDict["eye_camera_to_world_matrix"];
+
+                    //Debug.Log(leftMatrixDict.Length);
+
+                    foreach (object leftMatrixEntry in leftMatrixDict)
+                    {
+                        object[] leftMatrixList = (object[])leftMatrixEntry;
+
+                        //Debug.Log(leftMatrixList.Length);
+
+                        foreach (object leftListEntry in leftMatrixList)
+                        {
+                            Debug.Log(leftListEntry.ToString());
+                        }
+                        //Debug.Log(leftMatrixEntry.ToString());
+                    }
+
+                    object[] rightMatrixDict = (object[])rightDict["eye_camera_to_world_matrix"];
+
+                    foreach (object rightMatrixEntry in rightMatrixDict)
+                    {
+                        object[] rightMatrixList = (object[])rightMatrixEntry;
+
+                        foreach (object rightListEntry in rightMatrixList)
+                        {
+                            Debug.Log(rightListEntry.ToString());
+                        }
+                    }
+
+                    object[] biLeftMatrixDict = (object[])biDict["eye_camera_to_world_matrix0"];
+                    object[] biRightMatrixDict = (object[])biDict["eye_camera_to_world_matrix1"];
+
+                    foreach (object biLeftMatrixEntry in biLeftMatrixDict)
+                    {
+                        object[] biLeftMatrixList = (object[])biLeftMatrixEntry;
+
+                        foreach (object biLeftListEntry in biLeftMatrixList)
+                        {
+                            Debug.Log(biLeftListEntry.ToString());
+                        }
+                    }
+
+                    foreach (object biRightMatrixEntry in biRightMatrixDict)
+                    {
+                        object[] biRightMatrixList = (object[])biRightMatrixEntry;
+
+                        foreach (object biRightListEntry in biRightMatrixList)
+                        {
+                            Debug.Log(biRightListEntry.ToString());
+                        }
+                    }
+                }
+            }
         }
 
         private void UpdateEyesTranslation()
@@ -181,7 +248,7 @@ namespace PupilLabs
                 OnCalibrationSucceeded();
             }
 
-            CalibrationEnded(topic);
+            CalibrationEnded(topic, dictionary);
         }
 
         private void ReceiveFailure(string topic, Dictionary<string, object> dictionary, byte[] thirdFrame)
@@ -191,14 +258,21 @@ namespace PupilLabs
                 OnCalibrationFailed();
             }
 
-            CalibrationEnded(topic);
+            CalibrationEnded(topic, dictionary);
         }
 
-        private void CalibrationEnded(string topic)
+        private void CalibrationEnded(string topic, Dictionary<string, object> dictionary)
         {
             Debug.Log($"Calibration response: {topic}");
+
+            foreach (KeyValuePair<string, object> entry in dictionary)
+            {
+                Debug.Log(entry.ToString());
+            }
+
             subsCtrl.UnsubscribeFrom("notify.calibration.successful", ReceiveSuccess);
             subsCtrl.UnsubscribeFrom("notify.calibration.failed", ReceiveFailure);
+            subsCtrl.UnsubscribeFrom("notify.calibration.", ReceiveCalibrationData);
         }
     }
 }

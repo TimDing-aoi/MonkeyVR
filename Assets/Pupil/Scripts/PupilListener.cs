@@ -15,6 +15,7 @@ namespace PupilLabs
         {
             Debug.Log("Enabling Pupil Listener");
             subsCtrl.SubscribeTo("pupil.", ReceivePupilData);
+            
         }
 
         protected override void CustomDisable()
