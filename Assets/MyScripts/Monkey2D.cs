@@ -245,6 +245,8 @@ public class Monkey2D : MonoBehaviour
     readonly List<bool> alwaysON = new List<bool>();
 
     // JoyStick PTB
+    readonly List<float> timeCntPTBStart = new List<float>();    
+
     readonly List<float> ptbJoyVelMin = new List<float>();
     readonly List<float> ptbJoyVelMax = new List<float>();
     readonly List<float> ptbJoyVelStartRange = new List<float>();
@@ -1740,6 +1742,10 @@ public class Monkey2D : MonoBehaviour
             cPos.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
             cRot.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
 
+
+            timeCntPTBStart.Add(SharedJoystick.timeCntPTBStart - programT0);
+            SharedJoystick.timeCntPTBStart = programT0;
+
             ptbJoyVelMin.Add(SharedJoystick.ptbJoyVelMin);
             ptbJoyVelMax.Add(SharedJoystick.ptbJoyVelMax);
             ptbJoyVelStartRange.Add(SharedJoystick.ptbJoyVelStartRange);
@@ -1764,6 +1770,7 @@ public class Monkey2D : MonoBehaviour
 
             ptbJoyFlag.Add(SharedJoystick.ptbJoyFlag);
             ptbJoyFlagTrial.Add(SharedJoystick.ptbJoyFlagTrial);
+            SharedJoystick.ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= SharedJoystick.ptbJoyRatio); ;
 
             ptbJoyRatio.Add(SharedJoystick.ptbJoyRatio);
             ptbJoyOn.Add(SharedJoystick.ptbJoyOn);
@@ -1926,9 +1933,9 @@ public class Monkey2D : MonoBehaviour
                 //firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
 
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,"
-                   + "ptbJoyVelMin,ptbJoyVelMax,ptbJoyVelStartRange,ptbJoyVelStart,ptbJoyVelMu,ptbJoyVelSigma,ptbJoyVelGain,ptbJoyVelEnd,ptbJoyVelLen,ptbJoyVelValue," +
-                    "ptbJoyRotMin,ptbJoyRotMax,ptbJoyRotStartRange,ptbJoyRotStart,ptbJoyRotMu,ptbJoyRotSigma,ptbJoyRotGain,ptbJoyRotEnd,ptbJoyRotLen,ptbJoyRotValue," +
-                    "ptbJoyFlag,ptbJoyFlagTrial,ptbJoyRatio,ptbJoyOn,ptbJoyEnableTime," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                   + "ptbStart,ptbVelGain," +
+                    "ptbRotGain,ptbTrial," +
+                    "" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
@@ -2068,7 +2075,7 @@ public class Monkey2D : MonoBehaviour
                 for (int i = j; i < temp[0]; i++)
                 {
                     var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},"+
-                        "{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45}",
+                        "{21},{22},{23},{24}",
                         n[i],
                         max_v[i],
                         max_w[i],
@@ -2090,31 +2097,10 @@ public class Monkey2D : MonoBehaviour
                         endTime[i],
                         checkWait[i],
                         interWait[i],
-                        ptbJoyVelMin[i],
-                        ptbJoyVelMax[i],
-                        ptbJoyVelStartRange[i],
-                        ptbJoyVelStart[i],
-                        ptbJoyVelMu[i],
-                        ptbJoyVelSigma[i],
+                        timeCntPTBStart[i],
                         ptbJoyVelGain[i],
-                        ptbJoyVelEnd[i],
-                        ptbJoyVelLen[i],
-                        ptbJoyVelValue[i],
-                        ptbJoyRotMin[i],
-                        ptbJoyRotMax[i],
-                        ptbJoyRotStartRange[i],
-                        ptbJoyRotStart[i],
-                        ptbJoyRotMu[i],
-                        ptbJoyRotSigma[i],
                         ptbJoyRotGain[i],
-                        ptbJoyRotEnd[i],
-                        ptbJoyRotLen[i],
-                        ptbJoyRotValue[i],
-                        ptbJoyFlag[i],
-                        ptbJoyFlagTrial[i],
-                        ptbJoyRatio[i],
-                        ptbJoyOn[i],
-                        ptbJoyEnableTime[i]);
+                        ptbJoyFlagTrial[i]);
 
                     if (ptb != 2)
                     {
