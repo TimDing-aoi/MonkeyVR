@@ -82,9 +82,9 @@ public class Particles : MonoBehaviour
             {
                 TauValue = 1;
             }
-            TauValueR = TauValue;
-            TauValueG = 8/255;
-            TauValueB = 1 - TauValue;
+            TauValueR = 1;
+            TauValueG = TauValue;
+            TauValueB = 0;
             main.startColor = new Color(TauValueR, TauValueG, TauValueB, TauValueA);
             //print(TauValue);
             //print(TauValueR);

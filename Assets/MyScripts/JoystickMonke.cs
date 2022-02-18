@@ -205,13 +205,15 @@ public class JoystickMonke : MonoBehaviour
 
         ptbJoyOn = PlayerPrefs.GetInt("Perturbation On");
         
-        ptbJoyVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
+        //ptbJoyVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
         ptbJoyVelMax = PlayerPrefs.GetFloat("Perturb Velocity Max");
+        ptbJoyVelMin = -ptbJoyVelMax;
 
-        ptbJoyRotMin = PlayerPrefs.GetFloat("Perturb Rotation Min");
+        //ptbJoyRotMin = PlayerPrefs.GetFloat("Perturb Rotation Min");
         ptbJoyRotMax = PlayerPrefs.GetFloat("Perturb Rotation Max");
+        ptbJoyRotMin = -ptbJoyRotMax;
 
-        ptbJoyRatio = 0.5f;
+        ptbJoyRatio = PlayerPrefs.GetFloat("PerturbRatio"); //0.5f;
 
         ptbJoyVelStartRange = 1.0f;
         ptbJoyVelSigma = 0.2f;
