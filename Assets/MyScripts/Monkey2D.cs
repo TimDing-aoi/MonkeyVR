@@ -2217,6 +2217,10 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Max").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("PerturbRatio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("PerturbRatio").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");
@@ -2540,6 +2544,10 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteStartElement("PTBType");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("PTBType").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TauColoredFloor");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("TauColoredFloor").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("MeanDistance");
