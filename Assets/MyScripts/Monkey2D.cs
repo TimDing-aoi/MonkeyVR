@@ -1407,7 +1407,7 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(t, t1) == t)
             {
                 float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold && ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT)) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold /*&& Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold && ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT))*/ || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
             }
             else
             {
