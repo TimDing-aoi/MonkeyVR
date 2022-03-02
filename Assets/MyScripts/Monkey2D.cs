@@ -1924,6 +1924,10 @@ public class Monkey2D : MonoBehaviour
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait", ffPosStr, distStr);
                 }
             }
+            else if (PlayerPrefs.GetInt("Perturbation On") == 1)
+            {
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+            }
             else if (ptb != 2)
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
@@ -2070,7 +2074,7 @@ public class Monkey2D : MonoBehaviour
                     totalScore += score[i];
                 }
             }
-            else
+            else if(PlayerPrefs.GetInt("Perturbation On") == 1)
             {
                 for (int i = j; i < temp[0]; i++)
                 {
@@ -2101,6 +2105,39 @@ public class Monkey2D : MonoBehaviour
                         ptbJoyVelGain[i],
                         ptbJoyRotGain[i],
                         ptbJoyFlagTrial[i]);
+
+                    csvDisc.AppendLine(line);
+
+                    totalScore += score[i];
+                }
+            }
+            else
+            {
+                for (int i = j; i < temp[0]; i++)
+                {
+                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
+                        "{21},{22},{23},{24}",
+                        n[i],
+                        max_v[i],
+                        max_w[i],
+                        fv[i],
+                        onDur[i],
+                        densities[i],
+                        origin[i],
+                        heading[i],
+                        ffPos[i],
+                        cPos[i],
+                        cRot[i],
+                        dist[i],
+                        score[i],
+                        timedout[i],
+                        juiceDuration[i],
+                        beginTime[i],
+                        checkTime[i].ToString("F5"),
+                        rewardTime[i],
+                        endTime[i],
+                        checkWait[i],
+                        interWait[i]);
 
                     if (ptb != 2)
                     {
