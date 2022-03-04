@@ -82,6 +82,7 @@ namespace PupilLabs
 
         async void FixedUpdate()
         {
+            //print(sb.Length);
             //if (!calibrationController.subsCtrl.IsConnected)
             //{
             //    Debug.LogError("Pupil Disconnected. Check connection and try again.");
@@ -368,6 +369,7 @@ namespace PupilLabs
 
                 var path = PlayerPrefs.GetString("Path") + "\\continuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
                 File.AppendAllText(path, sb.ToString());
+                sb.Clear();
 
                 var num = PlayerPrefs.GetInt("Run Number") + 1;
                 PlayerPrefs.SetInt("Run Number", num);
