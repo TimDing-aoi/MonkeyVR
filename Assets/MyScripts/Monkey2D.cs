@@ -1830,7 +1830,7 @@ public class Monkey2D : MonoBehaviour
             isEnd = true;
 
             //print(wait);
-            await new WaitForSeconds(5);
+            await new WaitForSeconds(wait);
 
             phase = Phases.begin;
             Debug.Log("Check Phase End.");

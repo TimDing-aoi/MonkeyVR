@@ -415,6 +415,7 @@ public class JoystickMonke : MonoBehaviour
             {
                 if (SharedMonkey.isAccelControlTrial)
                 {
+                    currentTau = savedTau;
                     velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
                     rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                     ProcessNoise();
