@@ -365,9 +365,12 @@ public class Monkey2D : MonoBehaviour
     string ffPosStr = "";
 
     //Perturbation
+    public bool isAccelControlTrial =  false;
     int ptb;
-    float velocityThreshold;
-    float rotationThreshold;
+    float velbrakeThresh;
+    float rotbrakeThresh;
+    float velStopThreshold;
+    float rotStopThreshold;
     readonly List<float> rawX = new List<float>();
     readonly List<float> rawY = new List<float>();
 
@@ -462,13 +465,13 @@ public class Monkey2D : MonoBehaviour
         ptb = (int)PlayerPrefs.GetFloat("PTBType");
         if (ptb != 2)
         {
-            velocityThreshold = PlayerPrefs.GetFloat("VelocityThreshold");
-            rotationThreshold = PlayerPrefs.GetFloat("RotationThreshold");
+            velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
+            rotStopThreshold = PlayerPrefs.GetFloat("rotStopThreshold");
         }
         else
         {
-            velocityThreshold = 1.0f;
-            rotationThreshold = 1.0f;
+            velStopThreshold = 1.0f;
+            rotStopThreshold = 1.0f;
         }
 
         if (nFF > 1 && multiMode == 1)
@@ -1053,7 +1056,7 @@ public class Monkey2D : MonoBehaviour
             //filterTau.Add(SharedJoystick.filterTau);
             max_v.Add(SharedJoystick.MaxSpeed);
             max_w.Add(SharedJoystick.RotSpeed);
-            CurrentTau.Add(SharedJoystick.currentTau);
+            CurrentTau.Add(SharedJoystick.savedTau);
         }
         else
         {
@@ -1385,6 +1388,16 @@ public class Monkey2D : MonoBehaviour
         //Debug.Log("Trial Phase Start.");
         float startTime = Time.realtimeSinceStartup;
 
+        velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
+        rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
+
+        if (PlayerPrefs.GetFloat("ThreshTauMultiplier") != 0)
+        {
+            float k = PlayerPrefs.GetFloat("ThreshTauMultiplier");
+            velbrakeThresh = k * SharedJoystick.currentTau + velStopThreshold;
+            rotbrakeThresh = k * SharedJoystick.currentTau + rotStopThreshold;
+        }
+
         source = new CancellationTokenSource();
 
         if (toggle && isMoving)
@@ -1396,8 +1409,10 @@ public class Monkey2D : MonoBehaviour
 
         if (ptb != 2)
         {
+            print("PTB trial started");
+            isAccelControlTrial = true;
             var t = Task.Run(async () => {
-                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velocityThreshold); // Used to be rb.velocity.magnitude
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velbrakeThresh); // Used to be rb.velocity.magnitude
             }, source.Token);
 
             var t1 = Task.Run(async () => {
@@ -1407,11 +1422,16 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(t, t1) == t)
             {
                 float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotationThreshold /*&& ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT))*/ || t1.IsCompleted)); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh /*&& ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT))*/ || t1.IsCompleted)); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                if (t1.IsCompleted)
+                {
+                    isTimeout = true;
+                }
             }
             else
             {
-                //print("Timed out");
+                isAccelControlTrial = false;
+                print("Timed out");
                 isTimeout = true;
             }
         }
@@ -1436,7 +1456,20 @@ public class Monkey2D : MonoBehaviour
                 isTimeout = true;
             }
         }
-        
+
+        if (!isTimeout)
+        {
+            print("Braking, lower thresh");
+            isAccelControlTrial = false;
+            await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold));
+        }
+        else
+        {
+            print("Timed out");
+            isAccelControlTrial = false;
+            await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold));
+        }
+
         source.Cancel();
 
         if (mode == Modes.Flash)
@@ -1796,7 +1829,8 @@ public class Monkey2D : MonoBehaviour
 
             isEnd = true;
 
-            await new WaitForSeconds(wait);
+            //print(wait);
+            await new WaitForSeconds(5);
 
             phase = Phases.begin;
             Debug.Log("Check Phase End.");
@@ -2030,7 +2064,7 @@ public class Monkey2D : MonoBehaviour
                         CurrentTau[i]);
                 var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
                 PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
                 csvDisc.AppendLine(secondline);
             }
 
@@ -2066,7 +2100,7 @@ public class Monkey2D : MonoBehaviour
                         line = line + "," + CurrentTau[i];
                         line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
                 PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
                     }
 
                     csvDisc.AppendLine(line);
@@ -2143,7 +2177,7 @@ public class Monkey2D : MonoBehaviour
                         line = line + "," + CurrentTau[i];
                         line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
                 PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velocityThreshold + ',' + rotationThreshold;
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
                     }
 
                     csvDisc.AppendLine(line);
@@ -2610,12 +2644,12 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("TauTau").ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("RotationThreshold");
-            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationThreshold").ToString());
+            xmlWriter.WriteStartElement("rotStopThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("rotStopThreshold").ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("VelocityThreshold");
-            xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityThreshold").ToString());
+            xmlWriter.WriteStartElement("velStopThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("velStopThreshold").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("JoystickThreshold");

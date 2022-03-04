@@ -177,6 +177,7 @@ public class JoystickMonke : MonoBehaviour
     public float prevCleanRot = 0.0f;
 
     public float currentTau;
+    public float savedTau;
     public List<float> taus = new List<float>();
 
     public float rawX;
@@ -185,6 +186,11 @@ public class JoystickMonke : MonoBehaviour
     CTIJoystick USBJoystick;
     float prevX = 0.0f;
     float prevY = 0.0f;
+
+    float velInfluenceOnProcessNoise = 1.0f; // scaling of linear control on process noise magnitude
+    float rotInfluenceOnProcessNoise = 0.3f; // scaling of angular control on process noise magnitude
+
+    float TrialEndThreshold;
 
     // Start is called before the first frame update
     void Awake()
@@ -403,9 +409,26 @@ public class JoystickMonke : MonoBehaviour
 
             //print(ptb);
             //Akis PTB noise
+            //print(SharedMonkey.isAccelControlTrial);
+            //print(savedTau);
             if (ptb)
             {
-                ProcessNoise();
+                if (SharedMonkey.isAccelControlTrial)
+                {
+                    velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+                    rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+                    ProcessNoise();
+                }
+                else
+                {
+                    //print("stoping");
+                    moveX = 0;
+                    moveY = 0;
+                    currentTau = savedTau / 4;
+                    velFilterGain = 0;
+                    rotFilterGain = 0;
+                    ProcessNoise();
+                }
             }
             else
             {
@@ -566,7 +589,9 @@ public class JoystickMonke : MonoBehaviour
                 }
             }
             else
-            {                
+            {
+                //print(string.Format("current speed:{0}", currentSpeed));
+                //print(string.Format("current rotation:{0}", currentRot));
                 transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
                 transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
             }
@@ -664,6 +689,7 @@ public class JoystickMonke : MonoBehaviour
 
         //print(currentTau);
 
+        savedTau = currentTau;
         CalculateMaxValues();
     }
 
@@ -674,13 +700,14 @@ public class JoystickMonke : MonoBehaviour
 
         //print(stdDevLogSpace);
 
+        savedTau = currentTau;
         CalculateMaxValues();
     }
 
     private void CalculateMaxValues()
     {
-        MaxSpeed = (meanDist / meanTime) * (1.0f / (-1.0f + (2 * (currentTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / currentTau)) / 2.0f)));
-        RotSpeed = (meanAngle / meanTime) * (1.0f / (-1.0f + (2 * (currentTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / currentTau)) / 2.0f)));
+        MaxSpeed = (meanDist / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
+        RotSpeed = (meanAngle / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
     }
 
     public void ResetValues()
@@ -700,7 +727,6 @@ public class JoystickMonke : MonoBehaviour
         }
         else
         {
-
             gamma = Mathf.Exp(-Time.fixedDeltaTime / NoiseTau);
         }
 
@@ -725,10 +751,33 @@ public class JoystickMonke : MonoBehaviour
         prevRotEta = rotEta;
 
         //currentSpeed = Mathf.Sign(velEta) * Mathf.Abs((1.0f + velEta) * cleanVel);
-        //currentRot = Mathf.Sign(velEta) * Mathf.Abs((1.0f + rotEta) * cleanRot);
+        //currentRot = Mathf.Sign(rotEta) * Mathf.Abs((1.0f + rotEta) * cleanRot);
 
-        currentSpeed = cleanVel + Mathf.Sign(velEta) * Mathf.Abs(velEta * cleanVel);
-        currentRot = cleanRot + Mathf.Sign(velEta) * Mathf.Abs(rotEta * cleanRot);
+        //currentSpeed = cleanVel + Mathf.Sign(velEta) * Mathf.Abs(velEta * cleanVel);
+        //currentRot = cleanRot + Mathf.Sign(rotEta) * Mathf.Abs(rotEta * cleanRot);
+
+        velInfluenceOnProcessNoise = PlayerPrefs.GetFloat("LinearNoiseScale");
+        rotInfluenceOnProcessNoise = PlayerPrefs.GetFloat("RotationNoiseScale");
+        float ProcessNoiseMagnitude = Mathf.Sqrt(velInfluenceOnProcessNoise * cleanVel * cleanVel + rotInfluenceOnProcessNoise * cleanRot * cleanRot); // gate process noise by total control
+        if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > Mathf.Abs(cleanVel))
+        {
+            currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;
+        }
+        else
+        {
+            currentSpeed = cleanVel + velEta * ProcessNoiseMagnitude;
+        }
+
+        if (Mathf.Abs(rotEta * ProcessNoiseMagnitude) > Mathf.Abs(cleanRot))
+        {
+            currentRot = cleanRot + Mathf.Sign(rotEta) * cleanRot;
+        }
+        else
+        {
+            currentRot = cleanRot + rotEta * ProcessNoiseMagnitude;
+        }
+        //print(string.Format("cleanVel:{0}", cleanVel));
+        //print(string.Format("MaxSpeed:{0}", MaxSpeed));
     }
 
     public float BoxMullerGaussianSample()

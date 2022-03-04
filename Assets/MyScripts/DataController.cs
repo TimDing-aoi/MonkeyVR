@@ -173,7 +173,7 @@ namespace PupilLabs
                     var RawX = SharedJoystick.rawX;
                     var RawY = SharedJoystick.rawY;
                     var CleanLV = SharedJoystick.cleanVel;
-                    var CleanRV = SharedJoystick.prevCleanRot;
+                    var CleanRV = SharedJoystick.cleanRot;
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)
