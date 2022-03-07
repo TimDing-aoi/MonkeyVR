@@ -45,6 +45,7 @@ namespace PupilLabs
             subsCtrl.SubscribeTo("notify.calibration.successful", ReceiveSuccess);
             subsCtrl.SubscribeTo("notify.calibration.failed", ReceiveFailure);
             subsCtrl.SubscribeTo("notify.calibration.", ReceiveCalibrationData);
+            //subsCtrl.SubscribeTo("logs.", ReceiveCalibrationData);
 
             requestCtrl.StartPlugin(settings.PluginName);
             publisher = new Publisher(requestCtrl);
@@ -163,7 +164,31 @@ namespace PupilLabs
 
                     object[] leftMatrixDict = (object[])leftDict["eye_camera_to_world_matrix"];
 
-                    //Debug.Log(leftMatrixDict.Length);
+                    object gaze_distance_L = (object)leftDict["gaze_distance"];
+
+                    Debug.Log(gaze_distance_L.ToString());
+
+                    if (File.Exists("C:\\Users\\Lab\\Desktop\\LeftMatrix.txt"))
+                    {
+                        File.Delete("C:\\Users\\Lab\\Desktop\\LeftMatrix.txt");
+                    }
+
+                    if (File.Exists("C:\\Users\\Lab\\Desktop\\RightMatrix.txt"))
+                    {
+                        File.Delete("C:\\Users\\Lab\\Desktop\\RightMatrix.txt");
+                    }
+
+                    if (File.Exists("C:\\Users\\Lab\\Desktop\\BiMatrix0.txt"))
+                    {
+                        File.Delete("C:\\Users\\Lab\\Desktop\\BiMatrix0.txt");
+                    }
+
+                    if (File.Exists("C:\\Users\\Lab\\Desktop\\BiMatrix1.txt"))
+                    {
+                        File.Delete("C:\\Users\\Lab\\Desktop\\BiMatrix1.txt");
+                    }
+
+                    StringBuilder sb = new StringBuilder();
 
                     foreach (object leftMatrixEntry in leftMatrixDict)
                     {
@@ -173,10 +198,15 @@ namespace PupilLabs
 
                         foreach (object leftListEntry in leftMatrixList)
                         {
-                            Debug.Log(leftListEntry.ToString());
+                            //Debug.Log(leftListEntry.ToString());
+                            sb.AppendLine(leftListEntry.ToString());
                         }
                         //Debug.Log(leftMatrixEntry.ToString());
                     }
+
+                    File.AppendAllText("C:\\Users\\Lab\\Desktop\\LeftMatrix.txt", sb.ToString());
+
+                    sb.Clear();
 
                     object[] rightMatrixDict = (object[])rightDict["eye_camera_to_world_matrix"];
 
@@ -186,9 +216,14 @@ namespace PupilLabs
 
                         foreach (object rightListEntry in rightMatrixList)
                         {
-                            Debug.Log(rightListEntry.ToString());
+                            //Debug.Log(rightListEntry.ToString());
+                            sb.AppendLine(rightListEntry.ToString());
                         }
                     }
+
+                    File.AppendAllText("C:\\Users\\Lab\\Desktop\\RightMatrix.txt", sb.ToString());
+
+                    sb.Clear();
 
                     object[] biLeftMatrixDict = (object[])biDict["eye_camera_to_world_matrix0"];
                     object[] biRightMatrixDict = (object[])biDict["eye_camera_to_world_matrix1"];
@@ -199,9 +234,14 @@ namespace PupilLabs
 
                         foreach (object biLeftListEntry in biLeftMatrixList)
                         {
-                            Debug.Log(biLeftListEntry.ToString());
+                            //Debug.Log(biLeftListEntry.ToString());
+                            sb.AppendLine(biLeftListEntry.ToString());
                         }
                     }
+
+                    File.AppendAllText("C:\\Users\\Lab\\Desktop\\BiMatrix0.txt", sb.ToString());
+
+                    sb.Clear();
 
                     foreach (object biRightMatrixEntry in biRightMatrixDict)
                     {
@@ -209,9 +249,14 @@ namespace PupilLabs
 
                         foreach (object biRightListEntry in biRightMatrixList)
                         {
-                            Debug.Log(biRightListEntry.ToString());
+                            //Debug.Log(biRightListEntry.ToString());
+                            sb.AppendLine(biRightListEntry.ToString());
                         }
                     }
+
+                    File.AppendAllText("C:\\Users\\Lab\\Desktop\\BiMatrix1.txt", sb.ToString());
+
+                    sb.Clear();
                 }
             }
         }

@@ -149,7 +149,7 @@ namespace PupilLabs
 
             //print(isAuto);
 
-            subsCtrl.SubscribeTo("calibration", CustomReceiveData);
+            //subsCtrl.SubscribeTo("calibration", CustomReceiveData);
 
             marker.localScale = markerSize * Vector3.one;
 
@@ -245,6 +245,7 @@ namespace PupilLabs
             }
             else
             {
+                //UpdatePreviewMarkers();
                 pos = previewMarkers[targetIdx].transform.position;
             }
 

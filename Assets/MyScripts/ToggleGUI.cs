@@ -25,7 +25,7 @@ public class ToggleGUI : MonoBehaviour
         string text = string.Format("Good Trials / Total Trials: {0}/{1}", calibrationController.numCorrect, calibrationController.trialNum);
         GUI.Label(rect, text, style);
 
-        if (GUI.Button(new Rect(Screen.width - 220, Screen.height - 100, 150, 60), toggleText))
+        if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleText))
         {
             toggle = !toggle;
             gui.SetActive(toggle);

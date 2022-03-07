@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Linq;
 using PupilLabs;
+using System.IO;
 
 public class UICallback : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class UICallback : MonoBehaviour
     private Slider slider;
     private TMP_InputField text;
     private Dropdown dropdown;
+    private Button button;
     private bool flagSliderOrText;
     private string objectName;
 
@@ -45,7 +47,22 @@ public class UICallback : MonoBehaviour
         else if (GetComponent<Dropdown>() != null)
         {
             dropdown = this.GetComponent<Dropdown>();
-            dropdown.value = PlayerPrefs.GetInt((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value");
+            //dropdown.value = PlayerPrefs.GetInt((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value");
+            dropdown.value = 2;
+        }
+        else if (GetComponent<Button>() != null)
+        {
+            button = this.GetComponent<Button>();
+            
+            if (File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt"))
+            {
+                button.interactable = true;
+            }
+            else
+            {
+                button.interactable = false;
+                button.GetComponentInChildren<TMP_Text>().text = "Need Left and/or Right Calibrations";
+            }
         }
 
         switch (objectName)
@@ -126,6 +143,35 @@ public class UICallback : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (GetComponent<Button>() != null)
+        {
+            button = this.GetComponent<Button>();
+
+            if (File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt") && File.Exists("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt"))
+            {
+                button.interactable = true;
+                button.GetComponentInChildren<TMP_Text>().text = "Load New 3DHMDGazer Plugin";
+            }
+            else
+            {
+                button.interactable = false;
+                button.GetComponentInChildren<TMP_Text>().text = "Need Left and/or Right Calibrations";
+            }
+        }
+
+        if (GetComponent<Slider>() != null)
+        {
+            slider = this.GetComponent<Slider>();
+            PlayerPrefs.SetFloat((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value", slider.value);
+            //Debug.Log((char.ToLowerInvariant(name[0]) + name.Substring(1)).Replace(" ", "") + "Value");
+            text = GameObject.Find(objectName + " Text").GetComponent<TMP_InputField>();
+            text.text = slider.value.ToString();
+            flagSliderOrText = true;
+        }
+    }
+
     public void OnValueChanged()
     {
         if (flagSliderOrText)
@@ -151,6 +197,7 @@ public class UICallback : MonoBehaviour
         {
             case "Marker Scale":
                 calibrationController.markerSize = slider.value;
+                calibrationController.UpdatePreviewMarkers();
                 break;
 
             case "X Threshold":
@@ -231,5 +278,54 @@ public class UICallback : MonoBehaviour
         }
 
         PlayerPrefs.SetInt((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value", dropdown.value);
+    }
+
+    public void LoadNewGazer3DHMD()
+    {
+        calibrationController.subsCtrl.requestCtrl.StopPlugin("GazerHMD3D");
+
+        object[] LeftMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        object[] RightMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        object[] BiMatrix0 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        object[] BiMatrix1 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+
+        Dictionary<object, object> leftModelDic = new Dictionary<object, object> {
+            { "eye_camera_to_world_matrix", LeftMatrix },
+            { "gaze_distance", 500 }
+        };
+
+        Dictionary<object, object> rightModelDic = new Dictionary<object, object>
+        {
+            { "eye_camera_to_world_matrix", RightMatrix },
+            { "gaze_distance", 500 }
+        };
+
+        Dictionary<object, object> binocularModelDic = new Dictionary<object, object>
+        {
+            { "eye_camera_to_world_matrix0", BiMatrix0 },
+            { "eye_camera_to_world_matrix1", BiMatrix1 },
+            { "gaze_distance", 500 }
+        };
+
+        Dictionary<object, object> paramsDic = new Dictionary<object, object>
+        {
+            { "left_model", leftModelDic },
+            { "right_model", rightModelDic },
+            { "binocular_model", binocularModelDic }
+        };
+
+        Dictionary<string, object> args = new Dictionary<string, object>
+        {
+            { "params", paramsDic }
+        };
+
+        try
+        {
+            calibrationController.subsCtrl.requestCtrl.StartPlugin("GazerHMD3D", args);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+        }
     }
 }
