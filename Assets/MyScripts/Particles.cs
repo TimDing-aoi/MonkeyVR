@@ -77,7 +77,7 @@ public class Particles : MonoBehaviour
         {
             counter++;
             var main = particleSystem.main;
-            var TauValue = SharedJoystick.currentTau/3;
+            var TauValue = SharedJoystick.savedTau/3;
             if(TauValue > 1)
             {
                 TauValue = 1;

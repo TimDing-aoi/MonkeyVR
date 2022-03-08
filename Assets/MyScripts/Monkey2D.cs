@@ -2672,6 +2672,30 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseGain").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("LinearNoiseScale");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("LinearNoiseScale").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RotationNoiseScale");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseScale").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MeanAngle");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanAngle").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ThreshTauMultiplier");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ThreshTauMultiplier").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("velBrakeThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("velBrakeThresh").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("rotBrakeThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("rotBrakeThresh").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");
