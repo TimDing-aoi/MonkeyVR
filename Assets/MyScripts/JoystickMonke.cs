@@ -190,7 +190,11 @@ public class JoystickMonke : MonoBehaviour
     float velInfluenceOnProcessNoise = 1.0f; // scaling of linear control on process noise magnitude
     float rotInfluenceOnProcessNoise = 0.3f; // scaling of angular control on process noise magnitude
 
+    public bool BrakeFlag;
     float TrialEndThreshold;
+
+    float velbrakeThresh;
+    float rotbrakeThresh;
 
     // Start is called before the first frame update
     void Awake()
@@ -268,6 +272,18 @@ public class JoystickMonke : MonoBehaviour
         NoiseTauTau = PlayerPrefs.GetFloat("NoiseTauTau");
         velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
         rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+
+        velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
+        rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
+        float velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
+        float rotStopThreshold = PlayerPrefs.GetFloat("rotStopThreshold");
+
+        if (PlayerPrefs.GetFloat("ThreshTauMultiplier") != 0)
+        {
+            float k = PlayerPrefs.GetFloat("ThreshTauMultiplier");
+            velbrakeThresh = k * savedTau + velStopThreshold;
+            rotbrakeThresh = k * savedTau + rotStopThreshold;
+        }
 
         x[0] = R;
         y[0] = GaussianPDFDenorm(R);
@@ -413,21 +429,23 @@ public class JoystickMonke : MonoBehaviour
             //print(savedTau);
             if (ptb)
             {
-                if (SharedMonkey.isAccelControlTrial)
+                if (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh)
                 {
-                    currentTau = savedTau;
-                    velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
-                    rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+                    //print("stoping");
+                    //moveX = 0;
+                    //moveY = 0;
+                    BrakeFlag = true;
+                    currentTau = savedTau / 4;
+                    velFilterGain = 0;
+                    rotFilterGain = 0;
                     ProcessNoise();
                 }
                 else
                 {
-                    //print("stoping");
-                    moveX = 0;
-                    moveY = 0;
-                    currentTau = savedTau / 4;
-                    velFilterGain = 0;
-                    rotFilterGain = 0;
+                    BrakeFlag = false;
+                    currentTau = savedTau;
+                    velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+                    rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                     ProcessNoise();
                 }
             }

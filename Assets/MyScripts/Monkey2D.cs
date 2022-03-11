@@ -365,7 +365,6 @@ public class Monkey2D : MonoBehaviour
     string ffPosStr = "";
 
     //Perturbation
-    public bool isAccelControlTrial =  false;
     int ptb;
     float velbrakeThresh;
     float rotbrakeThresh;
@@ -1410,7 +1409,6 @@ public class Monkey2D : MonoBehaviour
         if (ptb != 2)
         {
             print("PTB trial started");
-            isAccelControlTrial = true;
             var t = Task.Run(async () => {
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velbrakeThresh); // Used to be rb.velocity.magnitude
             }, source.Token);
@@ -1422,7 +1420,7 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(t, t1) == t)
             {
                 float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-                await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh /*&& ((float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT))*/ || t1.IsCompleted)); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
                 if (t1.IsCompleted)
                 {
                     isTimeout = true;
@@ -1430,7 +1428,6 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
-                isAccelControlTrial = false;
                 print("Timed out");
                 isTimeout = true;
             }
@@ -1455,19 +1452,6 @@ public class Monkey2D : MonoBehaviour
                 //print("Timed out");
                 isTimeout = true;
             }
-        }
-
-        if (!isTimeout)
-        {
-            print("Braking, lower thresh");
-            isAccelControlTrial = false;
-            await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold));
-        }
-        else
-        {
-            print("Timed out");
-            isAccelControlTrial = false;
-            await new WaitUntil(() => (Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold));
         }
 
         source.Cancel();
