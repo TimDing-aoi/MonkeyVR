@@ -1426,6 +1426,7 @@ public class Monkey2D : MonoBehaviour
                 {
                     isTimeout = true;
                 }
+                isIntertrail = true;
             }
             else
             {
@@ -1817,7 +1818,7 @@ public class Monkey2D : MonoBehaviour
             //print(wait);
             isIntertrail = true;
             float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT;
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT);
             await new WaitForSeconds(wait);
             isIntertrail = false;
 
