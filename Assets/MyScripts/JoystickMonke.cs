@@ -429,7 +429,18 @@ public class JoystickMonke : MonoBehaviour
             //print(savedTau);
             if (ptb)
             {
-                if (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh)
+                if (SharedMonkey.isIntertrail)
+                {
+                    //print("stoping");
+                    moveX = 0;
+                    moveY = 0;
+                    BrakeFlag = true;
+                    currentTau = savedTau / 4;
+                    velFilterGain = 0;
+                    rotFilterGain = 0;
+                    ProcessNoise();
+                }
+                else if (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh)
                 {
                     //print("stoping");
                     //moveX = 0;
