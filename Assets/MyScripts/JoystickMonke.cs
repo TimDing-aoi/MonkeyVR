@@ -191,6 +191,7 @@ public class JoystickMonke : MonoBehaviour
     float rotInfluenceOnProcessNoise = 0.3f; // scaling of angular control on process noise magnitude
 
     public bool BrakeFlag;
+    public bool StopFlag;
     float TrialEndThreshold;
 
     public float velbrakeThresh;
@@ -434,7 +435,8 @@ public class JoystickMonke : MonoBehaviour
                     //print("stoping");
                     moveX = 0;
                     moveY = 0;
-                    BrakeFlag = true;
+                    StopFlag = true;
+                    BrakeFlag = false;
                     currentTau = savedTau / 4;
                     velFilterGain = 0;
                     rotFilterGain = 0;
@@ -445,6 +447,7 @@ public class JoystickMonke : MonoBehaviour
                     //print("stoping");
                     //moveX = 0;
                     //moveY = 0;
+                    StopFlag = false;
                     BrakeFlag = true;
                     currentTau = savedTau / 4;
                     velFilterGain = 0;
@@ -453,6 +456,7 @@ public class JoystickMonke : MonoBehaviour
                 }
                 else
                 {
+                    StopFlag = false;
                     BrakeFlag = false;
                     currentTau = savedTau;
                     velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");

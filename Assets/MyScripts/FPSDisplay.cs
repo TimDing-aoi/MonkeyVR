@@ -45,9 +45,13 @@ public class FPSDisplay : MonoBehaviour
 		float msec = deltaTime * 1000.0f;
 		fps = 1.0f / deltaTime;
 		string text;
-		if (!SharedJoystick.BrakeFlag)
+		if (!SharedJoystick.BrakeFlag && !SharedJoystick.StopFlag)
         {
 			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Trial", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
+		}
+		else if (SharedJoystick.StopFlag)
+        {
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Stop", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
 		}
         else
         {

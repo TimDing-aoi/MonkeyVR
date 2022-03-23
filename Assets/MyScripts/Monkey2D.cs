@@ -1410,6 +1410,7 @@ public class Monkey2D : MonoBehaviour
         if (ptb != 2)
         {
             print("PTB trial started");
+            isIntertrail = false;
             var t = Task.Run(async () => {
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velbrakeThresh); // Used to be rb.velocity.magnitude
             }, source.Token);
@@ -1430,6 +1431,7 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
+                isIntertrail = true;
                 print("Timed out");
                 isTimeout = true;
             }
@@ -1820,7 +1822,6 @@ public class Monkey2D : MonoBehaviour
             float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
             await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) <= joystickT && (float)Math.Abs(SharedJoystick.moveY) <= joystickT);
             await new WaitForSeconds(wait);
-            isIntertrail = false;
 
             phase = Phases.begin;
             Debug.Log("Check Phase End.");
