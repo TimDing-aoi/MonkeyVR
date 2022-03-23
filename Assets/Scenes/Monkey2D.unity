@@ -1566,6 +1566,7 @@ MonoBehaviour:
   points: 0
   juiceTime: 0
   ntrials: 0
+  isIntertrail: 0
   currPhase: 0
   initialD: 0
   velocity: 0

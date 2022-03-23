@@ -66,7 +66,7 @@ public class FPSDisplay : MonoBehaviour
 		{
 			GUI.contentColor = Color.black;
 		}
-		GUI.Box(new Rect(0f, 65f, 50f, 50f), texture);
+		GUI.Box(new Rect(0f, 120f, 50f, 50f), texture);
 	}
 
 	public float GetFPS()
