@@ -193,8 +193,8 @@ public class JoystickMonke : MonoBehaviour
     public bool BrakeFlag;
     float TrialEndThreshold;
 
-    float velbrakeThresh;
-    float rotbrakeThresh;
+    public float velbrakeThresh;
+    public float rotbrakeThresh;
 
     // Start is called before the first frame update
     void Awake()

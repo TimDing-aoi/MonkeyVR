@@ -241,6 +241,7 @@ namespace PupilLabs
                 }
                 else
                 {
+                    // hit -> hit point of vector from enter of eyes to ground plane
                     UnityEngine.Debug.DrawRay(origin, direction * hit.distance, Color.yellow);
 
                     projectionMarker.position = new Vector3(hit.point.x * xScale + xOffset, hit.point.y * yScale + yOffset, hit.point.z);

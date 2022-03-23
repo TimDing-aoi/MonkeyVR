@@ -1421,7 +1421,7 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(t, t1) == t)
             {
                 float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
                 if (t1.IsCompleted)
                 {
                     isTimeout = true;
@@ -1818,7 +1818,7 @@ public class Monkey2D : MonoBehaviour
             //print(wait);
             isIntertrail = true;
             float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) < joystickT && (float)Math.Abs(SharedJoystick.moveY) < joystickT);
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.moveX) <= joystickT && (float)Math.Abs(SharedJoystick.moveY) <= joystickT);
             await new WaitForSeconds(wait);
             isIntertrail = false;
 
