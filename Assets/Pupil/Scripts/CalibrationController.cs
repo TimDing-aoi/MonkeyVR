@@ -446,6 +446,8 @@ namespace PupilLabs
             //    }
             //}
 
+            //StringBuilder sb = new StringBuilder();
+
             for (int i = 1; i < indices.Length - 1; i++)
             {
                 if (indices[i] == indices[i - 1])
@@ -458,8 +460,10 @@ namespace PupilLabs
                     trialMode[i + 1] = tempN;
                 }
 
-                //print(string.Format("{0}, {1}", indices[i], trialMode[i]));
+                //sb.AppendLine(string.Format("{0}, {1}", indices[i], trialMode[i]));
             }
+
+            //File.WriteAllText("C:\\Users\\lab\\Desktop\\indices_test.txt", sb.ToString());
 
             trialNum = 0;
             numCorrect = 0;
