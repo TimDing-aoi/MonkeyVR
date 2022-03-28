@@ -1820,7 +1820,8 @@ public class Monkey2D : MonoBehaviour
             //print(wait);
             isIntertrail = true;
             float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.rawX) <= 1.1f && (float)Math.Abs(SharedJoystick.rawY) <= 1.1f);
+            float startthreshold = PlayerPrefs.GetFloat("JoystickStartThreshold");
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
             await new WaitForSeconds(wait);
 
             phase = Phases.begin;

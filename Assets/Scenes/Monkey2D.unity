@@ -1371,6 +1371,7 @@ GameObject:
   - component: {fileID: 1242841534}
   - component: {fileID: 1242841533}
   - component: {fileID: 1242841536}
+  - component: {fileID: 1242841537}
   m_Layer: 12
   m_Name: Task Controller
   m_TagString: Untagged
@@ -1575,6 +1576,18 @@ MonoBehaviour:
   player_origin: {x: 0, y: 0, z: 0}
   particleSystem: {fileID: 903295597}
   offset: -0.3
+--- !u!114 &1242841537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242841532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ff4cba069ded04b8bfc2fe0c37c620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1447618676
 GameObject:
   m_ObjectHideFlags: 0
