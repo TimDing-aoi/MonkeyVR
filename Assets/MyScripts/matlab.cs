@@ -12,6 +12,8 @@ public class readSocket : MonoBehaviour
     // Use this for initialization
     TcpListener listener;
     String msg;
+
+    [Obsolete]
     void Start()
     {
         listener = new TcpListener(55001);
