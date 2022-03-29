@@ -282,12 +282,34 @@ public class UICallback : MonoBehaviour
 
     public void LoadNewGazer3DHMD()
     {
-        calibrationController.subsCtrl.requestCtrl.StopPlugin("GazerHMD3D");
+        //calibrationController.subsCtrl.requestCtrl.StopPlugin("GazerHMD3D");
 
-        object[] LeftMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
-        object[] RightMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
-        object[] BiMatrix0 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
-        object[] BiMatrix1 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        //initialize 2D array
+        object[][] LeftMatrix = new object[4][]; for (int i = 0; i < 4; i++) { LeftMatrix[i] = new object[4]; }
+        object[][] RightMatrix = new object[4][]; for (int i = 0; i < 4; i++) { RightMatrix[i] = new object[4]; }
+        object[][] BiMatrix0 = new object[4][]; for (int i = 0; i < 4; i++) { BiMatrix0[i] = new object[4]; }
+        object[][] BiMatrix1 = new object[4][]; for (int i = 0; i < 4; i++) { BiMatrix1[i] = new object[4]; }
+
+        StreamReader LeftSR = new StreamReader("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt");
+        StreamReader RightSR = new StreamReader("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt");
+        StreamReader BiZeroSR = new StreamReader("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt");
+        StreamReader BiOneSR = new StreamReader("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt");
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                LeftMatrix[i][k] = float.Parse(LeftSR.ReadLine());
+                RightMatrix[i][k] = float.Parse(RightSR.ReadLine());
+                BiMatrix0[i][k] = float.Parse(BiZeroSR.ReadLine());
+                BiMatrix1[i][k] = float.Parse(BiOneSR.ReadLine());
+            }
+        }
+
+        //object[] LeftMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\LeftMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        //object[] RightMatrix = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\RightMatrix.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        //object[] BiMatrix0 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix0.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
+        //object[] BiMatrix1 = File.ReadAllLines("C:\\Users\\Lab\\Desktop\\Calibration\\BiMatrix1.txt").Where(s => s != string.Empty).Select(s => float.Parse(s)).Cast<object>().ToArray();
 
         Dictionary<object, object> leftModelDic = new Dictionary<object, object> {
             { "eye_camera_to_world_matrix", LeftMatrix },
