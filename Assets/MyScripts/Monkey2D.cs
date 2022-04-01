@@ -2688,6 +2688,10 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("rotBrakeThresh").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("JoystickStartThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickStartThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");
