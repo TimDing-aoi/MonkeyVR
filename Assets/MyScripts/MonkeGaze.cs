@@ -73,7 +73,7 @@ public class MonkeGaze : MonoBehaviour
     public float m01Offset = 0.0f;
 
     [Range (-1, 1)]
-    public float m02Offset = -0.315f;
+    public float m02Offset = -0.317f;
 
     [Range(-1, 1)]
     public float m03Offset = 0.0f;
@@ -114,6 +114,10 @@ public class MonkeGaze : MonoBehaviour
     [Range(-1, 1)]
     public float m33Offset = 0.0f;
 
+    [Header("SET THIS BEFORE PLAYING")]
+    [Tooltip("Switch between custom (true) and Vive (false) matrix")]
+    public bool toggleProjectionMatrix = true;
+
     [Tooltip("SerialPort of your device.")]
     [HideInInspector] public string portName = "COM4";
 
@@ -132,8 +136,11 @@ public class MonkeGaze : MonoBehaviour
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
 
-        Lcam.ResetProjectionMatrix();
-        Rcam.ResetProjectionMatrix();
+        if (toggleProjectionMatrix)
+        {
+            Lcam.ResetProjectionMatrix();
+            Rcam.ResetProjectionMatrix();
+        }
         lm = Lcam.projectionMatrix; //Lcam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
         lm00 = lm.m00;
         lm01 = lm.m01;

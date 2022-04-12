@@ -353,6 +353,11 @@ namespace PupilLabs
                     flagChangePos = !flagChangePos;
                 }
 
+                if (targetIdx>8)
+                {
+                    targetIdx=0;
+                }
+
                 if (!calibration.IsCalibrating && !flagFuseTest)
                 {
                     window.transform.position = previewMarkers[targetIdx].transform.position;
