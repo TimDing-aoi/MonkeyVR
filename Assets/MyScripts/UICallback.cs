@@ -166,9 +166,9 @@ public class UICallback : MonoBehaviour
             slider = this.GetComponent<Slider>();
             PlayerPrefs.SetFloat((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value", slider.value);
             //Debug.Log((char.ToLowerInvariant(name[0]) + name.Substring(1)).Replace(" ", "") + "Value");
-            text = GameObject.Find(objectName + " Text").GetComponent<TMP_InputField>();
-            text.text = slider.value.ToString();
-            flagSliderOrText = true;
+            //text = GameObject.Find(objectName + " Text").GetComponent<TMP_InputField>();
+            //text.text = slider.value.ToString();
+            //flagSliderOrText = true;
         }
     }
 
