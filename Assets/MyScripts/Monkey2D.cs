@@ -375,6 +375,8 @@ public class Monkey2D : MonoBehaviour
     readonly List<float> rawY = new List<float>();
 
     StringBuilder sb = new StringBuilder();
+    [HideInInspector]
+    public string sbPacket;
     bool flagMultiFF;
     double timeProgStart = 0.0f;
 

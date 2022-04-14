@@ -47,6 +47,9 @@ namespace PupilLabs
         [HideInInspector] public float yScale = 1f;
         [HideInInspector] public float xOffset = 0f;
         [HideInInspector] public float yOffset = 0f;
+
+        [HideInInspector]
+        public string sbPacket;
         void OnEnable()
         {
             dataController = this;
@@ -133,7 +136,7 @@ namespace PupilLabs
                             "NaN, NaN, NaN"));
                     }
 #else
-                    sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n",
+                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n",
                             calibrationController.status,
                             (double)Time.realtimeSinceStartup,
                             gazeDataNow.MappingContext,
@@ -145,7 +148,8 @@ namespace PupilLabs
                             gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", "")));
+                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
+                    sb.Append(sbPacket);
 #endif
                 }
                 else
@@ -235,7 +239,7 @@ namespace PupilLabs
                     if (SharedJoystick.ptb)
                     {
                         flagRecording = true;
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
+                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
                             trial,
                             (double)Time.realtimeSinceStartup - timeProgStart,
                             epoch,
@@ -261,12 +265,13 @@ namespace PupilLabs
                             CleanLV,
                             CleanRV,
                             RawX,
-                            RawY));
+                            RawY);
+                        sb.Append(sbPacket);
                     }
                     else
                     {
                         flagRecording = true;
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
+                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
                                 trial,
                                 (double)Time.realtimeSinceStartup - timeProgStart,
                                 epoch,
@@ -284,7 +289,8 @@ namespace PupilLabs
                                 gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                                 gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                                 gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", "")));
+                                gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
+                        sb.Append(sbPacket);
                     }
 #endif
                 }
