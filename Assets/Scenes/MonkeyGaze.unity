@@ -10455,6 +10455,7 @@ MonoBehaviour:
   m31Offset: 0
   m32Offset: 0
   m33Offset: 0
+  toggleProjectionMatrix: 1
   portName: COM3
   baudRate: 2000000
   ReadTimeout: 5000
