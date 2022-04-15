@@ -16,7 +16,7 @@ public class Socket : MonoBehaviour
     NetworkStream theStream;
     StreamWriter theWriter;
     StreamReader theReader;
-    String Host = "localhost";
+    String Host = "127.0.0.1";
     Int32 Port = 55000;
     void Start()
     {
@@ -27,10 +27,7 @@ public class Socket : MonoBehaviour
     void Update()
     {
         int framecounter = Time.frameCount;
-        if(framecounter % 270 == 0)
-        {
-            SendPacket();
-        }
+        SendPacket();
     }
     public void setupSocket()
     {
@@ -41,7 +38,7 @@ public class Socket : MonoBehaviour
             theWriter = new StreamWriter(theStream);
             socketReady = true;
             Byte[] sendBytes = Encoding.UTF8.GetBytes("yah!! it works");
-            //mySocket.GetStream().Write(sendBytes, 0, sendBytes.Length);
+            mySocket.GetStream().Write(sendBytes, 0, sendBytes.Length);
             Debug.Log("socket is sent");
         }
         catch (Exception e)
@@ -61,9 +58,8 @@ public class Socket : MonoBehaviour
             //socketReady = true;
             string continuousPacket = PupilLabs.DataController.dataController.sbPacket;
             Byte[] sendBytes = Encoding.UTF8.GetBytes(continuousPacket);
-            print(sendBytes.Length);
-            //mySocket.GetStream().Write(sendBytes, 0, sendBytes.Length);
-            Debug.Log("socket is sent");
+            mySocket.GetStream().Write(sendBytes, 0, sendBytes.Length);
+            Debug.Log(string.Format("packet of {0} is sent", sendBytes.Length));
         }
         catch (Exception e)
         {
