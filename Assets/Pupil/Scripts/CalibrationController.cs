@@ -50,6 +50,8 @@ namespace PupilLabs
         public event Action OnCalibrationSucceeded;
         public event Action OnFuseTestStarted;
         public event Action OnFuseTestComplete;
+        public event Action OnMicroSimuStarted;
+        public event Action OnMicroSimuComplete;
 
         //members
         Calibration calibration = new Calibration();
@@ -99,17 +101,30 @@ namespace PupilLabs
         bool flagCalibrating = false;
         bool flagChangePos = false;
         bool flagFuseTest = false;
+        bool flagMicroSimu = false;
         bool flagTesting = false;
         bool flagWait = true;
         [HideInInspector] public bool flagReward = false;
         bool flagFailed = false;
+
+        [HideInInspector]
+        public enum MicroSimuF
+        {
+            none = 0,
+            Trial = 1,
+            Stimulation = 2,
+            Reward = 3,
+            ITI = 4
+        }
+        [HideInInspector] public MicroSimuF MicroSimuFlag;
 
         [HideInInspector] public enum Status
         {
             none = 0,
             calibration = 1,
             fixating = 2,
-            test = 3
+            test = 3,
+            simu = 4
         }
         [HideInInspector] public Status status;
         readonly static List<int> order = new List<int>()
@@ -125,6 +140,7 @@ namespace PupilLabs
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
+            MicroSimuFlag = MicroSimuF.none;
 
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
@@ -239,7 +255,7 @@ namespace PupilLabs
 
             //Vector3 pos = Vector3.zero;
 
-            if (calibration.IsCalibrating || flagFuseTest)
+            if (calibration.IsCalibrating || flagFuseTest || flagMicroSimu)
             {
                 pos = marker.transform.position;
             }
@@ -283,6 +299,10 @@ namespace PupilLabs
             {
                 UpdateFuseTest();
             }
+            else if (flagMicroSimu)
+            {
+                UpdateMicroSimu();
+            }
 
             if (Input.GetKeyUp(KeyCode.C))
             {
@@ -304,6 +324,10 @@ namespace PupilLabs
             else if (Input.GetKeyDown(KeyCode.F))
             {
                 ToggleFuseTest();
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                ToggleMicroSimu();
             }
             else if (!flagCalibrating)
             {
@@ -358,7 +382,7 @@ namespace PupilLabs
                     targetIdx=0;
                 }
 
-                if (!calibration.IsCalibrating && !flagFuseTest)
+                if (!calibration.IsCalibrating && !flagFuseTest && !flagMicroSimu)
                 {
                     window.transform.position = previewMarkers[targetIdx].transform.position;
                 }
@@ -387,6 +411,31 @@ namespace PupilLabs
 
                 flagFuseTest = false;
                 flagTesting = false;
+            }
+        }
+
+        public void ToggleMicroSimu()
+        {
+            if (!flagMicroSimu)
+            {
+                OnMicroSimuStarted();
+                trialNum = 0;
+                StartMicroSimu();
+
+                status = Status.simu;
+
+                flagMicroSimu = true;
+                //flagTesting = true;
+            }
+            else
+            {
+                OnMicroSimuComplete();
+                StopMicroSimu();
+
+                status = Status.none;
+
+                flagMicroSimu = false;
+                //flagTesting = false;
             }
         }
 
@@ -603,14 +652,145 @@ namespace PupilLabs
                 }
             }
         }
+        public void UpdateMicroSimu()
+        {
+            UpdateMarker();
 
-        public void StopFuseTest()
+            float tNow = Time.time;
+            float gazeX = gazeVisualizer.projectionMarker.position.x;
+            float gazeY = gazeVisualizer.projectionMarker.position.y;
+
+            if (tNow - tLastTrial <= totalTime)
+            {
+                //check gaze
+                if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
+                    && Mathf.Abs(gazeY - marker.position.y) <= yThreshold)
+                {
+                    tTotalFix += tNow - tLastSample;
+                }
+
+                tLastSample = tNow;
+            }
+            else
+            {
+                //if gazed enough time give reward
+                if (tTotalFix >= secondsPerTarget)
+                {
+                    string toSend = "ij" + juiceTime.ToString();
+                    try
+                    {
+                        print("rewarded");
+                        flagReward = true;
+                        sp.Write(toSend);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log(e);
+                    }
+
+                    numCorrect++;
+                }
+
+                mode = 3;
+
+                if (flagTesting)
+                {
+                    flagTesting = false;
+                    rewarded.Add(flagReward);
+
+                    print(string.Format("trial {0} complete", trialNum));
+                    print(string.Format("Total Time: {0}, Target Time: {1}", tTotalFix, secondsPerTarget));
+
+                    tTotalFix = 0.0f;
+
+                    if (isAuto) tStartITI = Time.time;
+                }
+
+                if (isAuto && tNow - tStartITI >= intertrialInterval)
+                {
+                    flagChangePos = true;
+                }
+
+                leftMask.SetActive(false);
+                rightMask.SetActive(false);
+                marker.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+
+                if (trialNum < 225 && flagChangePos)
+                {
+                    trialNum++;
+
+                    targetIdx = indices[trialNum];
+
+                    mode = trialMode[trialNum];
+
+                    trialNumber.Add(trialNum);
+                    eyeMode.Add(mode);
+                    targetIndex.Add(targetIdx);
+
+                    switch (mode)
+                    {
+                        case 0:
+                            leftMask.SetActive(true);
+                            rightMask.SetActive(false);
+                            break;
+
+                        case 1:
+                            leftMask.SetActive(false);
+                            rightMask.SetActive(true);
+                            break;
+
+                        case 2:
+                            leftMask.SetActive(false);
+                            rightMask.SetActive(false);
+                            break;
+                    }
+
+                    tLastTrial = Time.time;
+
+                    UpdatePosition();
+
+                    flagReward = false;
+
+                    flagChangePos = !flagChangePos;
+
+                    flagTesting = !flagTesting;
+
+                    flagWait = !flagWait;
+                }
+
+                if (trialNum >= 225)
+                {
+                    ToggleFuseTest();
+                }
+            }
+        }
+
+            public void StopFuseTest()
         {
             Debug.Log("Stopping Fuse Test.");
 
             marker.gameObject.SetActive(false);
 
             Save();
+        }
+
+        public void StartMicroSimu()
+        {
+            Debug.Log("Starting Micro Simulation.");
+
+            marker.gameObject.SetActive(false);
+
+            //Save();
+        }
+
+        public void StopMicroSimu()
+        {
+            Debug.Log("Stopping Micro Simulation.");
+
+            marker.gameObject.SetActive(false);
+
+            //Save();
         }
 
         public void ToggleCalibration()
@@ -881,7 +1061,7 @@ namespace PupilLabs
             window.transform.position = marker.position;
             //marker.LookAt(camera.transform.position);
 
-            if (flagCalibrating || flagTesting)
+            if (flagCalibrating || flagTesting || MicroSimuFlag == MicroSimuF.Trial)
             {
                 marker.gameObject.GetComponent<SpriteRenderer>().enabled = true;
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = true;
