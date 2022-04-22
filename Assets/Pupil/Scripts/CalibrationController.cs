@@ -65,7 +65,10 @@ namespace PupilLabs
         float tLastSample = 0;
         float tLastTarget = 0;
         float tLastTrial = 0;
+        float tLastStimu = 0;
+        float tLastReward = 0;
         float tStartITI = 0;
+        float tLastITI = 0;
         float tTotalFix = 0;
         List<GameObject> previewMarkers = new List<GameObject>();
         int[] indices = new int[225];
@@ -660,21 +663,45 @@ namespace PupilLabs
             float gazeX = gazeVisualizer.projectionMarker.position.x;
             float gazeY = gazeVisualizer.projectionMarker.position.y;
 
-            if (tNow - tLastTrial <= totalTime)
+            //fix time not enough AND not time out AND ITI ended
+            if (tTotalFix <= totalTime && tNow - tLastITI <= 2 && MicroSimuFlag == MicroSimuF.ITI)
             {
-                //check gaze
+                MicroSimuFlag = MicroSimuF.Trial;
+
+                //check gaze and add time
                 if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
                     && Mathf.Abs(gazeY - marker.position.y) <= yThreshold)
                 {
                     tTotalFix += tNow - tLastSample;
                 }
-
-                tLastSample = tNow;
+                //Gazed away
+                else
+                {
+                    tTotalFix = 0;
+                }
+                tLastTrial = tNow;
             }
-            else
+            else if(tNow - tLastTrial < 0.3 && tTotalFix >= 0.5)
             {
+                //stimulation gap time
+            }
+            //Trial ended
+            else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5)
+            {
+                MicroSimuFlag = MicroSimuF.Stimulation;
+                //do stimulation here
+                tLastStimu = tNow;
+            }
+            else if (tNow - tLastStimu < 100 && tTotalFix >= 0.5)
+            {
+                //reward gap time
+            }
+            //stimulation ended
+            else if(MicroSimuFlag == MicroSimuF.Stimulation)
+            {
+                MicroSimuFlag = MicroSimuF.Reward;
                 //if gazed enough time give reward
-                if (tTotalFix >= secondsPerTarget)
+                if (tTotalFix >= 0.5)
                 {
                     string toSend = "ij" + juiceTime.ToString();
                     try
@@ -691,20 +718,12 @@ namespace PupilLabs
                     numCorrect++;
                 }
 
-                mode = 3;
+                rewarded.Add(flagReward);
 
-                if (flagTesting)
-                {
-                    flagTesting = false;
-                    rewarded.Add(flagReward);
+                print(string.Format("trial {0} complete", trialNum));
+                print(string.Format("Total Time: {0}, Target Time: {1}", tTotalFix, secondsPerTarget));
 
-                    print(string.Format("trial {0} complete", trialNum));
-                    print(string.Format("Total Time: {0}, Target Time: {1}", tTotalFix, secondsPerTarget));
-
-                    tTotalFix = 0.0f;
-
-                    if (isAuto) tStartITI = Time.time;
-                }
+                tTotalFix = 0.0f;
 
                 if (isAuto && tNow - tStartITI >= intertrialInterval)
                 {
@@ -719,49 +738,16 @@ namespace PupilLabs
                 if (trialNum < 225 && flagChangePos)
                 {
                     trialNum++;
-
-                    targetIdx = indices[trialNum];
-
-                    mode = trialMode[trialNum];
-
                     trialNumber.Add(trialNum);
-                    eyeMode.Add(mode);
-                    targetIndex.Add(targetIdx);
 
-                    switch (mode)
-                    {
-                        case 0:
-                            leftMask.SetActive(true);
-                            rightMask.SetActive(false);
-                            break;
-
-                        case 1:
-                            leftMask.SetActive(false);
-                            rightMask.SetActive(true);
-                            break;
-
-                        case 2:
-                            leftMask.SetActive(false);
-                            rightMask.SetActive(false);
-                            break;
-                    }
-
-                    tLastTrial = Time.time;
+                    MicroSimuFlag = MicroSimuF.ITI;
+                    tLastITI = Time.time;
 
                     UpdatePosition();
-
-                    flagReward = false;
-
-                    flagChangePos = !flagChangePos;
-
-                    flagTesting = !flagTesting;
-
-                    flagWait = !flagWait;
                 }
-
-                if (trialNum >= 225)
+                else
                 {
-                    ToggleFuseTest();
+                    ToggleMicroSimu();
                 }
             }
         }
