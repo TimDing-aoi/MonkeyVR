@@ -765,7 +765,17 @@ namespace PupilLabs
         {
             Debug.Log("Starting Micro Simulation.");
 
-            marker.gameObject.SetActive(false);
+            showPreview = false;
+
+            foreach (GameObject marker in previewMarkers)
+            {
+                marker.SetActive(false);
+            }
+
+            targetIdx = 4;
+            UpdatePosition();
+
+            marker.gameObject.SetActive(true);
 
             //Save();
         }
