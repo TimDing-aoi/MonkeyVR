@@ -79,7 +79,7 @@ namespace PupilLabs
         [HideInInspector] public Vector3 pos;
 
         //saving discrete data
-        int runNumber;
+        int runNumber = PlayerPrefs.GetInt("Fusion Run Number");
         static List<int> trialNumber = new List<int>();
         static List<bool> rewarded = new List<bool>();
         static List<int> eyeMode = new List<int>();
@@ -140,7 +140,6 @@ namespace PupilLabs
 
         void OnEnable()
         {
-            runNumber = PlayerPrefs.GetInt("Fusion Run Number");
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
@@ -329,7 +328,7 @@ namespace PupilLabs
             {
                 ToggleFuseTest();
             }
-            else if (Input.GetKeyDown(KeyCode.F))
+            else if (Input.GetKeyDown(KeyCode.M))
             {
                 ToggleMicroSimu();
             }
@@ -678,7 +677,7 @@ namespace PupilLabs
                 //Gazed away
                 else
                 {
-                    tTotalFix = 0;
+                    //tTotalFix = 0;
                 }
                 tLastTrial = tNow;
             }
