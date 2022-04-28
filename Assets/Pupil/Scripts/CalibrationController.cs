@@ -143,7 +143,7 @@ namespace PupilLabs
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
-            MicroSimuFlag = MicroSimuF.none;
+            MicroSimuFlag = MicroSimuF.ITI;
 
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
@@ -305,6 +305,10 @@ namespace PupilLabs
             else if (flagMicroSimu)
             {
                 UpdateMicroSimu();
+            }
+            else
+            {
+                tLastITI = Time.time;
             }
 
             if (Input.GetKeyUp(KeyCode.C))
@@ -664,15 +668,16 @@ namespace PupilLabs
             float gazeY = gazeVisualizer.projectionMarker.position.y;
 
             //fix time not enough AND not time out AND ITI ended
-            if (tTotalFix <= totalTime && tNow - tLastITI <= 2 && MicroSimuFlag == MicroSimuF.ITI)
+            if (tTotalFix <= 999 && tNow - tLastITI <= 2 && MicroSimuFlag == MicroSimuF.ITI)
             {
-                MicroSimuFlag = MicroSimuF.Trial;
+                print("MS trial");
+                previewMarkers[4].SetActive(true);
 
                 //check gaze and add time
                 if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
                     && Mathf.Abs(gazeY - marker.position.y) <= yThreshold)
                 {
-                    tTotalFix += tNow - tLastSample;
+                    tTotalFix += tNow - tLastTrial;
                 }
                 //Gazed away
                 else
@@ -683,22 +688,28 @@ namespace PupilLabs
             }
             else if(tNow - tLastTrial < 0.3 && tTotalFix >= 0.5)
             {
+                print("stimu gap");
+                previewMarkers[4].SetActive(false);
+                MicroSimuFlag = MicroSimuF.Trial;
                 //stimulation gap time
             }
             //Trial ended
             else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5)
             {
+                print("stimu");
                 MicroSimuFlag = MicroSimuF.Stimulation;
                 //do stimulation here
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < 100 && tTotalFix >= 0.5)
+            else if (tNow - tLastStimu < 0.3 && tTotalFix >= 0.5)
             {
+                print("reward gap");
                 //reward gap time
             }
             //stimulation ended
             else if(MicroSimuFlag == MicroSimuF.Stimulation)
             {
+                print("reward");
                 MicroSimuFlag = MicroSimuF.Reward;
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
@@ -721,26 +732,15 @@ namespace PupilLabs
                 rewarded.Add(flagReward);
 
                 print(string.Format("trial {0} complete", trialNum));
-                print(string.Format("Total Time: {0}, Target Time: {1}", tTotalFix, secondsPerTarget));
+                print(string.Format("Going to the next trial."));
 
                 tTotalFix = 0.0f;
 
-                if (isAuto && tNow - tStartITI >= intertrialInterval)
-                {
-                    flagChangePos = true;
-                }
-
-                leftMask.SetActive(false);
-                rightMask.SetActive(false);
-                marker.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-
-                if (trialNum < 225 && flagChangePos)
+                if (trialNum < 225)
                 {
                     trialNum++;
                     trialNumber.Add(trialNum);
 
-                    MicroSimuFlag = MicroSimuF.ITI;
                     tLastITI = Time.time;
 
                     UpdatePosition();
@@ -749,6 +749,16 @@ namespace PupilLabs
                 {
                     ToggleMicroSimu();
                 }
+            }
+            else if (tNow - tLastITI < 2)
+            {
+                print("ITI. Taking a rest");
+            }
+            else
+            {
+                print("Next trial.");
+                tLastITI = tNow;
+                MicroSimuFlag = MicroSimuF.ITI;
             }
         }
 

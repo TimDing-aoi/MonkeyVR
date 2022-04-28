@@ -5988,6 +5988,7 @@ MonoBehaviour:
   yScale: 0
   xOffset: 0
   yOffset: 0
+  sbPacket: 
 --- !u!4 &880135708
 Transform:
   m_ObjectHideFlags: 0
