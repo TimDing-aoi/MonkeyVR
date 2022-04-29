@@ -736,7 +736,8 @@ namespace PupilLabs
 
                 tTotalFix = 0.0f;
 
-                if (trialNum < 225)
+                float TotalTrials = PlayerPrefs.GetFloat("TotalTrials");
+                if (trialNum < TotalTrials)
                 {
                     trialNum++;
                     trialNumber.Add(trialNum);
@@ -787,7 +788,7 @@ namespace PupilLabs
 
             marker.gameObject.SetActive(true);
 
-            //Save();
+            Save();
         }
 
         public void StopMicroSimu()
@@ -796,7 +797,7 @@ namespace PupilLabs
 
             marker.gameObject.SetActive(false);
 
-            //Save();
+            Save();
         }
 
         public void ToggleCalibration()
