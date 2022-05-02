@@ -79,7 +79,7 @@ namespace PupilLabs
         [HideInInspector] public Vector3 pos;
 
         //saving discrete data
-        int runNumber = PlayerPrefs.GetInt("Fusion Run Number");
+        int runNumber;
         static List<int> trialNumber = new List<int>();
         static List<bool> rewarded = new List<bool>();
         static List<int> eyeMode = new List<int>();
@@ -140,6 +140,8 @@ namespace PupilLabs
 
         void OnEnable()
         {
+            runNumber = PlayerPrefs.GetInt("Fusion Run Number");
+
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
@@ -667,11 +669,14 @@ namespace PupilLabs
             float gazeX = gazeVisualizer.projectionMarker.position.x;
             float gazeY = gazeVisualizer.projectionMarker.position.y;
 
+            print(tTotalFix);
+
             //fix time not enough AND not time out AND ITI ended
             if (tTotalFix <= 999 && tNow - tLastITI <= 2 && MicroSimuFlag == MicroSimuF.ITI)
             {
                 print("MS trial");
                 previewMarkers[4].SetActive(true);
+                window.SetActive(true);
 
                 //check gaze and add time
                 if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
@@ -751,8 +756,9 @@ namespace PupilLabs
                     ToggleMicroSimu();
                 }
             }
-            else if (tNow - tLastITI < 2)
+            else if (tNow - tLastITI < 2 || tNow - tLastTrial < 2 && tTotalFix < 0.5)
             {
+                previewMarkers[4].SetActive(false);
                 print("ITI. Taking a rest");
             }
             else
