@@ -793,7 +793,7 @@ public class JoystickMonke : MonoBehaviour
         velInfluenceOnProcessNoise = PlayerPrefs.GetFloat("LinearNoiseScale");
         rotInfluenceOnProcessNoise = PlayerPrefs.GetFloat("RotationNoiseScale");
         //float ProcessNoiseMagnitude = Mathf.Sqrt(velInfluenceOnProcessNoise * cleanVel * cleanVel + rotInfluenceOnProcessNoise * cleanRot * cleanRot); // gate process noise by total control
-        float ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) ^ 2 + (cleanRot / RotSpeed) ^ 2);
+        float ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
         if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > MaxSpeed)
         {
             currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;

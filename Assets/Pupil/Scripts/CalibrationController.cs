@@ -108,6 +108,7 @@ namespace PupilLabs
         bool flagTesting = false;
         bool flagWait = true;
         [HideInInspector] public bool flagReward = false;
+        [HideInInspector] public bool flagStimulation = false;
         bool flagFailed = false;
 
         [HideInInspector]
@@ -120,6 +121,20 @@ namespace PupilLabs
             ITI = 4
         }
         [HideInInspector] public MicroSimuF MicroSimuFlag;
+        [HideInInspector]
+        public float StimuITI;
+        [HideInInspector]
+        public float StimuTrialDur;
+        [HideInInspector]
+        public float StimuStimuDur;
+        [HideInInspector]
+        public float StimuRewardDur;
+        [HideInInspector]
+        public float StimuGapMin;
+        [HideInInspector]
+        public float StimuGapMax;
+        [HideInInspector]
+        public float StimuGap = 0;
 
         [HideInInspector] public enum Status
         {
@@ -158,6 +173,13 @@ namespace PupilLabs
             xThreshold = Mathf.Tan(xAngle * Mathf.Deg2Rad / 2.0f);
             yThreshold = Mathf.Tan(yAngle * Mathf.Deg2Rad / 2.0f);
             markerSize = PlayerPrefs.GetFloat("Marker Size");
+
+            StimuITI = PlayerPrefs.GetFloat("StimuITI");
+            StimuTrialDur = PlayerPrefs.GetFloat("StimuTrialDur");
+            StimuStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
+            StimuRewardDur = PlayerPrefs.GetFloat("StimuRewardDur");
+            StimuGapMin = PlayerPrefs.GetFloat("StimuGapMin");
+            StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
 
             sizeX = scale * xThreshold;
             sizeY = scale * yThreshold;
@@ -672,7 +694,7 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tTotalFix <= 999 && tNow - tLastITI <= 2 && MicroSimuFlag == MicroSimuF.ITI)
+            if (tTotalFix <= 999 && tNow - tLastITI <= StimuTrialDur && MicroSimuFlag == MicroSimuF.ITI)
             {
                 print("MS trial");
                 previewMarkers[4].SetActive(true);
@@ -690,8 +712,13 @@ namespace PupilLabs
                     //tTotalFix = 0;
                 }
                 tLastTrial = tNow;
+
+                if(StimuGap == 0)
+                {
+                    StimuGap = (float)(StimuGapMin + (StimuGapMax-StimuGapMin) * random.NextDouble());
+                }
             }
-            else if(tNow - tLastTrial < 0.3 && tTotalFix >= 0.5)
+            else if(tNow - tLastTrial < StimuGap && tTotalFix >= 0.5)
             {
                 print("stimu gap");
                 previewMarkers[4].SetActive(false);
@@ -699,14 +726,26 @@ namespace PupilLabs
                 //stimulation gap time
             }
             //Trial ended
-            else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5)
+            else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5 && flagStimulation == false)
             {
                 print("stimu");
                 MicroSimuFlag = MicroSimuF.Stimulation;
-                //do stimulation here
+
+                string toSend = "im" + StimuStimuDur.ToString();
+                try
+                {
+                    print("stimulation");
+                    flagStimulation = true;
+                    sp.Write(toSend);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
+
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < 0.3 && tTotalFix >= 0.5)
+            else if (tNow - tLastStimu < 0.1 && tTotalFix >= 0.5)
             {
                 print("reward gap");
                 //reward gap time
@@ -719,7 +758,7 @@ namespace PupilLabs
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
                 {
-                    string toSend = "ij" + juiceTime.ToString();
+                    string toSend = "ij" + StimuRewardDur.ToString();
                     try
                     {
                         print("rewarded");
@@ -765,6 +804,7 @@ namespace PupilLabs
             {
                 print("Next trial.");
                 tLastITI = tNow;
+                StimuGap = 0;
                 MicroSimuFlag = MicroSimuF.ITI;
             }
         }
