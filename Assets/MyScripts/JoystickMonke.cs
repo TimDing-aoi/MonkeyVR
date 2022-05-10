@@ -152,7 +152,7 @@ public class JoystickMonke : MonoBehaviour
     public float logSample = 1f;
 
     [HideInInspector]
-    public bool ProcessNoiseFlag = false;
+    public bool ProcessNoiseFlag;
 
     [HideInInspector]
     public float velKsi = 0.0f;
