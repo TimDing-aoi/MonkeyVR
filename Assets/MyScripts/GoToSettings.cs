@@ -243,7 +243,7 @@ public class GoToSettings : MonoBehaviour
     {
         try
         {
-            if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto")
+            if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto" || obj.name == "isProcessNoise")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }
@@ -634,7 +634,7 @@ public class GoToSettings : MonoBehaviour
                 {
                     if (children.gameObject.CompareTag("Setting"))
                     {
-                        if (children.name == "isAuto")
+                        if (children.name == "isAuto" || children.name == "isProcessNoise")
                         {
                             UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                             foreach (XmlNode node in doc.DocumentElement.ChildNodes)

@@ -152,6 +152,9 @@ public class JoystickMonke : MonoBehaviour
     public float logSample = 1f;
 
     [HideInInspector]
+    public bool ProcessNoiseFlag = false;
+
+    [HideInInspector]
     public float velKsi = 0.0f;
     [HideInInspector]
     public float prevVelKsi = 0.0f;
@@ -208,6 +211,7 @@ public class JoystickMonke : MonoBehaviour
         PlayerPrefs.SetFloat("FixedYSpeed", 0);
         PlayerPrefs.SetFloat("MovingFFmode", 0);
         portName = PlayerPrefs.GetString("Port");
+        ProcessNoiseFlag = PlayerPrefs.GetInt("isProcessNoise") == 1;
         //MaxSpeed = 0.0f;
         //RotSpeed = 0.0f;
 
@@ -755,64 +759,81 @@ public class JoystickMonke : MonoBehaviour
     private void ProcessNoise()
     {
         float gamma;
-        if (NoiseTau == 0)
+        float alpha;
+        float beta;
+        float delta;
+        if (!ProcessNoiseFlag)
         {
             gamma = 0;
+
+            alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
+            beta = (1.0f - alpha);
+
+            velKsi = 0;
+            velEta = 0;
+            cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
+            prevCleanVel = cleanVel;
+            prevVelKsi = velKsi;
+            prevVelEta = velEta;
+
+            rotKsi = 0;
+            rotEta = 0;
+            cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
+            prevCleanRot = cleanRot;
+            prevRotKsi = rotKsi;
+            prevRotEta = rotEta;
+
+            currentSpeed = cleanVel;
+            currentRot = cleanRot;
         }
         else
         {
-            gamma = Mathf.Exp(-Time.fixedDeltaTime / NoiseTau);
+            if (NoiseTau == 0)
+            {
+                gamma = 0;
+            }
+            else
+            {
+                gamma = Mathf.Exp(-Time.fixedDeltaTime / NoiseTau);
+            }
+
+            alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
+            beta = (1.0f - alpha);
+            delta = (1.0f - gamma);
+
+            velKsi = gamma * prevVelKsi + delta * velFilterGain * BoxMullerGaussianSample();
+            velEta = gamma * prevVelEta + delta * velKsi;
+            cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
+            prevCleanVel = cleanVel;
+            prevVelKsi = velKsi;
+            prevVelEta = velEta;
+
+            rotKsi = gamma * prevRotKsi + delta * rotFilterGain * BoxMullerGaussianSample();
+            rotEta = gamma * prevRotEta + delta * rotKsi;
+            cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
+            prevCleanRot = cleanRot;
+            prevRotKsi = rotKsi;
+            prevRotEta = rotEta;
+
+            float ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
+            if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > MaxSpeed)
+            {
+                currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;
+            }
+            else
+            {
+                currentSpeed = cleanVel + velEta * ProcessNoiseMagnitude * MaxSpeed;
+            }
+
+            if (Mathf.Abs(rotEta * ProcessNoiseMagnitude) > RotSpeed)
+            {
+                currentRot = cleanRot + Mathf.Sign(rotEta) * cleanRot;
+            }
+            else
+            {
+                currentRot = cleanRot + rotEta * ProcessNoiseMagnitude * RotSpeed;
+            }
         }
-
-        float alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
-        float beta = (1.0f - alpha);
-        float delta = (1.0f - gamma);
-        //print(string.Format("{0},{1},{2},{3}", alpha, beta, delta, gamma));
-        //print(currentTau);
-
-        velKsi = gamma * prevVelKsi + delta * velFilterGain * BoxMullerGaussianSample();
-        velEta = gamma * prevVelEta + delta * velKsi;
-        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
-        prevCleanVel = cleanVel;
-        prevVelKsi = velKsi;
-        prevVelEta = velEta;
-
-        rotKsi = gamma * prevRotKsi + delta * rotFilterGain * BoxMullerGaussianSample();
-        rotEta = gamma * prevRotEta + delta * rotKsi;
-        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
-        prevCleanRot = cleanRot;
-        prevRotKsi = rotKsi;
-        prevRotEta = rotEta;
-
-        //currentSpeed = Mathf.Sign(velEta) * Mathf.Abs((1.0f + velEta) * cleanVel);
-        //currentRot = Mathf.Sign(rotEta) * Mathf.Abs((1.0f + rotEta) * cleanRot);
-
-        //currentSpeed = cleanVel + Mathf.Sign(velEta) * Mathf.Abs(velEta * cleanVel);
-        //currentRot = cleanRot + Mathf.Sign(rotEta) * Mathf.Abs(rotEta * cleanRot);
-
-        velInfluenceOnProcessNoise = PlayerPrefs.GetFloat("LinearNoiseScale");
-        rotInfluenceOnProcessNoise = PlayerPrefs.GetFloat("RotationNoiseScale");
-        //float ProcessNoiseMagnitude = Mathf.Sqrt(velInfluenceOnProcessNoise * cleanVel * cleanVel + rotInfluenceOnProcessNoise * cleanRot * cleanRot); // gate process noise by total control
-        float ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
-        if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > MaxSpeed)
-        {
-            currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;
-        }
-        else
-        {
-            currentSpeed = cleanVel + velEta * ProcessNoiseMagnitude * MaxSpeed;
-        }
-
-        if (Mathf.Abs(rotEta * ProcessNoiseMagnitude) > RotSpeed)
-        {
-            currentRot = cleanRot + Mathf.Sign(rotEta) * cleanRot;
-        }
-        else
-        {
-            currentRot = cleanRot + rotEta * ProcessNoiseMagnitude * RotSpeed;
-        }
-        //print(string.Format("cleanVel:{0}", cleanVel));
-        //print(string.Format("MaxSpeed:{0}", MaxSpeed));
     }
 
     public float BoxMullerGaussianSample()
