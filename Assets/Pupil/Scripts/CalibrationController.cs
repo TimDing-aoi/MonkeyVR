@@ -700,7 +700,7 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tTotalFix <= 999 && tNow - tLastITI <= StimuTrialDur && MicroSimuFlag == MicroSimuF.ITI)
+            if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroSimuFlag == MicroSimuF.ITI)
             {
                 print("MS trial");
                 previewMarkers[4].SetActive(true);
@@ -729,6 +729,7 @@ namespace PupilLabs
             {
                 print("stimu gap");
                 previewMarkers[4].SetActive(false);
+                window.SetActive(false);
                 MicroSimuFlag = MicroSimuF.Trial;
                 //stimulation gap time
             }
@@ -766,7 +767,7 @@ namespace PupilLabs
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
                 {
-                    string toSend = "ij" + StimuRewardDur.ToString();
+                    string toSend = "ij" + 1f.ToString();
                     try
                     {
                         print("rewarded");
@@ -795,7 +796,7 @@ namespace PupilLabs
                     trialNum++;
                     trialNumber.Add(trialNum);
 
-                    tLastITI = Time.time;
+                    tLastITI = tNow;
 
                     UpdatePosition();
                 }
@@ -811,9 +812,11 @@ namespace PupilLabs
             }
             else
             {
+                flagReward = false;
                 print("Next trial.");
                 tLastITI = tNow;
                 StimuGap = 0;
+                tTotalFix = 0;
                 MicroSimuFlag = MicroSimuF.ITI;
                 SendMarker("s", 1000.0f);
             }
