@@ -85,6 +85,12 @@ namespace PupilLabs
         static List<int> eyeMode = new List<int>();
         static List<int> targetIndex = new List<int>();
 
+        static List<float> StimuGapTime = new List<float>();
+        static List<float> StimuStartTime = new List<float>();
+        readonly List<float> beginTime = new List<float>();
+        readonly List<float> rewardTime = new List<float>();
+        readonly List<float> endTime = new List<float>();
+
         bool previewMarkersActive = false;
 
         //added settings
@@ -456,7 +462,7 @@ namespace PupilLabs
                 status = Status.simu;
 
                 flagMicroSimu = true;
-                //flagTesting = true;
+                SendMarker("s", 1000.0f);
             }
             else
             {
@@ -716,6 +722,7 @@ namespace PupilLabs
                 if(StimuGap == 0)
                 {
                     StimuGap = (float)(StimuGapMin + (StimuGapMax-StimuGapMin) * random.NextDouble());
+                    StimuGapTime.Add(StimuGap);
                 }
             }
             else if(tNow - tLastTrial < StimuGap && tTotalFix >= 0.5)
@@ -729,6 +736,7 @@ namespace PupilLabs
             else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5 && flagStimulation == false)
             {
                 print("stimu");
+                StimuStartTime.Add(tNow);
                 MicroSimuFlag = MicroSimuF.Stimulation;
 
                 string toSend = "im" + StimuStimuDur.ToString();
@@ -775,12 +783,13 @@ namespace PupilLabs
 
                 rewarded.Add(flagReward);
 
+                SendMarker("e", 1000.0f);
                 print(string.Format("trial {0} complete", trialNum));
                 print(string.Format("Going to the next trial."));
 
                 tTotalFix = 0.0f;
 
-                float TotalTrials = PlayerPrefs.GetFloat("TotalTrials");
+                float TotalTrials = 255;
                 if (trialNum < TotalTrials)
                 {
                     trialNum++;
@@ -806,6 +815,7 @@ namespace PupilLabs
                 tLastITI = tNow;
                 StimuGap = 0;
                 MicroSimuFlag = MicroSimuF.ITI;
+                SendMarker("s", 1000.0f);
             }
         }
 
@@ -821,6 +831,7 @@ namespace PupilLabs
         public void StartMicroSimu()
         {
             Debug.Log("Starting Micro Simulation.");
+            SendMarker("f", 1000.0f);
 
             showPreview = false;
 
@@ -833,17 +844,16 @@ namespace PupilLabs
             UpdatePosition();
 
             marker.gameObject.SetActive(true);
-
-            Save();
         }
 
         public void StopMicroSimu()
         {
             Debug.Log("Stopping Micro Simulation.");
+            SendMarker("x", 1000.0f);
 
             marker.gameObject.SetActive(false);
 
-            Save();
+            MicroStimuSave();
         }
 
         public void ToggleCalibration()
@@ -1226,6 +1236,68 @@ namespace PupilLabs
             runNumber++;
 
             PlayerPrefs.SetInt("Fusion Run Number", runNumber);
+        }
+
+        private void MicroStimuSave()
+        {
+            string firstLine = "trial,Begin Time, End Time,Stimulation Gap Time,Stimulation Start Time";
+
+            List<int> temp;
+
+            StringBuilder csvDisc = new StringBuilder();
+
+            csvDisc.AppendLine(firstLine);
+
+            temp = new List<int>()
+            {
+                trialNumber.Count,
+                StimuGapTime.Count,
+                StimuStartTime.Count,
+                beginTime.Count,
+                endTime.Count
+            };
+
+            temp.Sort();
+
+            for (int i = 0; i < temp[0]; i++)
+            {
+                var line = string.Format("{0},{1},{2},{3},{4},{5}",
+                    beginTime[i],
+                    endTime[i],
+                    trialNumber[i],
+                    StimuGapTime[i],
+                    StimuStartTime[i]);
+                csvDisc.AppendLine(line);
+            }
+
+            string path = PlayerPrefs.GetString("Path");
+
+            string discPath = path + "/MicroStimu_discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + runNumber + ".txt";
+            File.WriteAllText(discPath, csvDisc.ToString());
+        }
+
+        public async void SendMarker(string mark, float time)
+        {
+            string toSend = "i" + mark + time.ToString();
+
+            switch (mark)
+            {
+                case "j":
+                    rewardTime.Add(Time.time);
+                    break;
+                case "s":
+                    beginTime.Add(Time.time);
+                    break;
+                case "e":
+                    endTime.Add(Time.time);
+                    break;
+                default:
+                    break;
+            }
+
+            sp.Write(toSend);
+
+            await new WaitForSeconds(time / 1000.0f);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using static Monkey2D;
 using static JoystickMonke;
 using UnityEngine.InputSystem;
+using PupilLabs;
 
 public class FPSDisplay : MonoBehaviour
 {
