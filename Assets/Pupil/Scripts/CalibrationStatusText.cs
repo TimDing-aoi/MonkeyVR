@@ -29,8 +29,8 @@ namespace PupilLabs
             calibrationController.OnCalibrationFailed += CalibrationFailed;
             calibrationController.OnFuseTestStarted += FuseTestStarted;
             calibrationController.OnFuseTestComplete += FuseTestComplete;
-            calibrationController.OnMicroSimuStarted += MicroSimuStarted;
-            calibrationController.OnMicroSimuComplete += MicroSimuComplete;
+            calibrationController.OnMicroStimuStarted += MicroStimuStarted;
+            calibrationController.OnMicroStimuComplete += MicroStimuComplete;
         }
 
         void OnDisable()
@@ -42,8 +42,8 @@ namespace PupilLabs
             calibrationController.OnCalibrationFailed -= CalibrationFailed;
             calibrationController.OnFuseTestStarted -= FuseTestStarted;
             calibrationController.OnFuseTestComplete -= FuseTestComplete;
-            calibrationController.OnMicroSimuStarted -= MicroSimuStarted;
-            calibrationController.OnMicroSimuComplete -= MicroSimuComplete;
+            calibrationController.OnMicroStimuStarted -= MicroStimuStarted;
+            calibrationController.OnMicroStimuComplete -= MicroStimuComplete;
         }
 
         private void OnConnected()
@@ -51,7 +51,7 @@ namespace PupilLabs
             string text = "Connected";
             text += "\n\nPlease warm up your eyes and press 'C' to start the calibration or 'P' to preview the calibration targets.\n\n" +
                 "You may also press 'N' to start the Firefly Task (only if calibration has already been done).\n" +
-                "Or, you may press 'F' to start the Fusing Test, or M for the micro simulation.";
+                "Or, you may press 'F' to start the Fusing Test, or M for the micro Stimulation.";
             SetStatusText(text);
         }
 
@@ -94,18 +94,18 @@ namespace PupilLabs
             StartCoroutine(ChangeTextAfter(1.0f, "Press 'N' to start the Firefly Task.\nPress 'F' to start the Fusing Test."));
         }
 
-        private void MicroSimuStarted()
+        private void MicroStimuStarted()
         {
-            SetStatusText("Micro Simulation in progress.");
+            SetStatusText("Micro Stimulation in progress.");
         }
 
-        private void MicroSimuComplete()
+        private void MicroStimuComplete()
         {
-            SetStatusText("Micro Simulation complete.");
+            SetStatusText("Micro Stimulation complete.");
 
             StartCoroutine(ChangeTextAfter(1.0f, "Please warm up your eyes and press 'C' to start the calibration or 'P' to preview the calibration targets.\n\n" +
                 "You may also press 'N' to start the Firefly Task (only if calibration has already been done).\n" +
-                "Or, you may press 'F' to start the Fusing Test, or M for the micro simulation."));
+                "Or, you may press 'F' to start the Fusing Test, or M for the micro Stimulation."));
         }
 
         private void SetStatusText(string text)

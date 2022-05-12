@@ -2606,6 +2606,10 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteStartElement("Setting");
             xmlWriter.WriteAttributeString("Type", "Perturbation Settings");
 
+            xmlWriter.WriteStartElement("isProcessNoise");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isProcessNoise").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteStartElement("PTBType");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("PTBType").ToString());
             xmlWriter.WriteEndElement();

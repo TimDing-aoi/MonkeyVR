@@ -50,8 +50,8 @@ namespace PupilLabs
         public event Action OnCalibrationSucceeded;
         public event Action OnFuseTestStarted;
         public event Action OnFuseTestComplete;
-        public event Action OnMicroSimuStarted;
-        public event Action OnMicroSimuComplete;
+        public event Action OnMicroStimuStarted;
+        public event Action OnMicroStimuComplete;
 
         //members
         Calibration calibration = new Calibration();
@@ -110,7 +110,7 @@ namespace PupilLabs
         bool flagCalibrating = false;
         bool flagChangePos = false;
         bool flagFuseTest = false;
-        bool flagMicroSimu = false;
+        bool flagMicroStimu = false;
         bool flagTesting = false;
         bool flagWait = true;
         [HideInInspector] public bool flagReward = false;
@@ -118,7 +118,7 @@ namespace PupilLabs
         bool flagFailed = false;
 
         [HideInInspector]
-        public enum MicroSimuF
+        public enum MicroStimuF
         {
             none = 0,
             Trial = 1,
@@ -126,7 +126,7 @@ namespace PupilLabs
             Reward = 3,
             ITI = 4
         }
-        [HideInInspector] public MicroSimuF MicroSimuFlag;
+        [HideInInspector] public MicroStimuF MicroStimuFlag;
         [HideInInspector]
         public float StimuITI;
         [HideInInspector]
@@ -148,7 +148,7 @@ namespace PupilLabs
             calibration = 1,
             fixating = 2,
             test = 3,
-            simu = 4
+            Stimu = 4
         }
         [HideInInspector] public Status status;
         readonly static List<int> order = new List<int>()
@@ -166,7 +166,7 @@ namespace PupilLabs
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
-            MicroSimuFlag = MicroSimuF.ITI;
+            MicroStimuFlag = MicroStimuF.ITI;
 
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
@@ -288,7 +288,7 @@ namespace PupilLabs
 
             //Vector3 pos = Vector3.zero;
 
-            if (calibration.IsCalibrating || flagFuseTest || flagMicroSimu)
+            if (calibration.IsCalibrating || flagFuseTest || flagMicroStimu)
             {
                 pos = marker.transform.position;
             }
@@ -332,9 +332,9 @@ namespace PupilLabs
             {
                 UpdateFuseTest();
             }
-            else if (flagMicroSimu)
+            else if (flagMicroStimu)
             {
-                UpdateMicroSimu();
+                UpdateMicroStimu();
             }
             else
             {
@@ -364,7 +364,7 @@ namespace PupilLabs
             }
             else if (Input.GetKeyDown(KeyCode.M))
             {
-                ToggleMicroSimu();
+                ToggleMicroStimu();
             }
             else if (!flagCalibrating)
             {
@@ -419,7 +419,7 @@ namespace PupilLabs
                     targetIdx=0;
                 }
 
-                if (!calibration.IsCalibrating && !flagFuseTest && !flagMicroSimu)
+                if (!calibration.IsCalibrating && !flagFuseTest && !flagMicroStimu)
                 {
                     window.transform.position = previewMarkers[targetIdx].transform.position;
                 }
@@ -451,27 +451,27 @@ namespace PupilLabs
             }
         }
 
-        public void ToggleMicroSimu()
+        public void ToggleMicroStimu()
         {
-            if (!flagMicroSimu)
+            if (!flagMicroStimu)
             {
-                OnMicroSimuStarted();
+                OnMicroStimuStarted();
                 trialNum = 0;
-                StartMicroSimu();
+                StartMicroStimu();
 
-                status = Status.simu;
+                status = Status.Stimu;
 
-                flagMicroSimu = true;
+                flagMicroStimu = true;
                 SendMarker("s", 1000.0f);
             }
             else
             {
-                OnMicroSimuComplete();
-                StopMicroSimu();
+                OnMicroStimuComplete();
+                StopMicroStimu();
 
                 status = Status.none;
 
-                flagMicroSimu = false;
+                flagMicroStimu = false;
                 //flagTesting = false;
             }
         }
@@ -689,7 +689,7 @@ namespace PupilLabs
                 }
             }
         }
-        public void UpdateMicroSimu()
+        public void UpdateMicroStimu()
         {
             UpdateMarker();
 
@@ -700,11 +700,12 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroSimuFlag == MicroSimuF.ITI)
+            if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
             {
                 print("MS trial");
                 previewMarkers[4].SetActive(true);
                 window.SetActive(true);
+                window.gameObject.GetComponent<SpriteRenderer>().enabled = true;
 
                 //check gaze and add time
                 if (Mathf.Abs(gazeX - marker.position.x) <= xThreshold
@@ -730,15 +731,16 @@ namespace PupilLabs
                 print("stimu gap");
                 previewMarkers[4].SetActive(false);
                 window.SetActive(false);
-                MicroSimuFlag = MicroSimuF.Trial;
+                window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                MicroStimuFlag = MicroStimuF.Trial;
                 //stimulation gap time
             }
             //Trial ended
-            else if(MicroSimuFlag == MicroSimuF.Trial && tTotalFix >= 0.5 && flagStimulation == false)
+            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= 0.5 && flagStimulation == false)
             {
                 print("stimu");
                 StimuStartTime.Add(tNow);
-                MicroSimuFlag = MicroSimuF.Stimulation;
+                MicroStimuFlag = MicroStimuF.Stimulation;
 
                 string toSend = "im" + StimuStimuDur.ToString();
                 try
@@ -754,16 +756,17 @@ namespace PupilLabs
 
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < 0.1 && tTotalFix >= 0.5)
+            else if (tNow - tLastStimu < 2 && tTotalFix >= 0.5)
             {
+                previewMarkers[4].SetActive(false);
                 print("reward gap");
                 //reward gap time
             }
             //stimulation ended
-            else if(MicroSimuFlag == MicroSimuF.Stimulation)
+            else if(MicroStimuFlag == MicroStimuF.Stimulation)
             {
                 print("reward");
-                MicroSimuFlag = MicroSimuF.Reward;
+                MicroStimuFlag = MicroStimuF.Reward;
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
                 {
@@ -802,10 +805,10 @@ namespace PupilLabs
                 }
                 else
                 {
-                    ToggleMicroSimu();
+                    ToggleMicroStimu();
                 }
             }
-            else if (tNow - tLastITI < 2 || tNow - tLastTrial < 2 && tTotalFix < 0.5)
+            else if (tNow - tLastITI < 2 && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < 2 && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
             {
                 previewMarkers[4].SetActive(false);
                 print("ITI. Taking a rest");
@@ -817,7 +820,7 @@ namespace PupilLabs
                 tLastITI = tNow;
                 StimuGap = 0;
                 tTotalFix = 0;
-                MicroSimuFlag = MicroSimuF.ITI;
+                MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
             }
         }
@@ -831,9 +834,9 @@ namespace PupilLabs
             Save();
         }
 
-        public void StartMicroSimu()
+        public void StartMicroStimu()
         {
-            Debug.Log("Starting Micro Simulation.");
+            Debug.Log("Starting Micro Stimulation.");
             SendMarker("f", 1000.0f);
 
             showPreview = false;
@@ -849,9 +852,9 @@ namespace PupilLabs
             marker.gameObject.SetActive(true);
         }
 
-        public void StopMicroSimu()
+        public void StopMicroStimu()
         {
-            Debug.Log("Stopping Micro Simulation.");
+            Debug.Log("Stopping Micro Stimulation.");
             SendMarker("x", 1000.0f);
 
             marker.gameObject.SetActive(false);
@@ -1127,7 +1130,7 @@ namespace PupilLabs
             window.transform.position = marker.position;
             //marker.LookAt(camera.transform.position);
 
-            if (flagCalibrating || flagTesting || MicroSimuFlag == MicroSimuF.Trial)
+            if (flagCalibrating || flagTesting || MicroStimuFlag == MicroStimuF.Trial)
             {
                 marker.gameObject.GetComponent<SpriteRenderer>().enabled = true;
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = true;
