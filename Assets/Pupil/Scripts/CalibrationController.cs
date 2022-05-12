@@ -736,23 +736,13 @@ namespace PupilLabs
                 //stimulation gap time
             }
             //Trial ended
-            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= 0.5 && flagStimulation == false)
+            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= 0.5)
             {
                 print("stimu");
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
 
-                string toSend = "im" + StimuStimuDur.ToString();
-                try
-                {
-                    print("stimulation");
-                    flagStimulation = true;
-                    sp.Write(toSend);
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e);
-                }
+                SendMarker("m", 1000.0f);
 
                 tLastStimu = tNow;
             }
@@ -770,17 +760,7 @@ namespace PupilLabs
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
                 {
-                    string toSend = "ij" + 1f.ToString();
-                    try
-                    {
-                        print("rewarded");
-                        flagReward = true;
-                        sp.Write(toSend);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log(e);
-                    }
+                    SendMarker("j", 1000.0f);
 
                     numCorrect++;
                 }
