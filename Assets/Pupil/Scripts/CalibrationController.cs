@@ -126,7 +126,9 @@ namespace PupilLabs
             Reward = 3,
             ITI = 4
         }
-        [HideInInspector] public MicroStimuF MicroStimuFlag;
+        [HideInInspector] public MicroStimuF MicroStimuFlag = MicroStimuF.none;
+        [HideInInspector]
+        public bool endMarkerFlag = false;
         [HideInInspector]
         public float StimuITI;
         [HideInInspector]
@@ -767,7 +769,6 @@ namespace PupilLabs
 
                 rewarded.Add(flagReward);
 
-                SendMarker("e", 1000.0f);
                 print(string.Format("trial {0} complete", trialNum));
                 print(string.Format("Going to the next trial."));
 
@@ -790,12 +791,18 @@ namespace PupilLabs
             }
             else if (tNow - tLastITI < 2 && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < 2 && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
             {
+                if(endMarkerFlag == false)
+                {
+                    SendMarker("e", 1000.0f);
+                    endMarkerFlag = true;
+                }
                 previewMarkers[4].SetActive(false);
                 print("ITI. Taking a rest");
             }
             else
             {
                 flagReward = false;
+                endMarkerFlag = false;
                 print("Next trial.");
                 tLastITI = tNow;
                 StimuGap = 0;
