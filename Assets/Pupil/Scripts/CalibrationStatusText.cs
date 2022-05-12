@@ -91,7 +91,7 @@ namespace PupilLabs
         {
             SetStatusText("Fuse Test complete.");
 
-            StartCoroutine(ChangeTextAfter(1.0f, "Press 'N' to start the Firefly Task.\nPress 'F' to start the Fusing Test."));
+            StartCoroutine(ChangeTextAfter(1.0f, "Press 'N' to start the Firefly Task.\nPress 'F' to start the Fusing Test.\n'M' for the micro Stimulation."));
         }
 
         private void MicroStimuStarted()
@@ -105,7 +105,7 @@ namespace PupilLabs
 
             StartCoroutine(ChangeTextAfter(1.0f, "Please warm up your eyes and press 'C' to start the calibration or 'P' to preview the calibration targets.\n\n" +
                 "You may also press 'N' to start the Firefly Task (only if calibration has already been done).\n" +
-                "Or, you may press 'F' to start the Fusing Test, or M for the micro Stimulation."));
+                "Or, you may press 'F' to start the Fusing Test, or 'M' for the micro Stimulation."));
         }
 
         private void SetStatusText(string text)

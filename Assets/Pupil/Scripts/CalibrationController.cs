@@ -817,6 +817,7 @@ namespace PupilLabs
                 endMarkerFlag = false;
                 print("Next trial.");
                 tLastITI = tNow;
+                tLastTrial = tNow;
                 StimuGap = 0;
                 tTotalFix = 0;
                 MicroStimuFlag = MicroStimuF.ITI;
