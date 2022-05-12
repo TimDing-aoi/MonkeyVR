@@ -64,6 +64,7 @@ namespace PupilLabs
 
         float tLastSample = 0;
         float tLastTarget = 0;
+        float tBlockStart;
         float tLastTrial = 0;
         float tLastStimu = 0;
         float tLastReward = 0;
@@ -127,6 +128,8 @@ namespace PupilLabs
             ITI = 4
         }
         [HideInInspector] public MicroStimuF MicroStimuFlag = MicroStimuF.none;
+        [HideInInspector]
+        public bool startMarkerFlag = false;
         [HideInInspector]
         public bool endMarkerFlag = false;
         [HideInInspector]
@@ -463,8 +466,8 @@ namespace PupilLabs
 
                 status = Status.Stimu;
 
+                tBlockStart = Time.time;
                 flagMicroStimu = true;
-                SendMarker("s", 1000.0f);
             }
             else
             {
@@ -474,7 +477,7 @@ namespace PupilLabs
                 status = Status.none;
 
                 flagMicroStimu = false;
-                //flagTesting = false;
+                startMarkerFlag = false;
             }
         }
 
@@ -702,8 +705,17 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
+            if (tNow - tBlockStart <= 0.3f)
             {
+                //do nothing
+            }
+            else if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
+            {
+                if (startMarkerFlag == false)
+                {
+                    SendMarker("s", 1000.0f);
+                    startMarkerFlag = true;
+                }
                 print("MS trial");
                 previewMarkers[4].SetActive(true);
                 window.SetActive(true);
