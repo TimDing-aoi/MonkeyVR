@@ -10786,6 +10786,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 528a2a5af85707849a09e8168819098b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2006923128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2006923130}
+  - component: {fileID: 2006923129}
+  m_Layer: 0
+  m_Name: MatlabSocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &2006923129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006923128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca694c1b750cf29489ddf7f2a11cf000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2006923130
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006923128}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -502.875, y: 0.000018119812, z: -87.000046}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2017681420
 GameObject:
   m_ObjectHideFlags: 0
@@ -13360,6 +13403,11 @@ PrefabInstance:
       propertyPath: dataController
       value: 
       objectReference: {fileID: 880135707}
+    - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
+        type: 3}
+      propertyPath: MatlabSocket
+      value: 
+      objectReference: {fileID: 2006923128}
     - target: {fileID: 3202356220036375677, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
       propertyPath: subsCtrl

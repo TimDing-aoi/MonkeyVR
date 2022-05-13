@@ -25,6 +25,7 @@ namespace PupilLabs
         public GazeVisualizer gazeVisualizer;
         public GameObject window;
         public GameObject plane;
+        public GameObject MatlabSocket;
 
         [Header("Settings")]
         public CalibrationSettings settings;
@@ -714,6 +715,7 @@ namespace PupilLabs
                 if (startMarkerFlag == false)
                 {
                     SendMarker("s", 1000.0f);
+                    beginTime.Add(Time.time);
                     startMarkerFlag = true;
                 }
                 print("MS trial");
@@ -756,7 +758,7 @@ namespace PupilLabs
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
 
-                SendMarker("m", 1000.0f);
+                SendMarker("m", StimuGap * 1000.0f);
 
                 tLastStimu = tNow;
             }
@@ -786,7 +788,7 @@ namespace PupilLabs
 
                 tTotalFix = 0.0f;
 
-                float TotalTrials = 255;
+                float TotalTrials = PlayerPrefs.GetFloat("StimNumTrials");
                 if (trialNum < TotalTrials)
                 {
                     trialNum++;
@@ -803,9 +805,10 @@ namespace PupilLabs
             }
             else if (tNow - tLastITI < 2 && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < 2 && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
             {
-                if(endMarkerFlag == false)
+                if(endMarkerFlag == false && tTotalFix >= 0.5)
                 {
                     SendMarker("e", 1000.0f);
+                    endTime.Add(Time.time);
                     endMarkerFlag = true;
                 }
                 previewMarkers[4].SetActive(false);
@@ -822,6 +825,10 @@ namespace PupilLabs
                 tTotalFix = 0;
                 MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
+                if (tTotalFix >= 0.5)
+                {
+                    beginTime.Add(Time.time);
+                }
             }
         }
 
@@ -846,6 +853,8 @@ namespace PupilLabs
                 marker.SetActive(false);
             }
 
+            MatlabSocket.SetActive(true);
+
             targetIdx = 4;
             UpdatePosition();
 
@@ -858,6 +867,8 @@ namespace PupilLabs
             SendMarker("x", 1000.0f);
 
             marker.gameObject.SetActive(false);
+
+            MatlabSocket.SetActive(false);
 
             MicroStimuSave();
         }
@@ -1264,13 +1275,13 @@ namespace PupilLabs
             };
 
             temp.Sort();
-
+            print(temp[0]);
             for (int i = 0; i < temp[0]; i++)
             {
                 var line = string.Format("{0},{1},{2},{3},{4}",
+                    trialNumber[i],
                     beginTime[i],
                     endTime[i],
-                    trialNumber[i],
                     StimuGapTime[i],
                     StimuStartTime[i]);
                 csvDisc.AppendLine(line);
@@ -1286,7 +1297,7 @@ namespace PupilLabs
         {
             string toSend = "i" + mark + time.ToString();
 
-            switch (mark)
+            /*switch (mark)
             {
                 case "j":
                     rewardTime.Add(Time.time);
@@ -1299,7 +1310,7 @@ namespace PupilLabs
                     break;
                 default:
                     break;
-            }
+            }*/
 
             sp.Write(toSend);
 

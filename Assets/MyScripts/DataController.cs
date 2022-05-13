@@ -330,7 +330,7 @@ namespace PupilLabs
         {
             if (next.name == "Monkey2D")
             {
-                var path = PlayerPrefs.GetString("Path") + "\\fusion_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
+                var path = PlayerPrefs.GetString("Path") + "\\eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
                 File.AppendAllText(path, sb.ToString());
                 sb.Clear();
 
