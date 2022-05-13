@@ -1267,7 +1267,7 @@ namespace PupilLabs
 
             for (int i = 0; i < temp[0]; i++)
             {
-                var line = string.Format("{0},{1},{2},{3},{4},{5}",
+                var line = string.Format("{0},{1},{2},{3},{4}",
                     beginTime[i],
                     endTime[i],
                     trialNumber[i],
