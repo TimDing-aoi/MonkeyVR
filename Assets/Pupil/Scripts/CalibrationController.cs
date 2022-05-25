@@ -130,6 +130,8 @@ namespace PupilLabs
         }
         [HideInInspector] public MicroStimuF MicroStimuFlag = MicroStimuF.none;
         [HideInInspector]
+        public float LastMarker = 0;
+        [HideInInspector]
         public bool startMarkerFlag = false;
         [HideInInspector]
         public bool endMarkerFlag = false;
@@ -147,6 +149,8 @@ namespace PupilLabs
         public float StimuGapMax;
         [HideInInspector]
         public float StimuGap = 0;
+        [HideInInspector]
+        public float RewardGap = 0;
 
         [HideInInspector] public enum Status
         {
@@ -192,6 +196,7 @@ namespace PupilLabs
             StimuRewardDur = PlayerPrefs.GetFloat("StimuRewardDur");
             StimuGapMin = PlayerPrefs.GetFloat("StimuGapMin");
             StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
+            RewardGap = PlayerPrefs.GetFloat("RewardGap");
 
             sizeX = scale * xThreshold;
             sizeY = scale * yThreshold;
@@ -715,6 +720,7 @@ namespace PupilLabs
                 if (startMarkerFlag == false)
                 {
                     SendMarker("s", 1000.0f);
+                    LastMarker = 2;
                     beginTime.Add(Time.time);
                     startMarkerFlag = true;
                 }
@@ -757,12 +763,12 @@ namespace PupilLabs
                 print("stimu");
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
-
-                SendMarker("m", StimuGap * 1000.0f);
-
+                float stimu_duration = PlayerPrefs.GetFloat("StimuStimuDur"); 
+                SendMarker("m", stimu_duration * 1000.0f);
+                LastMarker = 5;
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < 2 && tTotalFix >= 0.5)
+            else if (tNow - tLastStimu < RewardGap && tTotalFix >= 0.5)
             {
                 previewMarkers[4].SetActive(false);
                 print("reward gap");
@@ -776,8 +782,9 @@ namespace PupilLabs
                 //if gazed enough time give reward
                 if (tTotalFix >= 0.5)
                 {
-                    SendMarker("j", 1000.0f);
-
+                    float juiceDur = PlayerPrefs.GetFloat("StimuRewardDur");
+                    SendMarker("j", juiceDur * 1000.0f);
+                    LastMarker = 4;
                     numCorrect++;
                 }
 
@@ -803,11 +810,12 @@ namespace PupilLabs
                     ToggleMicroStimu();
                 }
             }
-            else if (tNow - tLastITI < 2 && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < 2 && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
+            else if (tNow - tLastITI < StimuITI && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < StimuITI && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
             {
                 if(endMarkerFlag == false && tTotalFix >= 0.5)
                 {
                     SendMarker("e", 1000.0f);
+                    LastMarker = 3;
                     endTime.Add(Time.time);
                     endMarkerFlag = true;
                 }
@@ -825,6 +833,7 @@ namespace PupilLabs
                 tTotalFix = 0;
                 MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
+                LastMarker = 2;
                 if (tTotalFix >= 0.5)
                 {
                     beginTime.Add(Time.time);
@@ -845,6 +854,7 @@ namespace PupilLabs
         {
             Debug.Log("Starting Micro Stimulation.");
             SendMarker("f", 1000.0f);
+            LastMarker = 1;
 
             showPreview = false;
 
@@ -865,6 +875,7 @@ namespace PupilLabs
         {
             Debug.Log("Stopping Micro Stimulation.");
             SendMarker("x", 1000.0f);
+            LastMarker = 17;
 
             marker.gameObject.SetActive(false);
 

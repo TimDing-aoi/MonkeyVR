@@ -148,7 +148,8 @@ namespace PupilLabs
                             gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
+                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            calibrationController.LastMarker);
                     sb.Append(sbPacket);
 #endif
                 }

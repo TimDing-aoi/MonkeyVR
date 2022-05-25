@@ -2698,6 +2698,38 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickStartThreshold").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("StimuITI");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuITI").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuTrialDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuTrialDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuStimuDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuRewardDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuRewardDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuGapMin");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMin").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuGapMax");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMax").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimNumTrials");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimNumTrials").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RewardGap");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardGap").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");
