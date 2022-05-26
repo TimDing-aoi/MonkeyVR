@@ -93,6 +93,8 @@ namespace PupilLabs
         readonly List<float> rewardTime = new List<float>();
         readonly List<float> endTime = new List<float>();
 
+        private float beginTimer = 0;
+
         bool previewMarkersActive = false;
 
         //added settings
@@ -724,7 +726,7 @@ namespace PupilLabs
                 {
                     SendMarker("s", 1000.0f);
                     LastMarker = 2;
-                    beginTime.Add(Time.time);
+                    beginTimer = Time.time;
                     startMarkerFlag = true;
                 }
                 print("MS trial");
@@ -766,12 +768,15 @@ namespace PupilLabs
                 print("stimu");
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
-                float stimu_duration = PlayerPrefs.GetFloat("StimuStimuDur"); 
-                SendMarker("m", stimu_duration * 1000.0f);
+                SendMarker("m", StimuStimuDur * 1000.0f);
                 LastMarker = 5;
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < RewardGap && tTotalFix >= RewardThresh)
+            else if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
+            {
+                LastMarker = 5;
+            }
+            else if (tNow - tLastStimu < StimuStimuDur + RewardGap && tTotalFix >= RewardThresh)
             {
                 previewMarkers[4].SetActive(false);
                 print("reward gap");
@@ -785,8 +790,7 @@ namespace PupilLabs
                 //if gazed enough time give reward
                 if (tTotalFix >= RewardThresh)
                 {
-                    float juiceDur = PlayerPrefs.GetFloat("StimuRewardDur");
-                    SendMarker("j", juiceDur);
+                    SendMarker("j", StimuRewardDur);
                     LastMarker = 4;
                     numCorrect++;
                 }
@@ -813,13 +817,17 @@ namespace PupilLabs
                     ToggleMicroStimu();
                 }
             }
-            else if (tNow - tLastITI < StimuITI && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
+            else if (tNow - tLastITI < StimuRewardDur)
+            {
+                LastMarker = 4;
+            }
+            else if (tNow - tLastITI < StimuRewardDur + StimuITI && MicroStimuFlag == MicroStimuF.Reward || 
+                tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
             {
                 if(endMarkerFlag == false && tTotalFix >= RewardThresh)
                 {
                     SendMarker("e", 1000.0f);
-                    LastMarker = 3;
-                    endTime.Add(Time.time);
+                    beginTime.Add(beginTimer);
                     endMarkerFlag = true;
                 }
                 previewMarkers[4].SetActive(false);
@@ -840,8 +848,9 @@ namespace PupilLabs
                 LastMarker = 2;
                 if (tTotalFix >= RewardThresh)
                 {
-                    beginTime.Add(Time.time);
+                    endTime.Add(Time.time);
                 }
+                beginTimer = Time.time;
             }
         }
 
