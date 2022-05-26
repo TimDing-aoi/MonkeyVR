@@ -817,7 +817,8 @@ namespace PupilLabs
 
                     UpdatePosition();
                 }
-                else
+
+                if (trialNum == TotalTrials)
                 {
                     ToggleMicroStimu();
                 }
@@ -1318,7 +1319,7 @@ namespace PupilLabs
 
             string path = PlayerPrefs.GetString("Path");
 
-            string discPath = path + "/MicroStimu_discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + runNumber + ".txt";
+            string discPath = path + "/MicroStimu_discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number") + ".txt";
             File.WriteAllText(discPath, csvDisc.ToString());
         }
 
