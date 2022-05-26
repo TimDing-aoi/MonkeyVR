@@ -2730,6 +2730,10 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardGap").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("RewardThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThresh").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");

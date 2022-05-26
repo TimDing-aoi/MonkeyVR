@@ -151,6 +151,8 @@ namespace PupilLabs
         public float StimuGap = 0;
         [HideInInspector]
         public float RewardGap = 0;
+        [HideInInspector]
+        public float RewardThresh = 0;
 
         [HideInInspector] public enum Status
         {
@@ -197,6 +199,7 @@ namespace PupilLabs
             StimuGapMin = PlayerPrefs.GetFloat("StimuGapMin");
             StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
             RewardGap = PlayerPrefs.GetFloat("RewardGap");
+            RewardThresh = PlayerPrefs.GetFloat("RewardThresh");
 
             sizeX = scale * xThreshold;
             sizeY = scale * yThreshold;
@@ -715,7 +718,7 @@ namespace PupilLabs
             {
                 //do nothing
             }
-            else if (tTotalFix <= 0.5 && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
+            else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
             {
                 if (startMarkerFlag == false)
                 {
@@ -748,7 +751,7 @@ namespace PupilLabs
                     StimuGapTime.Add(StimuGap);
                 }
             }
-            else if(tNow - tLastTrial < StimuGap && tTotalFix >= 0.5)
+            else if(tNow - tLastTrial < StimuGap && tTotalFix >= RewardThresh)
             {
                 print("stimu gap");
                 previewMarkers[4].SetActive(false);
@@ -758,7 +761,7 @@ namespace PupilLabs
                 //stimulation gap time
             }
             //Trial ended
-            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= 0.5)
+            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= RewardThresh)
             {
                 print("stimu");
                 StimuStartTime.Add(tNow);
@@ -768,7 +771,7 @@ namespace PupilLabs
                 LastMarker = 5;
                 tLastStimu = tNow;
             }
-            else if (tNow - tLastStimu < RewardGap && tTotalFix >= 0.5)
+            else if (tNow - tLastStimu < RewardGap && tTotalFix >= RewardThresh)
             {
                 previewMarkers[4].SetActive(false);
                 print("reward gap");
@@ -780,10 +783,10 @@ namespace PupilLabs
                 print("reward");
                 MicroStimuFlag = MicroStimuF.Reward;
                 //if gazed enough time give reward
-                if (tTotalFix >= 0.5)
+                if (tTotalFix >= RewardThresh)
                 {
                     float juiceDur = PlayerPrefs.GetFloat("StimuRewardDur");
-                    SendMarker("j", juiceDur * 1000.0f);
+                    SendMarker("j", juiceDur);
                     LastMarker = 4;
                     numCorrect++;
                 }
@@ -810,9 +813,9 @@ namespace PupilLabs
                     ToggleMicroStimu();
                 }
             }
-            else if (tNow - tLastITI < StimuITI && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < StimuITI && tTotalFix < 0.5 && MicroStimuFlag == MicroStimuF.ITI)
+            else if (tNow - tLastITI < StimuITI && MicroStimuFlag == MicroStimuF.Reward || tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
             {
-                if(endMarkerFlag == false && tTotalFix >= 0.5)
+                if(endMarkerFlag == false && tTotalFix >= RewardThresh)
                 {
                     SendMarker("e", 1000.0f);
                     LastMarker = 3;
@@ -820,6 +823,7 @@ namespace PupilLabs
                     endMarkerFlag = true;
                 }
                 previewMarkers[4].SetActive(false);
+                LastMarker = 3;
                 print("ITI. Taking a rest");
             }
             else
@@ -834,7 +838,7 @@ namespace PupilLabs
                 MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
                 LastMarker = 2;
-                if (tTotalFix >= 0.5)
+                if (tTotalFix >= RewardThresh)
                 {
                     beginTime.Add(Time.time);
                 }
