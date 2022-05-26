@@ -94,6 +94,7 @@ namespace PupilLabs
         readonly List<float> endTime = new List<float>();
 
         private float beginTimer = 0;
+        private bool rewarder = false;
 
         bool previewMarkersActive = false;
 
@@ -795,7 +796,7 @@ namespace PupilLabs
                     numCorrect++;
                 }
 
-                rewarded.Add(flagReward);
+                rewarder = true;
 
                 print(string.Format("trial {0} complete", trialNum));
                 print(string.Format("Going to the next trial."));
@@ -817,14 +818,14 @@ namespace PupilLabs
                     ToggleMicroStimu();
                 }
             }
-            else if (tNow - tLastITI < StimuRewardDur)
+            else if (tNow - tLastITI < StimuRewardDur * 0.001)
             {
                 LastMarker = 4;
             }
-            else if (tNow - tLastITI < StimuRewardDur + StimuITI && MicroStimuFlag == MicroStimuF.Reward || 
+            else if (tNow - tLastITI < StimuRewardDur * 0.001 + StimuITI && MicroStimuFlag == MicroStimuF.Reward || 
                 tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
             {
-                if(endMarkerFlag == false && tTotalFix >= RewardThresh)
+                if(endMarkerFlag == false && rewarder)
                 {
                     SendMarker("e", 1000.0f);
                     beginTime.Add(beginTimer);
@@ -846,7 +847,7 @@ namespace PupilLabs
                 MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
                 LastMarker = 2;
-                if (tTotalFix >= RewardThresh)
+                if (rewarder)
                 {
                     endTime.Add(Time.time);
                 }
@@ -1299,7 +1300,8 @@ namespace PupilLabs
             };
 
             temp.Sort();
-            print(temp[0]);
+            //print(beginTime.Count);
+            //print(endTime.Count);
             for (int i = 0; i < temp[0]; i++)
             {
                 var line = string.Format("{0},{1},{2},{3},{4}",
