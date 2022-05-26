@@ -89,8 +89,8 @@ namespace PupilLabs
 
         static List<float> StimuGapTime = new List<float>();
         static List<float> StimuStartTime = new List<float>();
+        readonly List<float> rewardStartTime = new List<float>();
         readonly List<float> beginTime = new List<float>();
-        readonly List<float> rewardTime = new List<float>();
         readonly List<float> endTime = new List<float>();
 
         private float beginTimer = 0;
@@ -796,6 +796,7 @@ namespace PupilLabs
                     numCorrect++;
                 }
 
+                rewardStartTime.Add(tNow);
                 rewarder = true;
 
                 print(string.Format("trial {0} complete", trialNum));
@@ -829,6 +830,7 @@ namespace PupilLabs
                 {
                     SendMarker("e", 1000.0f);
                     beginTime.Add(beginTimer);
+                    endTime.Add(Time.time);
                     endMarkerFlag = true;
                 }
                 previewMarkers[4].SetActive(false);
@@ -847,10 +849,6 @@ namespace PupilLabs
                 MicroStimuFlag = MicroStimuF.ITI;
                 SendMarker("s", 1000.0f);
                 LastMarker = 2;
-                if (rewarder)
-                {
-                    endTime.Add(Time.time);
-                }
                 beginTimer = Time.time;
             }
         }
@@ -1282,7 +1280,7 @@ namespace PupilLabs
 
         private void MicroStimuSave()
         {
-            string firstLine = "trial,Begin Time, End Time,Stimulation Gap Time,Stimulation Start Time";
+            string firstLine = "trial,Begin Time, End Time,Stimulation Gap Time,Stimulation Start Time,Reward Start Time";
 
             List<int> temp;
 
@@ -1296,7 +1294,8 @@ namespace PupilLabs
                 StimuGapTime.Count,
                 StimuStartTime.Count,
                 beginTime.Count,
-                endTime.Count
+                endTime.Count,
+                rewardStartTime.Count
             };
 
             temp.Sort();
@@ -1304,12 +1303,13 @@ namespace PupilLabs
             //print(endTime.Count);
             for (int i = 0; i < temp[0]; i++)
             {
-                var line = string.Format("{0},{1},{2},{3},{4}",
+                var line = string.Format("{0},{1},{2},{3},{4},{5}",
                     trialNumber[i],
                     beginTime[i],
                     endTime[i],
                     StimuGapTime[i],
-                    StimuStartTime[i]);
+                    StimuStartTime[i],
+                    rewardStartTime[i]);
                 csvDisc.AppendLine(line);
             }
 
