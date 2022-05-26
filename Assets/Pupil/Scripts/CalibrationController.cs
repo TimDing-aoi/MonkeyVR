@@ -717,9 +717,12 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tNow - tBlockStart <= 0.3f)
+            if (tNow - tBlockStart <= 1f)
             {
                 //do nothing
+                tTotalFix = 0;
+                tLastITI = tNow;
+                MicroStimuFlag = MicroStimuF.ITI;
             }
             else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
             {
