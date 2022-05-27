@@ -119,6 +119,7 @@ namespace PupilLabs
         bool flagTesting = false;
         bool flagWait = true;
         [HideInInspector] public bool flagReward = false;
+        [HideInInspector] public bool flagStimu = false;
         [HideInInspector] public bool flagStimulation = false;
         bool flagFailed = false;
 
@@ -784,12 +785,14 @@ namespace PupilLabs
             }
             else if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
             {
+                flagStimu = true;
                 LastMarker = 5;
             }
             else if (tNow - tLastStimu < StimuStimuDur + RewardGap && tTotalFix >= RewardThresh)
             {
                 previewMarkers[4].SetActive(false);
                 previewMarkers[2].SetActive(false);
+                flagStimu = false;
                 print("reward gap");
                 //reward gap time
             }
@@ -832,12 +835,14 @@ namespace PupilLabs
             }
             else if (tNow - tLastITI < StimuRewardDur * 0.001)
             {
+                flagReward = true;
                 LastMarker = 4;
             }
             else if (tNow - tLastITI < StimuRewardDur * 0.001 + StimuITI && MicroStimuFlag == MicroStimuF.Reward || 
                 tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
             {
-                if(endMarkerFlag == false && rewarder)
+                flagReward = false;
+                if (endMarkerFlag == false && rewarder)
                 {
                     SendMarker("e", 1000.0f);
                     beginTime.Add(beginTimer);
@@ -850,7 +855,6 @@ namespace PupilLabs
             }
             else
             {
-                flagReward = false;
                 endMarkerFlag = false;
                 print("Next trial.");
                 tLastITI = tNow;
