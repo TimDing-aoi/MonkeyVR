@@ -174,6 +174,9 @@ namespace PupilLabs
 
         System.Random random = new System.Random();
 
+        public AudioSource AudioSource;
+        public AudioClip StimuTest;
+
         void OnEnable()
         {
             runNumber = PlayerPrefs.GetInt("Fusion Run Number");
@@ -775,6 +778,9 @@ namespace PupilLabs
                 SendMarker("m", StimuStimuDur * 1000.0f);
                 LastMarker = 5;
                 tLastStimu = tNow;
+                AudioSource.clip = StimuTest;
+                AudioSource.Play();
+                previewMarkers[2].SetActive(true);
             }
             else if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
             {
@@ -783,6 +789,7 @@ namespace PupilLabs
             else if (tNow - tLastStimu < StimuStimuDur + RewardGap && tTotalFix >= RewardThresh)
             {
                 previewMarkers[4].SetActive(false);
+                previewMarkers[2].SetActive(false);
                 print("reward gap");
                 //reward gap time
             }
@@ -887,14 +894,14 @@ namespace PupilLabs
             marker.gameObject.SetActive(true);
         }
 
-        public void StopMicroStimu()
+        public async void StopMicroStimu()
         {
             Debug.Log("Stopping Micro Stimulation.");
             SendMarker("x", 1000.0f);
             LastMarker = 17;
 
             marker.gameObject.SetActive(false);
-
+            await new WaitForSeconds(1f);
             MatlabSocket.SetActive(false);
 
             MicroStimuSave();

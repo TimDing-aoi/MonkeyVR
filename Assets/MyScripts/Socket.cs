@@ -23,6 +23,13 @@ public class Socket : MonoBehaviour
         setupSocket();
         Debug.Log("socket is set up");
     }
+
+    void OnEnable()
+    {
+        setupSocket();
+        Debug.Log("socket is set up");
+    }
+
     // Update is called once per frame
     void Update()
     {
