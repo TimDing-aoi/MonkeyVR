@@ -1,12 +1,9 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                     ///
 /// Monkey2D.cs                                                                         ///
-/// by Joshua Calugay                                                                   ///
-/// jc10487@nyu.edu                                                                     ///
-/// jcal1696@gmail.com (use this to contact me since, whoever is reading this is        ///
-///                     probably my successor, which means I no longer work at          ///
-///                     NYU, which means I no longer have my NYU email.)                ///
-/// Last Updated: 6/17/2020                                                             ///
+/// by Joshua Calugay and Tim Ding                                                      ///
+/// hd840@nyu.edu                                                                       ///
+/// jcal1696@gmail.com                                                                  ///
 /// For the Angelaki Lab                                                                ///
 ///                                                                                     ///
 /// <summary>                                                                           ///
