@@ -19,6 +19,7 @@ public class GoToSettings : MonoBehaviour
     public GameObject obj;
     public GameObject settingMenu1;
     public GameObject settingMenu2;
+    public GameObject settingMenu3;
     public UnityEngine.UI.Button saveButton;
     public UnityEngine.UI.Button loadButton;
     private TMP_InputField input;
@@ -58,6 +59,7 @@ public class GoToSettings : MonoBehaviour
     public GameObject loading;
     public Canvas window;
     public GameObject regularMenu;
+    public GameObject FFMenu;
     public GameObject calibrationMenu;
 
     // Start is called before the first frame update
@@ -243,7 +245,8 @@ public class GoToSettings : MonoBehaviour
     {
         try
         {
-            if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto" || obj.name == "isProcessNoise")
+            if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto" || obj.name == "isProcessNoise"
+                || obj.name == "isColored")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }
@@ -432,18 +435,34 @@ public class GoToSettings : MonoBehaviour
 
     public void SwitchPage()
     {
-        regularMenu.SetActive(!regularMenu.activeInHierarchy);
-        calibrationMenu.SetActive(!calibrationMenu.activeInHierarchy);
-        
-        if (regularMenu.activeInHierarchy)
+        if (!FFMenu.activeInHierarchy)
         {
+            regularMenu.SetActive(!regularMenu.activeInHierarchy);
+            calibrationMenu.SetActive(!calibrationMenu.activeInHierarchy);
+
+            if (regularMenu.activeInHierarchy)
+            {
+                this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calib/acc control/process noise";
+            }
+
+            if (calibrationMenu.activeInHierarchy)
+            {
+                this.transform.GetChild(0).GetComponent<TMP_Text>().text = "FF/JoyStk";
+            }
+        }
+        else
+        {
+            FFMenu.SetActive(false);
+            regularMenu.SetActive(true);
             this.transform.GetChild(0).GetComponent<TMP_Text>().text = "calib/acc control/process noise";
         }
+    }
 
-        if (calibrationMenu.activeInHierarchy)
-        {
-            this.transform.GetChild(0).GetComponent<TMP_Text>().text = "FF/JoyStk";
-        }
+    public void SwitchFFPage()
+    {
+        regularMenu.SetActive(false);
+        calibrationMenu.SetActive(false);
+        FFMenu.SetActive(true);
     }
 
     public void SetScale()
@@ -684,6 +703,49 @@ public class GoToSettings : MonoBehaviour
             }
 
             settingMenu2.SetActive(false);
+            settingMenu3.SetActive(true);
+
+            foreach (Transform child in settingMenu3.transform)
+            {
+                foreach (Transform children in child)
+                {
+                    if (children.gameObject.CompareTag("Setting"))
+                    {
+                        if (children.name == "isColored")
+                        {
+                            UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        toggle.isOn = int.Parse(setting.InnerText) == 1;
+                                        PlayerPrefs.SetInt(children.name, toggle.isOn ? 1 : 0);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TMP_InputField field = children.GetComponent<TMP_InputField>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        field.text = setting.InnerText;
+                                        PlayerPrefs.SetFloat(children.name, float.Parse(field.text));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            settingMenu3.SetActive(false);
             settingMenu1.SetActive(true);
         }
         catch (Exception e)

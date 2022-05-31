@@ -118,6 +118,10 @@ public class Monkey2D : MonoBehaviour
     int multiMode;
     readonly public List<float> velocities = new List<float>();
     readonly public List<float> v_ratios = new List<float>();
+    readonly public List<float> colorratios = new List<float>();
+    readonly public List<float> colorrewards = new List<float>();
+    private List<float> colorchosen = new List<float>();
+    private float colorhit = 0;
     readonly public List<float> v_noises = new List<float>();
     readonly public List<Vector3> directions = new List<Vector3>()
     {
@@ -180,6 +184,9 @@ public class Monkey2D : MonoBehaviour
 
     // Firefly ON Duration
     readonly List<float> onDur = new List<float>();
+
+    //Firefly Colors
+    readonly List<string> ffCol = new List<string>();
 
     // Firefly Check Coords
     readonly List<string> ffPos = new List<string>();
@@ -473,6 +480,11 @@ public class Monkey2D : MonoBehaviour
             rotStopThreshold = 1.0f;
         }
 
+        if (nFF > 1 && PlayerPrefs.GetInt("isColored") == 1)
+        {
+            multiMode = 2;
+        }
+
         if (nFF > 1 && multiMode == 1)
         {
             ranges.Add(minDrawDistance);
@@ -619,6 +631,25 @@ public class Monkey2D : MonoBehaviour
         }
 
         drawLine(30, 200);
+
+        if (PlayerPrefs.GetInt("isColored") == 1)
+        {
+            colorratios.Add(PlayerPrefs.GetFloat("red"));
+            colorratios.Add(PlayerPrefs.GetFloat("blue"));
+            colorratios.Add(PlayerPrefs.GetFloat("green"));
+            colorratios.Add(PlayerPrefs.GetFloat("yellow"));
+            colorratios.Add(PlayerPrefs.GetFloat("white"));
+            for (int i = 1; i < 5; i++)
+            {
+                colorratios[i] = colorratios[i] + colorratios[i - 1];
+            }
+
+            colorrewards.Add(PlayerPrefs.GetFloat("redrew"));
+            colorrewards.Add(PlayerPrefs.GetFloat("bluerew"));
+            colorrewards.Add(PlayerPrefs.GetFloat("greenrew"));
+            colorrewards.Add(PlayerPrefs.GetFloat("yellowrew"));
+            colorrewards.Add(PlayerPrefs.GetFloat("whiterew"));
+        }
 
         try
         {
@@ -1258,6 +1289,45 @@ public class Monkey2D : MonoBehaviour
         // Debug.Log("Begin Phase End.");
         if (nFF > 1)
         {
+            if (PlayerPrefs.GetInt("isColored") == 1)
+            {
+                foreach (GameObject FF in pooledFF)
+                {
+                    float r = (float)rand.NextDouble();
+
+                    if (r <= colorratios[0])
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.red;
+                        colorchosen.Add(1);
+                    }
+                    else if (r > colorratios[0] && r <= colorratios[1])
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.blue;
+                        colorchosen.Add(2);
+                    }
+                    else if (r > colorratios[1] && r <= colorratios[2])
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.green;
+                        colorchosen.Add(3);
+                    }
+                    else if (r > colorratios[2] && r <= colorratios[3])
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.yellow;
+                        colorchosen.Add(4);
+                    }
+                    else if (r > colorratios[3] && r <= colorratios[4])
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.white;
+                        colorchosen.Add(5);
+                    }
+                    else
+                    {
+                        FF.GetComponent<SpriteRenderer>().color = Color.black;
+                        colorchosen.Add(6);
+                    }
+                }
+            }
+
             switch (mode)
             {
                 case Modes.ON:
@@ -1522,6 +1592,7 @@ public class Monkey2D : MonoBehaviour
         isReward = true;
 
         float distance = 0.0f;
+        float curdistance = 9999f;
 
         Vector3 pos;
         Quaternion rot;
@@ -1566,14 +1637,16 @@ public class Monkey2D : MonoBehaviour
         }
         else if (nFF > 1 && multiMode == 2)
         {
-            foreach (GameObject FF in pooledFF)
+            for (int i = 0; i < nFF; i++)
             {
-                ffPosStr = string.Concat(ffPosStr, ",", FF.transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
-                distance = Vector3.Distance(pPos, FF.transform.position);
+                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
+                distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
                 //print(distance);
-                if (distance <= fireflyZoneRadius)
+                if (distance <= fireflyZoneRadius && distance < curdistance)
                 {
+                    curdistance = distance;
                     proximity = true;
+                    colorhit = i;
                 }
                 distances.Add(distance);
             }
@@ -1613,6 +1686,19 @@ public class Monkey2D : MonoBehaviour
                     juiceTime = 0;
                     //Debug.Log("Juice: " + DateTime.Now.ToLongTimeString());
                 }
+            }
+            else if (nFF > 1 && PlayerPrefs.GetInt("isColored") == 1)
+            {
+                print(colorhit);
+                print(colorchosen[(int)colorhit]);
+                juiceTime = colorrewards[(int)colorchosen[(int)colorhit] - 1];
+                audioSource.clip = winSound;
+                juiceDuration.Add(juiceTime);
+                audioSource.Play();
+                points++;
+                SendMarker("j", juiceTime);
+                await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
+                juiceTime = 0;
             }
             else
             {
@@ -1748,6 +1834,12 @@ public class Monkey2D : MonoBehaviour
             distances.Clear();
             ffPosStr = "";
             isTimeout = false;
+
+            if (PlayerPrefs.GetInt("isColored") == 1)
+            {
+                ffCol.Add(string.Format("{0},{1}", colorchosen[0], colorchosen[1]));
+                colorchosen.Clear();
+            }
 
             await new WaitForSeconds(wait);
 
@@ -1944,6 +2036,10 @@ public class Monkey2D : MonoBehaviour
                 {
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,{2}rewardTime,endTime,checkWait,interWait", ffPosStr, distStr, checkStr);
                 }
+                else if (PlayerPrefs.GetInt("isColored") == 1)
+                {
+                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,FF1colorID,FF2coloID", ffPosStr, distStr);
+                }
                 else
                 {
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait", ffPosStr, distStr);
@@ -2006,11 +2102,15 @@ public class Monkey2D : MonoBehaviour
                 temp.Add(checkTime.Count);
             }
 
+            if (PlayerPrefs.GetInt("isColored") == 1)
+            {
+                temp.Add(ffCol.Count);
+            }
+
             //foreach (int count in temp)
             //{
             //    print(count);
             //}
-
             temp.Sort();
 
             var totalScore = 0;
@@ -2099,11 +2199,42 @@ public class Monkey2D : MonoBehaviour
                     totalScore += score[i];
                 }
             }
-            else if(PlayerPrefs.GetInt("Perturbation On") == 1)
+            else if (PlayerPrefs.GetInt("isColored") == 1)
             {
                 for (int i = j; i < temp[0]; i++)
                 {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},"+
+                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}",
+                        n[i],
+                        max_v[i],
+                        max_w[i],
+                        fv[i],
+                        onDur[i],
+                        densities[i],
+                        origin[i],
+                        heading[i],
+                        ffPos[i],
+                        cPos[i],
+                        cRot[i],
+                        dist[i],
+                        score[i],
+                        timedout[i],
+                        juiceDuration[i],
+                        beginTime[i],
+                        checkTime[i].ToString("F5"),
+                        rewardTime[i],
+                        endTime[i],
+                        checkWait[i],
+                        interWait[i],
+                        ffCol[i]);
+
+                    csvDisc.AppendLine(line);
+                }
+            }
+            else if (PlayerPrefs.GetInt("Perturbation On") == 1)
+            {
+                for (int i = j; i < temp[0]; i++)
+                {
+                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
                         "{21},{22},{23},{24}",
                         n[i],
                         max_v[i],
@@ -2189,7 +2320,7 @@ public class Monkey2D : MonoBehaviour
             }
 
             PlayerPrefs.SetInt("Good Trials", totalScore);
-            print(n[n.Count - 1]);
+            print(temp[0]);
             PlayerPrefs.SetInt("Total Trials", n[n.Count - 1]);
 
             System.IO.Directory.CreateDirectory(path + "/configs/");
@@ -2762,6 +2893,55 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteStartElement("yOffsetSliderValue");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("yOffsetSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "moreOnFF");
+
+            xmlWriter.WriteStartElement("red");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("red").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("blue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("blue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("green");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("green").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yellow");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yellow").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("white");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("white").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("redrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("redrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("bluerew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("bluerew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("greenrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("greenrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yellowrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yellowrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("whiterew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("whiterew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("isColored");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isColored").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement();
