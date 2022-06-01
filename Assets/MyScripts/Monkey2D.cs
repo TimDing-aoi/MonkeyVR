@@ -239,6 +239,7 @@ public class Monkey2D : MonoBehaviour
     readonly List<int> score = new List<int>();
 
     // Stimulated?
+    private float stimuratio;
     private bool stimulatedTrial = false;
     readonly List<int> stimulated = new List<int>();
     readonly List<float> timeStimuStart = new List<float>();
@@ -482,6 +483,7 @@ public class Monkey2D : MonoBehaviour
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
         microStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
         microStimuGap = PlayerPrefs.GetFloat("FFstimugap");
+        stimuratio = PlayerPrefs.GetFloat("StimulationRatio");
         ptb = (int)PlayerPrefs.GetFloat("PTBType");
         if (ptb != 2)
         {
@@ -936,9 +938,13 @@ public class Monkey2D : MonoBehaviour
             if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) < trialStimuGap)
             {
                 isTrial = false;
-                SendMarker("m", microStimuDur * 1000.0f);
-                stimulatedTrial = true;
-                timeStimuStart.Add(tNow);
+                float stimr = (float)rand.NextDouble();
+                if(stimr < stimuratio)
+                {
+                    SendMarker("m", microStimuDur * 1000.0f);
+                    stimulatedTrial = true;
+                    timeStimuStart.Add(tNow);
+                }
             }
         }
 
@@ -2121,7 +2127,7 @@ public class Monkey2D : MonoBehaviour
 
             if (PlayerPrefs.GetInt("isFFstimu") == 1)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
 
@@ -2220,7 +2226,7 @@ public class Monkey2D : MonoBehaviour
 
                 if (PlayerPrefs.GetInt("isFFstimu") == 1)
                 {
-                    secondline += string.Format("{0},{1}", timeStimuStart[0], trialStimuDur[0]);
+                    secondline += string.Format(",{0},{1}", timeStimuStart[0], trialStimuDur[0]);
                 }
 
                 csvDisc.AppendLine(secondline);
@@ -2263,7 +2269,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
                     csvDisc.AppendLine(line);
@@ -2301,7 +2307,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
                     csvDisc.AppendLine(line);
@@ -2341,7 +2347,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
                     csvDisc.AppendLine(line);
@@ -2386,7 +2392,7 @@ public class Monkey2D : MonoBehaviour
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
                     csvDisc.AppendLine(line);
