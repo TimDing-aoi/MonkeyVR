@@ -238,6 +238,12 @@ public class Monkey2D : MonoBehaviour
     // Rewarded?
     readonly List<int> score = new List<int>();
 
+    // Stimulated?
+    private bool stimulatedTrial = false;
+    readonly List<int> stimulated = new List<int>();
+    readonly List<float> timeStimuStart = new List<float>();
+    readonly List<float> trialStimuDur = new List<float>();
+
     // Think the FF moves or not?
     //readonly List<int> answer = new List<int>();
     [HideInInspector] public bool isQuestion = false;
@@ -317,9 +323,11 @@ public class Monkey2D : MonoBehaviour
     private bool on = true;
 
     private bool isBegin = false;
+    private bool isTrial = false;
     private bool isCheck = false;
     private bool isEnd = false;
     public bool isIntertrail = false;
+    private float startTime;
 
     [HideInInspector] public Phases currPhase;
 
@@ -383,6 +391,10 @@ public class Monkey2D : MonoBehaviour
     public string sbPacket;
     bool flagMultiFF;
     double timeProgStart = 0.0f;
+
+    private float microStimuDur;
+    private float microStimuGap;
+    private float trialStimuGap;
 
     private void Awake()
     {
@@ -468,6 +480,8 @@ public class Monkey2D : MonoBehaviour
         separation = PlayerPrefs.GetFloat("Separation");
         minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
+        microStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
+        microStimuGap = PlayerPrefs.GetFloat("FFstimugap");
         ptb = (int)PlayerPrefs.GetFloat("PTBType");
         if (ptb != 2)
         {
@@ -915,6 +929,17 @@ public class Monkey2D : MonoBehaviour
             }
 
             SendMarker("s", 1000.0f);
+        }
+
+        if (isTrial)
+        {
+            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) < trialStimuGap)
+            {
+                isTrial = false;
+                SendMarker("m", microStimuDur * 1000.0f);
+                stimulatedTrial = true;
+                timeStimuStart.Add(tNow);
+            }
         }
 
         if (isCheck)
@@ -1443,6 +1468,12 @@ public class Monkey2D : MonoBehaviour
                     break;
             }
         }
+
+        if (PlayerPrefs.GetInt("isFFstimu") == 1)
+        {
+            trialStimuGap = microStimuGap * (float)rand.NextDouble();
+        }
+
         phase = Phases.trial;
         currPhase = Phases.trial;
     }
@@ -1454,8 +1485,10 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     async Task Trial()
     {
+        isTrial = true;
+
         //Debug.Log("Trial Phase Start.");
-        float startTime = Time.realtimeSinceStartup;
+        startTime = Time.realtimeSinceStartup;
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
@@ -1589,6 +1622,7 @@ public class Monkey2D : MonoBehaviour
     {
         proximity = false;
 
+        isTrial = false;
         isReward = true;
 
         float distance = 0.0f;
@@ -1888,7 +1922,20 @@ public class Monkey2D : MonoBehaviour
             ptbJoyOn.Add(SharedJoystick.ptbJoyOn);
             ptbJoyEnableTime.Add(SharedJoystick.ptbJoyEnableTime);
 
-            
+            if(PlayerPrefs.GetInt("isFFstimu") == 1)
+            {
+                if (stimulatedTrial)
+                {
+                    trialStimuDur.Add(microStimuDur);
+                    stimulated.Add(1);
+                }
+                else
+                {
+                    timeStimuStart.Add(0);
+                    trialStimuDur.Add(0);
+                    stimulated.Add(0);
+                }
+            }
 
             ffPositions.Clear();
             distances.Clear();
@@ -1899,6 +1946,11 @@ public class Monkey2D : MonoBehaviour
             player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
             float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
+            if (PlayerPrefs.GetInt("isFFstimu") == 1 && stimulatedTrial)
+            {
+                stimulatedTrial = false;
+                wait += microStimuDur; //wait more if it was a stimulated trail
+            }
 
             currPhase = Phases.ITI;
 
@@ -2067,6 +2119,10 @@ public class Monkey2D : MonoBehaviour
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
 
+            if (PlayerPrefs.GetInt("isFFstimu") == 1)
+            {
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+            }
             csvDisc.AppendLine(firstLine);
 
             temp = new List<int>()
@@ -2106,7 +2162,12 @@ public class Monkey2D : MonoBehaviour
             {
                 temp.Add(ffCol.Count);
             }
-
+            if (PlayerPrefs.GetInt("isFFstimu") == 1)
+            {
+                temp.Add(stimulated.Count);
+                temp.Add(timeStimuStart.Count);
+                temp.Add(trialStimuDur.Count);
+            }
             //foreach (int count in temp)
             //{
             //    print(count);
@@ -2156,6 +2217,12 @@ public class Monkey2D : MonoBehaviour
                 var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
                 PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
                 + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
+
+                if (PlayerPrefs.GetInt("isFFstimu") == 1)
+                {
+                    secondline += string.Format("{0},{1}", timeStimuStart[0], trialStimuDur[0]);
+                }
+
                 csvDisc.AppendLine(secondline);
             }
 
@@ -2194,6 +2261,11 @@ public class Monkey2D : MonoBehaviour
                 + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
                     }
 
+                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
+                    {
+                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                    }
+
                     csvDisc.AppendLine(line);
 
                     totalScore += score[i];
@@ -2226,6 +2298,11 @@ public class Monkey2D : MonoBehaviour
                         checkWait[i],
                         interWait[i],
                         ffCol[i]);
+
+                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
+                    {
+                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                    }
 
                     csvDisc.AppendLine(line);
                 }
@@ -2261,6 +2338,11 @@ public class Monkey2D : MonoBehaviour
                         ptbJoyVelGain[i],
                         ptbJoyRotGain[i],
                         ptbJoyFlagTrial[i]);
+
+                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
+                    {
+                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                    }
 
                     csvDisc.AppendLine(line);
 
@@ -2300,6 +2382,11 @@ public class Monkey2D : MonoBehaviour
                         line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
                 PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
                 + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
+                    }
+
+                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
+                    {
+                        line += string.Format("{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
                     csvDisc.AppendLine(line);
@@ -2860,6 +2947,18 @@ public class Monkey2D : MonoBehaviour
 
             xmlWriter.WriteStartElement("RewardThresh");
             xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThresh").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuAmp");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuAmp").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("FFstimugap");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("FFstimugap").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("isFFstimu");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isFFstimu").ToString());
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement();
