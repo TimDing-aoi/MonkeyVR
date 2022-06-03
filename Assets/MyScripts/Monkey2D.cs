@@ -935,7 +935,7 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) < trialStimuGap)
+            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
             {
                 isTrial = false;
                 float stimr = (float)rand.NextDouble();
@@ -943,7 +943,7 @@ public class Monkey2D : MonoBehaviour
                 {
                     SendMarker("m", microStimuDur * 1000.0f);
                     stimulatedTrial = true;
-                    timeStimuStart.Add(tNow);
+                    timeStimuStart.Add(tNow - programT0);
                 }
             }
         }
