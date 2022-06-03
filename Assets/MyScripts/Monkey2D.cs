@@ -357,6 +357,7 @@ public class Monkey2D : MonoBehaviour
     private Task currentTask;
     private Task flashTask;
     private bool playing = true;
+    public bool stimulating = false;
     //private bool writing = true;
 
     public float offset = 0.01f;
@@ -945,6 +946,15 @@ public class Monkey2D : MonoBehaviour
                     stimulatedTrial = true;
                     timeStimuStart.Add(tNow - programT0);
                 }
+            }
+
+            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && !toggle)
+            {
+                stimulating = true;
+            }
+            else
+            {
+                stimulating = false;
             }
         }
 

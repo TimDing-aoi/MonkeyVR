@@ -50,7 +50,7 @@ public class ToggleGUI : MonoBehaviour
         }
         GUI.Box(new Rect(0f, 30f, 50f, 50f), texture);
 
-        if (calibrationController.flagReward || Keyboard.current.spaceKey.isPressed)
+        if (calibrationController.flagStimu /*|| Keyboard.current.rightAltKey.isPressed*/)
         {
             GUI.contentColor = Color.green;
         }

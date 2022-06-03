@@ -68,6 +68,16 @@ public class FPSDisplay : MonoBehaviour
 			GUI.contentColor = Color.black;
 		}
 		GUI.Box(new Rect(0f, 120f, 50f, 50f), texture);
+
+		if (reward.stimulating /*|| Keyboard.current.rightAltKey.isPressed*/)
+		{
+			GUI.contentColor = Color.green;
+		}
+		else
+		{
+			GUI.contentColor = Color.black;
+		}
+		GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
 	}
 
 	public float GetFPS()
