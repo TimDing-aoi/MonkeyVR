@@ -8,6 +8,8 @@ public class Particles : MonoBehaviour
     [HideInInspector] public float densityLow;
     [HideInInspector] public float densityHigh;
     [HideInInspector] public float densityLowRatio;
+    [HideInInspector] public float ObsDensityRatio;
+    private bool isObsNoise;
     public float TauValueR = 0.0F;
     public float TauValueG = 0.0F;
     public float TauValueB = 0.0F;
@@ -34,6 +36,8 @@ public class Particles : MonoBehaviour
         densityHigh = PlayerPrefs.GetFloat("Density High");
         densityLowRatio = PlayerPrefs.GetFloat("Density Low Ratio");
         t_height = PlayerPrefs.GetFloat("Triangle Height");
+        ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
+        isObsNoise = PlayerPrefs.GetInt("isObsNoise") == 1;
         particleSystem = GetComponent<ParticleSystem>();
 
         particleSystem.Stop();
@@ -58,6 +62,22 @@ public class Particles : MonoBehaviour
         else
         {
             density = densityHigh;
+        }
+
+        if (isObsNoise)
+        {
+            if(name == "Dots")
+            {
+                density *= 1 - ObsDensityRatio;
+                densityHigh *= 1 - ObsDensityRatio;
+                densityLow *= 1 - ObsDensityRatio;
+            }
+            else
+            {
+                density *= ObsDensityRatio;
+                densityHigh *= ObsDensityRatio;
+                densityLow *= ObsDensityRatio;
+            }
         }
 
         prevDensity = density;
@@ -123,6 +143,23 @@ public class Particles : MonoBehaviour
 
         prevDensity = density;
 
-        return density;
+        if (name == "Dots")
+        {
+            return density /= 1 - ObsDensityRatio;
+        }
+        else
+        {
+            return density /= ObsDensityRatio;
+        }
+    }
+
+    public void SetDensity(float density)
+    {
+        var main = particleSystem.main;
+        var emission = particleSystem.emission;
+        main.maxParticles = Mathf.RoundToInt(Mathf.Pow(dist, 2.0f) * Mathf.PI * density / t_height);
+        var densityInCM = Mathf.FloorToInt(main.maxParticles / 10000.0f) < 1f ? main.maxParticles / 10000.0f : Mathf.FloorToInt(main.maxParticles / 10000.0f);
+        emission.rateOverTime = Mathf.Floor(densityInCM / lifeSpan * 10000.0f / (t_height));
+        particleSystem.Clear();
     }
 }

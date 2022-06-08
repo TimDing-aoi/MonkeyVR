@@ -234,6 +234,7 @@ public class Monkey2D : MonoBehaviour
 
     // density
     readonly List<float> densities = new List<float>();
+    readonly List<float> densities_obsRatio = new List<float>();
 
     // Rewarded?
     readonly List<int> score = new List<int>();
@@ -349,7 +350,13 @@ public class Monkey2D : MonoBehaviour
 
     private float ipd;
 
-    public ParticleSystem particleSystem;
+    public ParticleSystem particle_System;
+    public ParticleSystem particle_System2;
+    private bool isObsNoise;
+    private float ObsNoiseTau;
+    private float ObsVelocityNoiseGain;
+    private float ObsRotationNoiseGain;
+    private float ObsDensityRatio;
 
     private int loopCount = 0;
 
@@ -372,6 +379,12 @@ public class Monkey2D : MonoBehaviour
     float prevVel = 0.0f;
     float prevPrevVel = 0.0f;
     float tPrev = 0.0f;
+
+    //observation noise
+    float prevVelObsEps = 0;
+    float prevVelObsZet = 0;
+    float prevRotObsEps = 0;
+    float prevRotObsZet = 0;
 
     float separation;
 
@@ -486,6 +499,24 @@ public class Monkey2D : MonoBehaviour
         microStimuGap = PlayerPrefs.GetFloat("FFstimugap");
         stimuratio = PlayerPrefs.GetFloat("StimulationRatio");
         ptb = (int)PlayerPrefs.GetFloat("PTBType");
+        isObsNoise = PlayerPrefs.GetInt("isObsNoise") == 1;
+        ObsNoiseTau = PlayerPrefs.GetFloat("ObsNoiseTau");
+        ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
+        ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
+        ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
+
+        if (isObsNoise)
+        {
+            print("Activating Observe Noise");
+            var em = particle_System2.emission;
+            em.enabled = true;
+        }
+        else
+        {
+            var em = particle_System2.emission;
+            em.enabled = false;
+        }
+
         if (ptb != 2)
         {
             velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
@@ -803,8 +834,22 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     void Update()
     {
-        particleSystem.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
-        //print(particleSystem.transform.position);
+        if (isObsNoise)
+        {
+
+            float DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
+            float DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
+
+            //print(DistFlowSpeed);
+            //print(DistFlowRot);
+            var PS2 = particle_System2.main;
+            PS2.startSpeed = DistFlowSpeed;
+            particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
+            float step = DistFlowRot;
+            particle_System2.transform.Rotate(Vector3.up * step);
+        }
+        particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
+        //print(particle_System.transform.position);
         if (playing && Time.realtimeSinceStartup - programT0 > 0.3f)
         {
             switch (phase)
@@ -948,7 +993,7 @@ public class Monkey2D : MonoBehaviour
                 }
             }
 
-            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && !toggle)
+            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
             {
                 stimulating = true;
             }
@@ -1140,6 +1185,14 @@ public class Monkey2D : MonoBehaviour
         float density = particles.SwitchDensity();
 
         densities.Add(density);
+        if (isObsNoise)
+        {
+            densities_obsRatio.Add(ObsDensityRatio);
+        }
+        else
+        {
+            densities_obsRatio.Add(0);
+        }
 
         currPhase = Phases.begin;
         isBegin = true;
@@ -2102,42 +2155,42 @@ public class Monkey2D : MonoBehaviour
 
                 if (nFF > 1 && multiMode == 1)
                 {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,{2}rewardTime,endTime,checkWait,interWait", ffPosStr, distStr, checkStr);
+                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,{2}rewardTime,endTime,checkWait,interWait,ObsDensityRatio", ffPosStr, distStr, checkStr);
                 }
                 else if (PlayerPrefs.GetInt("isColored") == 1)
                 {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,FF1colorID,FF2coloID", ffPosStr, distStr);
+                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,FF1colorID,FF2coloID,ObsDensityRatio", ffPosStr, distStr);
                 }
                 else
                 {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait", ffPosStr, distStr);
+                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio", ffPosStr, distStr);
                 }
             }
             else if (PlayerPrefs.GetInt("Perturbation On") == 1)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else if (ptb != 2)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh,,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else if (SharedJoystick.ptbJoyOn>0) 
             {
                 //firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
 
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,"
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio,"
                    + "ptbStart,ptbVelGain," +
                     "ptbRotGain,ptbTrial," +
                     "" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
 
             if (PlayerPrefs.GetInt("isFFstimu") == 1)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration,ObsDensityRatio," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
 
@@ -2162,7 +2215,8 @@ public class Monkey2D : MonoBehaviour
                 fv.Count,
                 onDur.Count,
                 densities.Count,
-                juiceDuration.Count
+                juiceDuration.Count,
+                densities_obsRatio.Count
             };
 
             if (nFF > 1 && multiMode == 1)
@@ -2239,6 +2293,8 @@ public class Monkey2D : MonoBehaviour
                     secondline += string.Format(",{0},{1}", timeStimuStart[0], trialStimuDur[0]);
                 }
 
+                secondline += string.Format(",{0}", densities_obsRatio[0]);
+
                 csvDisc.AppendLine(secondline);
             }
 
@@ -2282,6 +2338,8 @@ public class Monkey2D : MonoBehaviour
                         line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
 
+                    line += string.Format(",{0}", densities_obsRatio[i]);
+
                     csvDisc.AppendLine(line);
 
                     totalScore += score[i];
@@ -2319,6 +2377,8 @@ public class Monkey2D : MonoBehaviour
                     {
                         line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
+
+                    line += string.Format(",{0}", densities_obsRatio[i]);
 
                     csvDisc.AppendLine(line);
                 }
@@ -2359,6 +2419,8 @@ public class Monkey2D : MonoBehaviour
                     {
                         line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
+
+                    line += string.Format(",{0}", densities_obsRatio[i]);
 
                     csvDisc.AppendLine(line);
 
@@ -2404,6 +2466,8 @@ public class Monkey2D : MonoBehaviour
                     {
                         line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
                     }
+
+                    line += string.Format(",{0}", densities_obsRatio[i]);
 
                     csvDisc.AppendLine(line);
 
@@ -2977,6 +3041,26 @@ public class Monkey2D : MonoBehaviour
             xmlWriter.WriteString(PlayerPrefs.GetInt("isFFstimu").ToString());
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("isObsNoise");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isObsNoise").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsNoiseTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsNoiseTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsVelocityNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsVelocityNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsRotationNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsRotationNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsDensityRatio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsDensityRatio").ToString());
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("Setting");
@@ -3086,5 +3170,61 @@ public class Monkey2D : MonoBehaviour
         points[segments] = points[0];
         lr.positionCount = segments + 1;
         lr.SetPositions(points);
+    }
+
+    float observationNoiseVel(float tau, float Gain)
+    {
+        float kappa;
+        float lamda;
+        float epsilon;
+        float zeta;
+        float result_speed;
+
+        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
+        lamda = 1 - kappa;
+        epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
+        zeta = kappa * prevVelObsZet + lamda * epsilon;
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) 
+            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
+        result_speed = SharedJoystick.currentSpeed + zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
+        prevVelObsEps = epsilon;
+        prevVelObsZet = zeta;
+
+        return result_speed;
+    }
+
+    float observationNoiseRot(float tau, float Gain)
+    {
+        float kappa;
+        float lamda;
+        float epsilon;
+        float zeta;
+        float result_speed;
+
+        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
+        lamda = 1 - kappa;
+        epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
+        zeta = kappa * prevRotObsZet + lamda * epsilon;
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
+            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
+
+        result_speed = SharedJoystick.currentRot + zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
+        prevRotObsEps = epsilon;
+        prevRotObsZet = zeta;
+
+        return result_speed;
+    }
+
+    public float BoxMullerGaussianSample()
+    {
+        float u1, u2, S;
+        do
+        {
+            u1 = 2.0f * (float)rand.NextDouble() - 1.0f;
+            u2 = 2.0f * (float)rand.NextDouble() - 1.0f;
+            S = u1 * u1 + u2 * u2;
+        }
+        while (S >= 1.0f);
+        return u1 * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
     }
 }

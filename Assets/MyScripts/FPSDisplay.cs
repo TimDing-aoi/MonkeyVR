@@ -16,6 +16,10 @@ public class FPSDisplay : MonoBehaviour
 	public float offset = 0.15f;
 	public float fps;
 
+	bool toggle = false;
+	string toggleText = "Open";
+	public GameObject OF2;
+
 	public Texture texture;
 
 	void Awake()
