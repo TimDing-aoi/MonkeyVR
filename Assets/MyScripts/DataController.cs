@@ -53,7 +53,7 @@ namespace PupilLabs
         void OnEnable()
         {
             dataController = this;
-
+            sb.Clear();
             sb.Append("Trial,Status,Timestamp,Mapping Context,Confidence,Target Index,Mode,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY,CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
 
             nullGaze.Add("confidence", 0.0);
@@ -136,7 +136,7 @@ namespace PupilLabs
                             "NaN, NaN, NaN"));
                     }
 #else
-                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}\n",
+                    sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}\n",
                             calibrationController.trialNum,
                             calibrationController.status,
                             (double)Time.realtimeSinceStartup,
@@ -335,7 +335,7 @@ namespace PupilLabs
         {
             if (next.name == "Monkey2D")
             {
-                var path = PlayerPrefs.GetString("Path") + "\\continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Fusion Run Number").ToString("D3") + ".txt";
+                var path = PlayerPrefs.GetString("Path") + "\\continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
                 File.AppendAllText(path, sb.ToString());
                 sb.Clear();
 
