@@ -1285,7 +1285,7 @@ namespace PupilLabs
 
             string path = PlayerPrefs.GetString("Path");
 
-            string discPath = path + "/fusion_discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + runNumber + ".txt";
+            string discPath = path + "/discontinuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + runNumber + ".txt";
             File.WriteAllText(discPath, csvDisc.ToString());
 
             runNumber++;

@@ -54,7 +54,7 @@ namespace PupilLabs
         {
             dataController = this;
 
-            sb.Append("Status,Timestamp,Mapping Context,Confidence,Target Index,Mode,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY,CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+            sb.Append("Trial,Status,Timestamp,Mapping Context,Confidence,Target Index,Mode,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY,CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
 
             nullGaze.Add("confidence", 0.0);
             nullGaze.Add("norm_pos", zero2d);
@@ -136,7 +136,8 @@ namespace PupilLabs
                             "NaN, NaN, NaN"));
                     }
 #else
-                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}\n",
+                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}\n",
+                            calibrationController.trialNum,
                             calibrationController.status,
                             (double)Time.realtimeSinceStartup,
                             gazeDataNow.MappingContext,
@@ -310,6 +311,8 @@ namespace PupilLabs
 
             gazeDataNow = gazeData;
 
+            /// if you need to apply offset and sclaing, just uncomment everything that starts with "//"
+
             //Vector3 tempGaze = gazeDataNow.GazeDirection;
 
             //gazeDirMod = new Vector3(tempGaze.x * xScale + xOffset, tempGaze.y * yScale + yOffset, tempGaze.z);
@@ -318,10 +321,11 @@ namespace PupilLabs
             //{
             //    gazeDirMod = hit.point;
             //}
-            // If you need to correct the position of the Gaze Direction in all termsz (x,y,z) then use this:
+
+            /// If you need to correct the position of the Gaze Direction in all termsz (x,y,z) then use this:
             //gazeDataNow.GazeDirection = gazeDataNow.GazeDirection * correctionFactor;
 
-            // Else if its just one direction do this, make correctionFactorX,Y, and/or Z equal to 1 if it doesnt need to be corrected
+            /// Else if its just one direction do this, make correctionFactorX,Y, and/or Z equal to 1 if it doesnt need to be corrected
             //gazeDataNow.GazeDirection = new Vector3(gazeDataNow.GazeDirection.x * correctionFactorX, gazeDataNow.GazeDirection.y * correctionFactorY, gazeDataNow.GazeDirection.z * correctionFactorZ) 
 
             await new WaitForSeconds(0.0f);
@@ -331,7 +335,7 @@ namespace PupilLabs
         {
             if (next.name == "Monkey2D")
             {
-                var path = PlayerPrefs.GetString("Path") + "\\eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
+                var path = PlayerPrefs.GetString("Path") + "\\continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Fusion Run Number").ToString("D3") + ".txt";
                 File.AppendAllText(path, sb.ToString());
                 sb.Clear();
 
