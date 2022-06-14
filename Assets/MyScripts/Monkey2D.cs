@@ -779,7 +779,9 @@ public class Monkey2D : MonoBehaviour
                 {
                     str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                 }
-                sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV," +
+                    "MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,", str) 
+                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
             }
             else
             {
@@ -793,7 +795,10 @@ public class Monkey2D : MonoBehaviour
                 }
                 else
                 {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence," +
+                        "GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," +
+                        "VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + 
+                        PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
             }
         }
@@ -992,15 +997,15 @@ public class Monkey2D : MonoBehaviour
                     timeStimuStart.Add(tNow - programT0);
                 }
             }
+        }
 
-            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
-            {
-                stimulating = true;
-            }
-            else
-            {
-                stimulating = false;
-            }
+        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
+        {
+            stimulating = true;
+        }
+        else
+        {
+            stimulating = false;
         }
 
         if (isCheck)
@@ -2165,7 +2170,7 @@ public class Monkey2D : MonoBehaviour
                 {
                     firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio", ffPosStr, distStr);
                 }
-            }
+            }/*
             else if (PlayerPrefs.GetInt("Perturbation On") == 1)
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
@@ -2176,8 +2181,6 @@ public class Monkey2D : MonoBehaviour
             }
             else if (SharedJoystick.ptbJoyOn>0) 
             {
-                //firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio,"
                    + "ptbStart,ptbVelGain," +
                     "ptbRotGain,ptbTrial," +
@@ -2190,7 +2193,16 @@ public class Monkey2D : MonoBehaviour
 
             if (PlayerPrefs.GetInt("isFFstimu") == 1)
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration,ObsDensityRatio," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
+                    "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration,ObsDensityRatio," 
+                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+            }*/
+            else
+            {
+                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
+                    "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow"
+                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
 
@@ -2249,7 +2261,7 @@ public class Monkey2D : MonoBehaviour
 
             if (ptb != 2)
             {
-                j = 1;
+                j = 0;
                 temp.Add(CurrentTau.Count);
             }
             else
@@ -2257,7 +2269,7 @@ public class Monkey2D : MonoBehaviour
                 j = 0;
             }
 
-            if (ptb != 2)
+            /*if (ptb != 2)
             {
                 int i = 0;
                 print(temp[0]);
@@ -2296,7 +2308,7 @@ public class Monkey2D : MonoBehaviour
                 secondline += string.Format(",{0}", densities_obsRatio[0]);
 
                 csvDisc.AppendLine(secondline);
-            }
+            }*/
 
             if (multiMode == 1)
             {
@@ -2345,11 +2357,11 @@ public class Monkey2D : MonoBehaviour
                     totalScore += score[i];
                 }
             }
-            else if (PlayerPrefs.GetInt("isColored") == 1)
+            else
             {
                 for (int i = j; i < temp[0]; i++)
                 {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}",
+                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
                         n[i],
                         max_v[i],
                         max_w[i],
@@ -2370,20 +2382,52 @@ public class Monkey2D : MonoBehaviour
                         rewardTime[i],
                         endTime[i],
                         checkWait[i],
-                        interWait[i],
-                        ffCol[i]);
+                        interWait[i]);
+
+                    if (ptb != 2)
+                    {
+                        line = line + "," + CurrentTau[i];
+                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold + ',' + PlayerPrefs.GetFloat("velBrakeThresh")
+                + ',' + PlayerPrefs.GetFloat("rotBrakeThresh");
+                    }
+                    else
+                    {
+                        line += string.Format(",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+                    }
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
+                        line += string.Format(",{0},{1},{2}", timeStimuStart[i], trialStimuDur[i], stimuratio);
+                    }
+                    else
+                    {
+                        line += string.Format(",0,0,0");
                     }
 
-                    line += string.Format(",{0}", densities_obsRatio[i]);
+                    if (isObsNoise)
+                    {
+                        line += string.Format(",{0},{1},{2},{3}", ObsNoiseTau, ObsVelocityNoiseGain, ObsRotationNoiseGain, densities_obsRatio[i]);
+                    }
+                    else
+                    {
+                        line += string.Format(",0,0,0,0");
+                    }
+
+                    if (PlayerPrefs.GetInt("isColored") == 1)
+                    {
+                        line += string.Format(",{0}", ffCol[i]);
+                    }
+                    else
+                    {
+                        line += string.Format(",0");
+                    }
 
                     csvDisc.AppendLine(line);
                 }
             }
-            else if (PlayerPrefs.GetInt("Perturbation On") == 1)
+            /*else if (PlayerPrefs.GetInt("Perturbation On") == 1)
             {
                 for (int i = j; i < temp[0]; i++)
                 {
@@ -2473,7 +2517,7 @@ public class Monkey2D : MonoBehaviour
 
                     totalScore += score[i];
                 }
-            }
+            }*/
 
             // DateTime.Today.ToString("dd-MM-yyyy")
             string discPath = path + "/discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";

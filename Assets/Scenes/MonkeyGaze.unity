@@ -13412,7 +13412,7 @@ PrefabInstance:
         type: 3}
       propertyPath: StimuTest
       value: 
-      objectReference: {fileID: 8300000, guid: 512452df06c684d4fa94a918e25c968a, type: 3}
+      objectReference: {fileID: 8300000, guid: d01ce912f50755444a9f23f0abad0d69, type: 3}
     - target: {fileID: 3202356220036375675, guid: 21cfd9b0bca932d4db028cf97bfb734f,
         type: 3}
       propertyPath: AudioSource

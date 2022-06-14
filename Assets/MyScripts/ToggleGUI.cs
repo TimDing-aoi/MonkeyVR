@@ -23,7 +23,19 @@ public class ToggleGUI : MonoBehaviour
         style.fontSize = h * 2 / 50;
         style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
         string text = string.Format("Good Trials / Total Trials: {0}/{1}", calibrationController.numCorrect, calibrationController.trialNum);
-        GUI.Label(rect, text, style);
+        string stimutext = string.Format("Total Trials: {0}", calibrationController.trialNum + 1);
+        if (calibrationController.flagMicroStimu)
+        {
+            GUI.Label(rect, stimutext, style);
+        }
+        else if(calibrationController.flagFuseTest)
+        {
+            GUI.Label(rect, text, style);
+        }
+        else
+        {
+            GUI.Label(rect, "", style);
+        }
 
         if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleText))
         {

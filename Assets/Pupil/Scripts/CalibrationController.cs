@@ -114,8 +114,8 @@ namespace PupilLabs
         //flags
         bool flagCalibrating = false;
         bool flagChangePos = false;
-        bool flagFuseTest = false;
-        bool flagMicroStimu = false;
+        [HideInInspector] public bool flagFuseTest = false;
+        [HideInInspector] public bool flagMicroStimu = false;
         bool flagTesting = false;
         bool flagWait = true;
         [HideInInspector] public bool flagReward = false;
@@ -493,6 +493,7 @@ namespace PupilLabs
                 status = Status.none;
 
                 flagMicroStimu = false;
+                flagStimu = false;
                 startMarkerFlag = false;
             }
         }
@@ -721,11 +722,12 @@ namespace PupilLabs
             print(tTotalFix);
 
             //fix time not enough AND not time out AND ITI ended
-            if (tNow - tBlockStart <= 1f)
+            if (tNow - tBlockStart <= 3f)
             {
                 //do nothing
                 tTotalFix = 0;
                 tLastITI = tNow;
+                tLastTrial = tNow;
                 MicroStimuFlag = MicroStimuF.ITI;
             }
             else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
