@@ -10,6 +10,7 @@ using System.Linq;
 using static ViveSR.anipal.Eye.SRanipal_Eye_Framework;
 using static Monkey2D;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 public class GoToSettings : MonoBehaviour
 {
@@ -160,6 +161,7 @@ public class GoToSettings : MonoBehaviour
 
     public void BeginCalibration()
     {
+        saveStimConfig();
         PlayerPrefs.SetFloat("calib", 1);
         SceneManager.LoadScene(1);
     }
@@ -167,7 +169,6 @@ public class GoToSettings : MonoBehaviour
     public void BeginGame()
     {
         PlayerPrefs.SetFloat("calib", 0);
-        SharedMonkey.SaveConfigs();
         SceneManager.LoadScene(2);
     }
 
@@ -754,5 +755,18 @@ public class GoToSettings : MonoBehaviour
         {
             Debug.LogException(e, this);
         }
+    }
+
+    public void saveStimConfig()
+    {
+        StringBuilder stimConf = new StringBuilder();
+        string path = PlayerPrefs.GetString("Path");
+        string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
+        stimConf.AppendLine("MonkeyName," + PlayerPrefs.GetString("Name").ToString());
+        stimConf.AppendLine("Date," + DateTime.Today.ToString("MMddyyyy").ToString());
+        stimConf.AppendLine("RunNumber," + PlayerPrefs.GetInt("Run Number").ToString("D3"));
+        stimConf.AppendLine("StimAmplitude," + PlayerPrefs.GetFloat("StimuAmp").ToString());
+        stimConf.AppendLine("StimDur," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+        File.WriteAllText(stimPath, stimConf.ToString());
     }
 }
