@@ -8,6 +8,7 @@ using System.IO.Ports;
 using System.Collections.Generic;
 using System.Linq;
 using static ViveSR.anipal.Eye.SRanipal_Eye_Framework;
+using static Monkey2D;
 using UnityEngine.SceneManagement;
 
 public class GoToSettings : MonoBehaviour
@@ -166,6 +167,7 @@ public class GoToSettings : MonoBehaviour
     public void BeginGame()
     {
         PlayerPrefs.SetFloat("calib", 0);
+        SharedMonkey.SaveConfigs();
         SceneManager.LoadScene(2);
     }
 
