@@ -762,11 +762,9 @@ public class GoToSettings : MonoBehaviour
         StringBuilder stimConf = new StringBuilder();
         string path = PlayerPrefs.GetString("Path");
         string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
-        stimConf.AppendLine("MonkeyName," + PlayerPrefs.GetString("Name").ToString());
-        stimConf.AppendLine("Date," + DateTime.Today.ToString("MMddyyyy").ToString());
-        stimConf.AppendLine("RunNumber," + PlayerPrefs.GetInt("Run Number").ToString("D3"));
-        stimConf.AppendLine("StimAmplitude," + PlayerPrefs.GetFloat("StimuAmp").ToString());
-        stimConf.AppendLine("StimDur," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+        stimConf.AppendLine("MonkeyName,Date,RunNumber,StimAmplitude,StimDur");
+        stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
+            + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
         File.WriteAllText(stimPath, stimConf.ToString());
     }
 }
