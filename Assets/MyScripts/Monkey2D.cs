@@ -2534,7 +2534,664 @@ public class Monkey2D : MonoBehaviour
             print(temp[0]);
             PlayerPrefs.SetInt("Total Trials", n[n.Count - 1]);
 
-            SaveConfigs();
+            System.IO.Directory.CreateDirectory(path + "/configs/");
+            string configPath = path + "/configs/" + "config" + "_" + PlayerPrefs.GetString("Name") + "_" +  DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".xml";
+
+            var settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.Indent = true;
+            settings.NewLineOnAttributes = true;
+
+            XmlWriter xmlWriter = XmlWriter.Create(configPath, settings);
+
+            xmlWriter.WriteStartDocument();
+
+            xmlWriter.WriteStartElement("Settings");
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Optic Flow Settings");
+
+            xmlWriter.WriteStartElement("LifeSpan");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Life Span").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("DrawDistance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Draw Distance").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("DensityLow");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("DensityHigh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Density High").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("DensityLowRatio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low Ratio").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TriangleHeight");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Triangle Height").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PlayerHeight");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Player Height").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Joystick Settings");
+
+            xmlWriter.WriteStartElement("MinLinearSpeed");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Linear Speed").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaxLinearSpeed");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Linear Speed").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinAngularSpeed");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angular Speed").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaxAngularSpeed");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angular Speed").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbationOn");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("Perturbation On").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbVelocityMin");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Min").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbVelocityMax");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Max").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbRotationMin");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Min").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbRotationMax");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Max").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PerturbRatio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("PerturbRatio").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Firefly Settings");
+
+            xmlWriter.WriteStartElement("Size");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Size").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RewardZoneRadius");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward Zone Radius").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinimumFireflyDistance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Firefly Distance").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaximumFireflyDistance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Firefly Distance").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinAngle");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angle").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaxAngle");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angle").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinJuiceTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Juice Time").ToString());
+            xmlWriter.WriteEndElement(); 
+            
+            xmlWriter.WriteStartElement("MaxJuiceTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Juice Time").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Ratio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio").ToString());
+            xmlWriter.WriteEndElement();
+
+            //xmlWriter.WriteStartElement("Reward");
+            //xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward").ToString());
+            //xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NumberofFireflies");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Number of Fireflies").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MultipleFireflyMode");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Multiple Firefly Mode").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Separation");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Seaparation").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("D1");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("D1").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("D2");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("D2").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("D3");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("D3").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("D4");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("D4").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("D5");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("D5").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("R1");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("R1").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("R2");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("R2").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("R3");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("R3").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("R4");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("R4").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("R5");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("R5").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Timeout");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Timeout").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Frequency");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Frequency").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("DutyCycle");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Duty Cycle").ToString());
+            xmlWriter.WriteEndElement();
+
+            //xmlWriter.WriteStartElement("FireflyLifeSpan");
+            //xmlWriter.WriteString(PlayerPrefs.GetFloat("Firefly Life Span").ToString());
+            //xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinimumWaittoCheck");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Wait to Check").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaximumWaittoCheck");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Wait to Check").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Mean1");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 1").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinimumIntertrialWait");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Intertrial Wait").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaximumIntertrialWait");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Intertrial Wait").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Mean2");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 2").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("OpticFlowSeed");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("Optic Flow Seed").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("FireflySeed");
+            xmlWriter.WriteString(seed.ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Moving Firefly Settings");
+
+            xmlWriter.WriteStartElement("MovingON");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("Moving ON").ToString());
+            xmlWriter.WriteEndElement();
+
+            //xmlWriter.WriteStartElement("RatioMoving");
+            //xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio Moving").ToString());
+            //xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VertHor");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("VertHor").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V1");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V1").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V2");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V2").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V3");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V3").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V4");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V4").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V5");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V5").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V6");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V6").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V7");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V7").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V8");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V8").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V9");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V9").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V10");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V10").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V11");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V11").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("V12");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("V12").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR1");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR1").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR2");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR2").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR3");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR3").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR4");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR4").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR5");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR5").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR6");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR6").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR7");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR7").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR8");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR8").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR9");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR9").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR10");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR10").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR11");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR11").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VR12");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VR12").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Data Collection Settings");
+
+            xmlWriter.WriteStartElement("Path");
+            xmlWriter.WriteString(PlayerPrefs.GetString("Path"));
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Name");
+            xmlWriter.WriteString(PlayerPrefs.GetString("Name"));
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Date");
+            xmlWriter.WriteString(PlayerPrefs.GetString("Date"));
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RunNumber");
+            xmlWriter.WriteString((PlayerPrefs.GetInt("Run Number") + 1).ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Calibration Settings");
+
+            xmlWriter.WriteStartElement("isAuto");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isAuto").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("GracePeriod");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Grace Period").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("FixationTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Fixation Time").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("IntertrialInterval");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Intertrial Interval").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("XThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("X Threshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("YThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Y Threshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MarkerSize");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Marker Size").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("CalibrationJuiceTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("Calibration Juice Time").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Perturbation Settings");
+
+            xmlWriter.WriteStartElement("isProcessNoise");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isProcessNoise").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("PTBType");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("PTBType").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TauColoredFloor");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("TauColoredFloor").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MeanDistance");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanDistance").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MeanTime");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanTime").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MinTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MinTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MaxTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MaxTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NumTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NumTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TauTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("TauTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("rotStopThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("rotStopThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("velStopThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("velStopThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("JoystickThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NoiseTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("NoiseTauTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTauTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("VelocityNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RotationNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("LinearNoiseScale");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("LinearNoiseScale").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RotationNoiseScale");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseScale").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("MeanAngle");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanAngle").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ThreshTauMultiplier");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ThreshTauMultiplier").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("velBrakeThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("velBrakeThresh").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("rotBrakeThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("rotBrakeThresh").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("JoystickStartThreshold");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickStartThreshold").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuITI");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuITI").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuTrialDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuTrialDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuStimuDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuRewardDur");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuRewardDur").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuGapMin");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMin").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuGapMax");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMax").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimNumTrials");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimNumTrials").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RewardGap");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardGap").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("RewardThresh");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThresh").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("StimuAmp");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuAmp").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("FFstimugap");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("FFstimugap").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("isFFstimu");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isFFstimu").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("isObsNoise");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isObsNoise").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsNoiseTau");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsNoiseTau").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsVelocityNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsVelocityNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsRotationNoiseGain");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsRotationNoiseGain").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ObsDensityRatio");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsDensityRatio").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "Calibration Parameters");
+
+            xmlWriter.WriteStartElement("xSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("ySliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("ySliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("markerSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("markerSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("xScaleSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xScaleSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yScaleSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yScaleSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("xOffsetSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("xOffsetSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yOffsetSliderValue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yOffsetSliderValue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Setting");
+            xmlWriter.WriteAttributeString("Type", "moreOnFF");
+
+            xmlWriter.WriteStartElement("red");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("red").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("blue");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("blue").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("green");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("green").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yellow");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yellow").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("white");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("white").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("redrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("redrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("bluerew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("bluerew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("greenrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("greenrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("yellowrew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("yellowrew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("whiterew");
+            xmlWriter.WriteString(PlayerPrefs.GetFloat("whiterew").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("isColored");
+            xmlWriter.WriteString(PlayerPrefs.GetInt("isColored").ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndDocument();
+            xmlWriter.Close();
+
         }
         catch (Exception e)
         {
@@ -2613,668 +3270,5 @@ public class Monkey2D : MonoBehaviour
         }
         while (S >= 1.0f);
         return u1 * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
-    }
-
-    public void SaveConfigs()
-    {
-        print("Saving Configs");
-
-        System.IO.Directory.CreateDirectory(path + "/configs/");
-        string configPath = path + "/configs/" + "config" + "_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".xml";
-
-        var settings = new XmlWriterSettings();
-        settings.OmitXmlDeclaration = true;
-        settings.Indent = true;
-        settings.NewLineOnAttributes = true;
-
-        XmlWriter xmlWriter = XmlWriter.Create(configPath, settings);
-
-        xmlWriter.WriteStartDocument();
-
-        xmlWriter.WriteStartElement("Settings");
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Optic Flow Settings");
-
-        xmlWriter.WriteStartElement("LifeSpan");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Life Span").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("DrawDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Draw Distance").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("DensityLow");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("DensityHigh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density High").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("DensityLowRatio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low Ratio").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("TriangleHeight");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Triangle Height").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PlayerHeight");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Player Height").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Joystick Settings");
-
-        xmlWriter.WriteStartElement("MinLinearSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Linear Speed").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaxLinearSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Linear Speed").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinAngularSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angular Speed").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaxAngularSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angular Speed").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbationOn");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Perturbation On").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbVelocityMin");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Min").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbVelocityMax");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Max").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbRotationMin");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Min").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbRotationMax");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Max").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbRatio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("PerturbRatio").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Firefly Settings");
-
-        xmlWriter.WriteStartElement("Size");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Size").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RewardZoneRadius");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward Zone Radius").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinimumFireflyDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Firefly Distance").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaximumFireflyDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Firefly Distance").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinAngle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angle").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaxAngle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angle").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Juice Time").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaxJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Juice Time").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Ratio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio").ToString());
-        xmlWriter.WriteEndElement();
-
-        //xmlWriter.WriteStartElement("Reward");
-        //xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward").ToString());
-        //xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("NumberofFireflies");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Number of Fireflies").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MultipleFireflyMode");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Multiple Firefly Mode").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Separation");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Seaparation").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("D1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D1").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("D2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("D3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D3").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("D4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D4").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("D5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D5").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("R1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R1").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("R2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("R3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R3").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("R4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R4").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("R5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R5").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Timeout");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Timeout").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Frequency");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Frequency").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("DutyCycle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Duty Cycle").ToString());
-        xmlWriter.WriteEndElement();
-
-        //xmlWriter.WriteStartElement("FireflyLifeSpan");
-        //xmlWriter.WriteString(PlayerPrefs.GetFloat("Firefly Life Span").ToString());
-        //xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinimumWaittoCheck");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Wait to Check").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaximumWaittoCheck");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Wait to Check").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Mean1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 1").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinimumIntertrialWait");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Intertrial Wait").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaximumIntertrialWait");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Intertrial Wait").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Mean2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("OpticFlowSeed");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Optic Flow Seed").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("FireflySeed");
-        xmlWriter.WriteString(seed.ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Moving Firefly Settings");
-
-        xmlWriter.WriteStartElement("MovingON");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Moving ON").ToString());
-        xmlWriter.WriteEndElement();
-
-        //xmlWriter.WriteStartElement("RatioMoving");
-        //xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio Moving").ToString());
-        //xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VertHor");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("VertHor").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V1").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V3").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V4").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V5").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V6");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V6").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V7");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V7").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V8");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V8").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V9");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V9").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V10");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V10").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V11");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V11").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("V12");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("V12").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR1").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR3").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR4").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR5").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR6");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR6").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR7");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR7").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR8");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR8").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR9");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR9").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR10");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR10").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR11");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR11").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VR12");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VR12").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Data Collection Settings");
-
-        xmlWriter.WriteStartElement("Path");
-        xmlWriter.WriteString(PlayerPrefs.GetString("Path"));
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Name");
-        xmlWriter.WriteString(PlayerPrefs.GetString("Name"));
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Date");
-        xmlWriter.WriteString(PlayerPrefs.GetString("Date"));
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RunNumber");
-        xmlWriter.WriteString((PlayerPrefs.GetInt("Run Number") + 1).ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Calibration Settings");
-
-        xmlWriter.WriteStartElement("isAuto");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("isAuto").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("GracePeriod");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Grace Period").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("FixationTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Fixation Time").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("IntertrialInterval");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Intertrial Interval").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("XThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("X Threshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("YThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Y Threshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MarkerSize");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Marker Size").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("CalibrationJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Calibration Juice Time").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Perturbation Settings");
-
-        xmlWriter.WriteStartElement("isProcessNoise");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("isProcessNoise").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PTBType");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("PTBType").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("TauColoredFloor");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("TauColoredFloor").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MeanDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanDistance").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MeanTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanTime").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("MinTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MaxTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("MaxTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("NumTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("NumTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("TauTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("TauTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("rotStopThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("rotStopThreshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("velStopThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("velStopThreshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("JoystickThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickThreshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("NoiseTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("NoiseTauTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("NoiseTauTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("VelocityNoiseGain");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("VelocityNoiseGain").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RotationNoiseGain");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseGain").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("LinearNoiseScale");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("LinearNoiseScale").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RotationNoiseScale");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("RotationNoiseScale").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MeanAngle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("MeanAngle").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ThreshTauMultiplier");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ThreshTauMultiplier").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("velBrakeThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("velBrakeThresh").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("rotBrakeThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("rotBrakeThresh").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("JoystickStartThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("JoystickStartThreshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuITI");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuITI").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuTrialDur");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuTrialDur").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuStimuDur");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuStimuDur").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuRewardDur");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuRewardDur").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuGapMin");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMin").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuGapMax");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuGapMax").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimNumTrials");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimNumTrials").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RewardGap");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardGap").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("RewardThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThresh").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("StimuAmp");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimuAmp").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("FFstimugap");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("FFstimugap").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("isFFstimu");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("isFFstimu").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("isObsNoise");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("isObsNoise").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ObsNoiseTau");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsNoiseTau").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ObsVelocityNoiseGain");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsVelocityNoiseGain").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ObsRotationNoiseGain");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsRotationNoiseGain").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ObsDensityRatio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ObsDensityRatio").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "Calibration Parameters");
-
-        xmlWriter.WriteStartElement("xSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("xSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("ySliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("ySliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("markerSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("markerSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("xScaleSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("xScaleSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("yScaleSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("yScaleSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("xOffsetSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("xOffsetSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("yOffsetSliderValue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("yOffsetSliderValue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Setting");
-        xmlWriter.WriteAttributeString("Type", "moreOnFF");
-
-        xmlWriter.WriteStartElement("red");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("red").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("blue");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("blue").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("green");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("green").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("yellow");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("yellow").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("white");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("white").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("redrew");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("redrew").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("bluerew");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("bluerew").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("greenrew");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("greenrew").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("yellowrew");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("yellowrew").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("whiterew");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("whiterew").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("isColored");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("isColored").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteEndDocument();
-        xmlWriter.Close();
     }
 }
