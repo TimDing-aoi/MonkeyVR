@@ -1090,7 +1090,7 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.ptb)
+            if (SharedJoystick.CtrlDynamicsFlag)
             {
                 sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
                     trial,
@@ -1157,7 +1157,7 @@ public class Monkey2D : MonoBehaviour
         SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
         SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);
 
-        //print(ptb);
+        //print(CtrlDynamicsFlag);
         if (ptb != 2)
         {
             switch (ptb)
@@ -1624,7 +1624,7 @@ public class Monkey2D : MonoBehaviour
 
             if (await Task.WhenAny(t, t1) == t || player == null)
             {
-                await new WaitUntil(() => ((SharedJoystick.currentSpeed == 0.0f && SharedJoystick.currentRot == 0.0f && !SharedJoystick.ptb) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => ((SharedJoystick.currentSpeed == 0.0f && SharedJoystick.currentRot == 0.0f && !SharedJoystick.CtrlDynamicsFlag) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
                 if (t1.IsCompleted) isTimeout = true;
             }
             else
@@ -2109,7 +2109,10 @@ public class Monkey2D : MonoBehaviour
                 break;
         }
 
-        juiceBox.Write(toSend);
+        if(PlayerPrefs.GetFloat("calib") != 0)
+        {
+            juiceBox.Write(toSend);
+        }
 
         await new WaitForSeconds(time / 1000.0f);
     }
@@ -2175,7 +2178,7 @@ public class Monkey2D : MonoBehaviour
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
-            else if (ptb != 2)
+            else if (CtrlDynamicsFlag != 2)
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh,,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
@@ -2269,7 +2272,7 @@ public class Monkey2D : MonoBehaviour
                 j = 0;
             }
 
-            /*if (ptb != 2)
+            /*if (CtrlDynamicsFlag != 2)
             {
                 int i = 0;
                 print(temp[0]);
@@ -2500,7 +2503,7 @@ public class Monkey2D : MonoBehaviour
                         checkWait[i],
                         interWait[i]);
 
-                    if (ptb != 2)
+                    if (CtrlDynamicsFlag != 2)
                     {
                         line = line + "," + CurrentTau[i];
                         line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +

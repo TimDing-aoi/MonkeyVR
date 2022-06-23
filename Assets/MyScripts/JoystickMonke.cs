@@ -106,7 +106,7 @@ public class JoystickMonke : MonoBehaviour
 
     public Phases currPhase;
 
-    public bool ptb = false;
+    public bool CtrlDynamicsFlag = false;
 
     //Akis PTB vars
     [HideInInspector]
@@ -262,7 +262,7 @@ public class JoystickMonke : MonoBehaviour
         }
 
         //load Akis PTB vars
-        ptb = (int)PlayerPrefs.GetFloat("PTBType") != 2;
+        CtrlDynamicsFlag = (int)PlayerPrefs.GetFloat("PTBType") != 2;
         meanDist = PlayerPrefs.GetFloat("MeanDistance");
         meanTime = PlayerPrefs.GetFloat("MeanTime");
         //Used to be
@@ -428,12 +428,13 @@ public class JoystickMonke : MonoBehaviour
             rawX = moveY;
             rawY = -moveX;
 
-            //print(ptb);
+            //print(CtrlDynamicsFlag);
             //Akis PTB noise
             //print(SharedMonkey.isAccelControlTrial);
             //print(savedTau);
-            if (ptb)
+            if (CtrlDynamicsFlag)
             {
+                updateControlDynamics();
                 if (SharedMonkey.isIntertrail)
                 {
                     //print("stoping");
@@ -467,7 +468,6 @@ public class JoystickMonke : MonoBehaviour
                     rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                     ProcessNoise();
                 }
-                updateControlDynamics();
             }
             else
             {
@@ -488,8 +488,11 @@ public class JoystickMonke : MonoBehaviour
                 {
                     currentRot = 0.0f;
                 }
-
-                //ProcessNoise();
+                cleanVel = currentSpeed;
+                cleanRot = currentRot;
+                velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+                rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+                ProcessNoise();
 
                 if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
                 {
@@ -630,8 +633,8 @@ public class JoystickMonke : MonoBehaviour
             }
             else
             {
-                print(string.Format("current speed:{0}", currentSpeed));
-                print(string.Format("current rotation:{0}", currentRot));
+                //print(string.Format("current speed:{0}", currentSpeed));
+                //print(string.Format("current rotation:{0}", currentRot));
                 transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
                 transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
             }
@@ -762,7 +765,7 @@ public class JoystickMonke : MonoBehaviour
     {
         float gamma;
         float delta;
-        if (!ProcessNoiseFlag)
+        if (!ProcessNoiseFlag && CtrlDynamicsFlag)
         {
             gamma = 0;
 
@@ -781,7 +784,7 @@ public class JoystickMonke : MonoBehaviour
             currentSpeed = cleanVel;
             currentRot = cleanRot;
         }
-        else
+        else if(ProcessNoiseFlag)
         {
             if (NoiseTau == 0)
             {
@@ -806,7 +809,16 @@ public class JoystickMonke : MonoBehaviour
             prevRotKsi = rotKsi;
             prevRotEta = rotEta;
 
-            float ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
+            float ProcessNoiseMagnitude;
+            if (RotSpeed == 0)
+            {
+                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed));
+            }
+            else
+            {
+                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
+            }
+
             if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > MaxSpeed)
             {
                 currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;
@@ -905,5 +917,7 @@ public class JoystickMonke : MonoBehaviour
         float beta = (1.0f - alpha);
         cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
         cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
+        //print(RotSpeed);
+        //print(cleanRot);
     }
 }

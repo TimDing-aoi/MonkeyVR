@@ -169,7 +169,6 @@ public class GoToSettings : MonoBehaviour
     public void BeginGame()
     {
         PlayerPrefs.SetFloat("calib", 0);
-        SharedMonkey.SaveConfigs();
         SceneManager.LoadScene(2);
     }
 
