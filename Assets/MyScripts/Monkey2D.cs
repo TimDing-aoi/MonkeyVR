@@ -2425,6 +2425,8 @@ public class Monkey2D : MonoBehaviour
                     }
 
                     csvDisc.AppendLine(line);
+
+                    totalScore += score[i];
                 }
             }
             /*else if (PlayerPrefs.GetInt("Perturbation On") == 1)

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static ViveSR.anipal.Eye.SRanipal_Eye_Framework;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 public class GoToSettings : MonoBehaviour
 {
@@ -159,6 +160,7 @@ public class GoToSettings : MonoBehaviour
 
     public void BeginCalibration()
     {
+        saveStimConfig();
         PlayerPrefs.SetFloat("calib", 1);
         SceneManager.LoadScene(1);
     }
@@ -752,5 +754,16 @@ public class GoToSettings : MonoBehaviour
         {
             Debug.LogException(e, this);
         }
+    }
+
+    public void saveStimConfig()
+    {
+        StringBuilder stimConf = new StringBuilder();
+        string path = PlayerPrefs.GetString("Path");
+        string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
+        stimConf.AppendLine("MonkeyName,Date,RunNumber,StimAmplitude,StimDur");
+        stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
+            + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+        File.WriteAllText(stimPath, stimConf.ToString());
     }
 }
