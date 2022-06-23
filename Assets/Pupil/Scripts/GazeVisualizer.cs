@@ -43,6 +43,7 @@ namespace PupilLabs
         float lastConfidence;
 
         float timer = 0.0f;
+        float GazeMarkerSize = 0.0f;
 
         System.Random random;
 
@@ -107,7 +108,7 @@ namespace PupilLabs
 
         void Update()
         {
-            projectionMarker.localScale = Vector3.one * 0.025f * calibrationController.scale;
+            projectionMarker.localScale = Vector3.one * GazeMarkerSize * calibrationController.scale;
 
             if (!isGazing)
             {
@@ -150,6 +151,7 @@ namespace PupilLabs
             if (next.name == "Monkey2D")
             {
                 gazeOrigin = Camera.main.transform;
+                GazeMarkerSize = 0.25f;
 
                 timeSync.UpdateTimeSync();
             }
@@ -160,6 +162,7 @@ namespace PupilLabs
             else if (next.name == "MonkeyGaze")
             {
                 gazeOrigin = Camera.main.transform;
+                GazeMarkerSize = 0.025f;
 
                 if (!isGazing)
                 {

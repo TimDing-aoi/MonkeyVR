@@ -783,7 +783,7 @@ namespace PupilLabs
                 tLastStimu = tNow;
                 AudioSource.clip = StimuTest;
                 AudioSource.Play();
-                previewMarkers[2].SetActive(true);
+                //previewMarkers[2].SetActive(true);
             }
             else if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
             {

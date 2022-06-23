@@ -2201,7 +2201,7 @@ public class Monkey2D : MonoBehaviour
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -3170,6 +3170,10 @@ public class Monkey2D : MonoBehaviour
 
         xmlWriter.WriteStartElement("isFFstimu");
         xmlWriter.WriteString(PlayerPrefs.GetInt("isFFstimu").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("StimulationRatio");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("StimulationRatio").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("isObsNoise");

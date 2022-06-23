@@ -489,7 +489,7 @@ public class JoystickMonke : MonoBehaviour
                     currentRot = 0.0f;
                 }
 
-                ProcessNoise();
+                //ProcessNoise();
 
                 if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
                 {
@@ -630,8 +630,8 @@ public class JoystickMonke : MonoBehaviour
             }
             else
             {
-                //print(string.Format("current speed:{0}", currentSpeed));
-                //print(string.Format("current rotation:{0}", currentRot));
+                print(string.Format("current speed:{0}", currentSpeed));
+                print(string.Format("current rotation:{0}", currentRot));
                 transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
                 transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
             }
