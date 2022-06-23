@@ -139,9 +139,9 @@ public class JoystickMonke : MonoBehaviour
     [HideInInspector]
     public float NoiseTauTau;
     [HideInInspector]
-    public float velFilterGain;
+    public float velProcessNoiseGain;
     [HideInInspector]
-    public float rotFilterGain;
+    public float rotProcessNoiseGain;
     [HideInInspector]
     public float kappa;
     [HideInInspector]
@@ -275,8 +275,8 @@ public class JoystickMonke : MonoBehaviour
         TauTau = PlayerPrefs.GetFloat("TauTau");
         NoiseTau = PlayerPrefs.GetFloat("NoiseTau");
         NoiseTauTau = PlayerPrefs.GetFloat("NoiseTauTau");
-        velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
-        rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+        velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+        rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
@@ -442,8 +442,8 @@ public class JoystickMonke : MonoBehaviour
                     StopFlag = true;
                     BrakeFlag = false;
                     currentTau = savedTau / 4;
-                    velFilterGain = 0;
-                    rotFilterGain = 0;
+                    velProcessNoiseGain = 0;
+                    rotProcessNoiseGain = 0;
                     ProcessNoise();
                 }
                 else if (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh)
@@ -454,8 +454,8 @@ public class JoystickMonke : MonoBehaviour
                     StopFlag = false;
                     BrakeFlag = true;
                     currentTau = savedTau / 4;
-                    velFilterGain = 0;
-                    rotFilterGain = 0;
+                    velProcessNoiseGain = 0;
+                    rotProcessNoiseGain = 0;
                     ProcessNoise();
                 }
                 else
@@ -463,10 +463,11 @@ public class JoystickMonke : MonoBehaviour
                     StopFlag = false;
                     BrakeFlag = false;
                     currentTau = savedTau;
-                    velFilterGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
-                    rotFilterGain = PlayerPrefs.GetFloat("RotationNoiseGain");
+                    velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
+                    rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                     ProcessNoise();
                 }
+                updateControlDynamics();
             }
             else
             {
@@ -488,6 +489,7 @@ public class JoystickMonke : MonoBehaviour
                     currentRot = 0.0f;
                 }
 
+                ProcessNoise();
 
                 if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
                 {
@@ -516,7 +518,7 @@ public class JoystickMonke : MonoBehaviour
                     //    ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= ptbJoyRatio);
                     //}
 
-                    if (ptbJoyFlagTrial > 0)
+                    if (ptbJoyFlagTrial > 0) 
                     {
 
                         //Monkey2D.Phase;                
@@ -556,8 +558,8 @@ public class JoystickMonke : MonoBehaviour
                                 timeCntPTBStart = Time.realtimeSinceStartup;
                             }
                             
-                            ptbJoyVelValue = ProcessJoystickNoise(timeCounterMovement, ptbJoyVelMu, ptbJoyVelSigma, ptbJoyVelGain);
-                            ptbJoyRotValue = ProcessJoystickNoise(timeCounterMovement, ptbJoyRotMu, ptbJoyRotSigma, ptbJoyRotGain);
+                            ptbJoyVelValue = GaussianShapedPtb(timeCounterMovement, ptbJoyVelMu, ptbJoyVelSigma, ptbJoyVelGain);
+                            ptbJoyRotValue = GaussianShapedPtb(timeCounterMovement, ptbJoyRotMu, ptbJoyRotSigma, ptbJoyRotGain);
                             ptbJoyFlag = 1;
                         }
                         else
@@ -683,7 +685,7 @@ public class JoystickMonke : MonoBehaviour
         //timeCntPTBStart = 0.0f;
     }
 
-    private float ProcessJoystickNoise(float t, float mu, float sigma, float gain)
+    private float GaussianShapedPtb(float t, float mu, float sigma, float gain)
     {
         //float sigma = 0.2f;
         //float maxNum = (1.0f / Math.Sqrt(2.0f * sigma));// * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2));
@@ -759,26 +761,19 @@ public class JoystickMonke : MonoBehaviour
     private void ProcessNoise()
     {
         float gamma;
-        float alpha;
-        float beta;
         float delta;
         if (!ProcessNoiseFlag)
         {
             gamma = 0;
 
-            alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
-            beta = (1.0f - alpha);
-
             velKsi = 0;
             velEta = 0;
-            cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
             prevCleanVel = cleanVel;
             prevVelKsi = velKsi;
             prevVelEta = velEta;
 
             rotKsi = 0;
             rotEta = 0;
-            cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
             prevCleanRot = cleanRot;
             prevRotKsi = rotKsi;
             prevRotEta = rotEta;
@@ -797,20 +792,16 @@ public class JoystickMonke : MonoBehaviour
                 gamma = Mathf.Exp(-Time.fixedDeltaTime / NoiseTau);
             }
 
-            alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
-            beta = (1.0f - alpha);
             delta = (1.0f - gamma);
 
-            velKsi = gamma * prevVelKsi + delta * velFilterGain * BoxMullerGaussianSample();
+            velKsi = gamma * prevVelKsi + delta * velProcessNoiseGain * BoxMullerGaussianSample();
             velEta = gamma * prevVelEta + delta * velKsi;
-            cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
             prevCleanVel = cleanVel;
             prevVelKsi = velKsi;
             prevVelEta = velEta;
 
-            rotKsi = gamma * prevRotKsi + delta * rotFilterGain * BoxMullerGaussianSample();
+            rotKsi = gamma * prevRotKsi + delta * rotProcessNoiseGain * BoxMullerGaussianSample();
             rotEta = gamma * prevRotEta + delta * rotKsi;
-            cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
             prevCleanRot = cleanRot;
             prevRotKsi = rotKsi;
             prevRotEta = rotEta;
@@ -906,5 +897,13 @@ public class JoystickMonke : MonoBehaviour
         }
         while (y + y < x * x && (x == 0 || y == 0));
         return R + x;
+    }
+
+    void updateControlDynamics()
+    {
+        float alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
+        float beta = (1.0f - alpha);
+        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
+        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
     }
 }
