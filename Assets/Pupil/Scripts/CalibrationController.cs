@@ -157,7 +157,8 @@ namespace PupilLabs
         public float RewardGap = 0;
         [HideInInspector]
         public float RewardThresh = 0;
-
+        [HideInInspector]
+        public float TotalTrials = 0;
         [HideInInspector] public enum Status
         {
             none = 0,
@@ -207,6 +208,8 @@ namespace PupilLabs
             StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
             RewardGap = PlayerPrefs.GetFloat("RewardGap");
             RewardThresh = PlayerPrefs.GetFloat("RewardThresh");
+
+            TotalTrials = PlayerPrefs.GetFloat("StimNumTrials");
 
             sizeX = scale * xThreshold;
             sizeY = scale * yThreshold;
@@ -819,8 +822,7 @@ namespace PupilLabs
 
                 tTotalFix = 0.0f;
 
-                float TotalTrials = PlayerPrefs.GetFloat("StimNumTrials");
-                if (trialNum < TotalTrials)
+                if (trialNum <= TotalTrials)
                 {
                     trialNum++;
                     trialNumber.Add(trialNum);
@@ -828,11 +830,6 @@ namespace PupilLabs
                     tLastITI = tNow;
 
                     UpdatePosition();
-                }
-
-                if (trialNum == TotalTrials)
-                {
-                    ToggleMicroStimu();
                 }
             }
             else if (tNow - tLastITI < StimuRewardDur * 0.001)
@@ -854,6 +851,10 @@ namespace PupilLabs
                 previewMarkers[4].SetActive(false);
                 LastMarker = 3;
                 print("ITI. Taking a rest");
+            }
+            else if (trialNum == TotalTrials)
+            {
+                ToggleMicroStimu();
             }
             else
             {
@@ -902,6 +903,8 @@ namespace PupilLabs
 
         public async void StopMicroStimu()
         {
+            await new WaitForSeconds(1f);
+
             Debug.Log("Stopping Micro Stimulation.");
             SendMarker("x", 1000.0f);
             LastMarker = 17;

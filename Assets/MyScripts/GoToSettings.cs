@@ -161,7 +161,7 @@ public class GoToSettings : MonoBehaviour
 
     public void BeginCalibration()
     {
-        saveStimConfig();
+        //saveStimConfig();
         PlayerPrefs.SetFloat("calib", 1);
         SceneManager.LoadScene(1);
     }
@@ -190,6 +190,7 @@ public class GoToSettings : MonoBehaviour
 
     public void ToMainMenu()
     {
+        saveStimConfig();
         //Camera.main.transform.position = new Vector3(0, 9, 0);
         mainMenu.enabled = true;
         //taskSelectMenu.enabled = false;
