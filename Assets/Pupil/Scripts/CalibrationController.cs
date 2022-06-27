@@ -737,6 +737,7 @@ namespace PupilLabs
             {
                 if (startMarkerFlag == false)
                 {
+                    trialNum++;
                     SendMarker("s", 1000.0f);
                     LastMarker = 2;
                     beginTimer = Time.time;
@@ -824,7 +825,6 @@ namespace PupilLabs
 
                 if (trialNum <= TotalTrials)
                 {
-                    trialNum++;
                     trialNumber.Add(trialNum);
 
                     tLastITI = tNow;
@@ -860,6 +860,7 @@ namespace PupilLabs
             {
                 endMarkerFlag = false;
                 print("Next trial.");
+                trialNum++;
                 tLastITI = tNow;
                 tLastTrial = tNow;
                 StimuGap = 0;

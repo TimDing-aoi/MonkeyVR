@@ -139,7 +139,7 @@ namespace PupilLabs
                     sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}\n",
                             calibrationController.trialNum,
                             calibrationController.status,
-                            (double)Time.realtimeSinceStartup,
+                            (double)Time.time,
                             gazeDataNow.MappingContext,
                             gazeDataNow.Confidence,
                             calibrationController.targetIdx,
