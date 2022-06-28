@@ -34,6 +34,7 @@ using UnityEngine;
 using static JoystickMonke;
 using static Serial;
 using static Particles;
+using static Particles2;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.XR;
@@ -1188,6 +1189,10 @@ public class Monkey2D : MonoBehaviour
         loopCount = 0;
 
         float density = particles.SwitchDensity();
+        if (particles.changedensityflag && isObsNoise)
+        {
+            particles2.SwitchDensity2();
+        }
 
         densities.Add(density);
         if (isObsNoise)
