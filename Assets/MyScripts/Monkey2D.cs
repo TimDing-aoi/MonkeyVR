@@ -412,6 +412,7 @@ public class Monkey2D : MonoBehaviour
     private float microStimuGap;
     private float trialStimuGap;
 
+    bool SMtrial = false;
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -505,6 +506,7 @@ public class Monkey2D : MonoBehaviour
         ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
         ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
+        SMtrial = PlayerPrefs.GetInt("isSM") == 1;
 
         if (isObsNoise)
         {
@@ -1292,6 +1294,21 @@ public class Monkey2D : MonoBehaviour
         //      "0.00,0.00,0.00"
         //
         // Which is csv format.
+
+        float velocityThreshold = PlayerPrefs.GetFloat("velBrakeThresh");
+        float rotationThreshold = PlayerPrefs.GetFloat("rotBrakeThresh");
+        float SMr = (float)rand.NextDouble();
+        if (SMtrial)
+        {
+            if (SMr > 0.5)
+            {
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velocityThreshold); // Used to be rb.velocity.magnitude
+            }
+            else
+            {
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) <= velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) <= rotationThreshold); // Used to be rb.velocity.magnitude
+            }
+        }
 
         player_origin = player.transform.position;
         origin.Add(player_origin.ToString("F5").Trim(toTrim).Replace(" ", ""));

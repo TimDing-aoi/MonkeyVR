@@ -250,7 +250,7 @@ public class GoToSettings : MonoBehaviour
         try
         {
             if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto" || obj.name == "isProcessNoise"
-                || obj.name == "isColored" || obj.name == "isFFstimu" || obj.name == "isObsNoise")
+                || obj.name == "isColored" || obj.name == "isFFstimu" || obj.name == "isObsNoise" || obj.name == "isSM")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }
