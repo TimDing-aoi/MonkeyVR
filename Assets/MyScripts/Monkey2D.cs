@@ -413,6 +413,12 @@ public class Monkey2D : MonoBehaviour
     private float trialStimuGap;
 
     bool SMtrial = false;
+
+    bool isCOM = false;
+    bool FF2shown = false;
+    float COMlambda;
+    float FF2delay;
+
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -507,6 +513,9 @@ public class Monkey2D : MonoBehaviour
         ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
+        isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
+        if (isCOM) nFF = 2;
+        COMlambda = PlayerPrefs.GetFloat("COMEx");
 
         if (isObsNoise)
         {
@@ -536,7 +545,12 @@ public class Monkey2D : MonoBehaviour
             multiMode = 2;
         }
 
-        if (nFF > 1 && multiMode == 1)
+        if (isCOM)
+        {
+            ffPositions.Add(Vector3.zero);
+            ffPositions.Add(Vector3.zero);
+        }
+        else if (nFF > 1 && multiMode == 1)
         {
             ranges.Add(minDrawDistance);
             ffPositions.Add(Vector3.zero);
@@ -989,6 +1003,29 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
+            if (isCOM && Time.time - startTime >= FF2delay && !FF2shown)
+            {
+                //print(FF2delay);
+                FF2shown = true;
+                float playerDistance = (float)Math.Sqrt(player.transform.position.x * player.transform.position.x + player.transform.position.y * player.transform.position.y);
+                Vector3 position;
+                float r = playerDistance + (maxDrawDistance - playerDistance) * (float)rand.NextDouble();
+                float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+                if (LR != 0.5f)
+                {
+                    float side = rand.NextDouble() < LR ? 1 : -1;
+                    position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle * side, Vector3.up) * player.transform.forward * r;
+                }
+                else
+                {
+                    position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                }
+                position.y = 0.0001f;
+                pooledFF[1].transform.position = position;
+                pooledFF[1].SetActive(true);
+                //ffPositions[1] = position;
+            }
+
             if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
             {
                 isTrial = false;
@@ -1209,7 +1246,29 @@ public class Monkey2D : MonoBehaviour
         currPhase = Phases.begin;
         isBegin = true;
 
-        if (nFF > 1 && multiMode == 1)
+        if (isCOM)
+        {
+            Vector3 position;
+            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
+            float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+            if (LR != 0.5f)
+            {
+                float side = rand.NextDouble() < LR ? 1 : -1;
+                position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle * side, Vector3.up) * player.transform.forward * r;
+            }
+            else
+            {
+                position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+            }
+            position.y = 0.0001f;
+            pooledFF[0].transform.position = position;
+            //ffPositions[0] = position;
+            Vector3 position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
+            pooledFF[1].transform.position = position1;
+            pooledFF[1].SetActive(false);
+            //ffPositions[1] = position1;
+        }
+        else if (nFF > 1 && multiMode == 1)
         {
             for (int i = 0; i < nFF; i++)
             {
@@ -1308,6 +1367,12 @@ public class Monkey2D : MonoBehaviour
             {
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) <= velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) <= rotationThreshold); // Used to be rb.velocity.magnitude
             }
+        }
+        else if (isCOM)
+        {
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velocityThreshold);
+            print(COMlambda);
+            FF2delay = GetPoisson(COMlambda);
         }
 
         player_origin = player.transform.position;
@@ -1716,6 +1781,7 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     async Task Check()
     {
+        FF2shown = false;
         proximity = false;
 
         isTrial = false;
@@ -2640,6 +2706,75 @@ public class Monkey2D : MonoBehaviour
         }
         while (S >= 1.0f);
         return u1 * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
+    }
+
+    public int GetPoisson(double lambda)
+    {
+        return (lambda < 30.0) ? PoissonSmall(lambda) : PoissonLarge(lambda);
+    }
+
+    private int PoissonSmall(double lambda)
+    {
+        // Algorithm due to Donald Knuth, 1969.
+        double p = 1.0, L = Math.Exp(-lambda);
+        int k = 0;
+        do
+        {
+            k++;
+            p *= GetUniform();
+        }
+        while (p > L);
+        return k - 1;
+    }
+
+    private int PoissonLarge(double lambda)
+    {
+        // "Rejection method PA" from "The Computer Generation of 
+        // Poisson Random Variables" by A. C. Atkinson,
+        // Journal of the Royal Statistical Society Series C 
+        // (Applied Statistics) Vol. 28, No. 1. (1979)
+        // The article is on pages 29-35. 
+        // The algorithm given here is on page 32.
+
+        double c = 0.767 - 3.36 / lambda;
+        double beta = Math.PI / Math.Sqrt(3.0 * lambda);
+        double alpha = beta * lambda;
+        double k = Math.Log(c) - lambda - Math.Log(beta);
+
+        for (; ; )
+        {
+            double u = GetUniform();
+            double x = (alpha - Math.Log((1.0 - u) / u)) / beta;
+            int n = (int)Math.Floor(x + 0.5);
+            if (n < 0)
+                continue;
+            double v = GetUniform();
+            double y = alpha - beta * x;
+            double temp = 1.0 + Math.Exp(y);
+            double lhs = y + Math.Log(v / (temp * temp));
+            double rhs = k + n * Math.Log(lambda) - LogFactorial(n);
+            if (lhs <= rhs)
+                return n;
+        }
+    }
+
+    public double LogFactorial(int n)
+    {
+        if (n < 0)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+        else
+        {
+            double x = n + 1;
+            return (x - 0.5) * Math.Log(x) - x + 0.5 * Math.Log(2 * Math.PI) + 1.0 / (12.0 * x);
+        }
+    }
+
+    public double GetUniform()
+    {
+        double answer = rand.NextDouble();
+        return answer;
     }
 
     public void SaveConfigs()
