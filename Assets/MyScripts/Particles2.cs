@@ -90,25 +90,7 @@ public class Particles2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((int)PlayerPrefs.GetFloat("PTBType") != 2 && (int)PlayerPrefs.GetFloat("TauColoredFloor") == 1)
-        {
-            counter++;
-            var main = particleSystem.main;
-            var TauValue = SharedJoystick.savedTau / 3;
-            if (TauValue > 1)
-            {
-                TauValue = 1;
-            }
-            TauValueR = 1;
-            TauValueG = TauValue;
-            TauValueB = 0;
-            main.startColor = new Color(TauValueR, TauValueG, TauValueB, TauValueA);
-            //print(TauValue);
-            //print(TauValueR);
-            //print(TauValueG);
-            //print(TauValueB);
-            //print(TauValueA);
-        }
+
     }
 
     public void SwitchDensity2()

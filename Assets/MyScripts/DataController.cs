@@ -166,31 +166,9 @@ namespace PupilLabs
                     var onoff = firefly.activeInHierarchy ? 1 : 0;
                     var position = player.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
                     var rotation = player.transform.rotation.ToString("F5").Trim('(', ')').Replace(" ", "");
-                    var linear = SharedJoystick.currentSpeed;
-                    var angular = SharedJoystick.currentRot;
                     var FFlinear = SharedMonkey.velocity;
                     var FFposition = string.Empty;
-                    var VKsi = SharedJoystick.velKsi;
-                    var VEta = SharedJoystick.velEta;
-                    var RKsi = SharedJoystick.rotKsi;
-                    var REta = SharedJoystick.rotEta;
-                    var PTBLV = SharedJoystick.currentSpeed;
-                    var PTBRV = SharedJoystick.currentRot;
-                    var RawX = SharedJoystick.rawX;
-                    var RawY = SharedJoystick.rawY;
-                    var CleanLV = SharedJoystick.cleanVel;
-                    var CleanRV = SharedJoystick.cleanRot;
-                    if (flagMultiFF)
-                    {
-                        foreach (Vector3 pos in SharedMonkey.ffPositions)
-                        {
-                            FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
-                        }
-                    }
-                    else
-                    {
-                        FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
-                    }
+                    FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
 #if USING_NAN
                     if (gazeDataNow != gazeNull)
                     {
@@ -238,62 +216,40 @@ namespace PupilLabs
                             "NaN, NaN, NaN"));
                     }
 #else
-                    if (SharedJoystick.CtrlDynamicsFlag)
-                    {
-                        flagRecording = true;
-                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
-                            trial,
-                            (double)Time.realtimeSinceStartup - timeProgStart,
-                            epoch,
-                            onoff,
-                            position,
-                            rotation,
-                            FFposition,
-                            FFlinear,
-                            gazeDataNow.MappingContext,
-                            gazeDataNow.Confidence,
-                            gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeDistance,
-                            gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            VKsi,
-                            VEta,
-                            RKsi,
-                            REta,
-                            PTBLV,
-                            PTBRV,
-                            CleanLV,
-                            CleanRV,
-                            RawX,
-                            RawY);
-                        sb.Append(sbPacket);
-                    }
-                    else
-                    {
-                        flagRecording = true;
-                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
-                                trial,
-                                (double)Time.realtimeSinceStartup - timeProgStart,
-                                epoch,
-                                onoff,
-                                position,
-                                rotation,
-                                linear,
-                                angular,
-                                FFposition,
-                                FFlinear,
-                                gazeDataNow.MappingContext,
-                                gazeDataNow.Confidence,
-                                gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeDistance,
-                                gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
-                        sb.Append(sbPacket);
-                    }
+                    flagRecording = true;
+                    char[] toTrim = { '(', ')' };
+                    string transformedFFPos = new Vector3(firefly.transform.position.z, firefly.transform.position.y, firefly.transform.position.x).ToString("F8").Trim(toTrim).Replace(" ", "");
+                    Vector3 fake_location = new Vector3(-999f, -999f, -999f);
+                    sbPacket = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+                        SharedMonkey.trialNum,
+                        Time.realtimeSinceStartup,
+                        SharedMonkey.currPhase,
+                        firefly.activeInHierarchy ? 1 : 0,
+                        string.Join(",", player.transform.position.z, player.transform.position.y, player.transform.position.x),
+                        string.Join(",", player.transform.rotation.x, player.transform.rotation.y, player.transform.rotation.z, player.transform.rotation.w),
+                        -999,
+                        SharedJoystick.moveX * SharedJoystick.maxJoyRotDeg,
+                        transformedFFPos,
+                        -999,
+                        gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        string.Join(",", player.transform.position.x, player.transform.position.y, player.transform.position.z),
+                        fake_location.ToString("F8").Trim(toTrim).Replace(" ", ""),
+                        gazeDataNow.GazeDistance,
+                        string.Join(",", -999, -999),
+                        string.Join(",", -999, -999),
+                        SharedMonkey.GFFPhaseFlag,
+                        SharedMonkey.GFFTrueDegree * Mathf.Rad2Deg,
+                        SharedMonkey.FFnoise,
+                        Time.frameCount,
+                        SharedMonkey.velocity,
+                        SharedMonkey.SelfMotionSpeed,
+                        gazeDataNow.MappingContext,
+                        gazeDataNow.Confidence,
+                        gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
+                    sb.Append(sbPacket);
 #endif
                 }
 #if USING_NAN
@@ -347,28 +303,11 @@ namespace PupilLabs
                 gazeOrigin = Camera.main.transform;
                 firefly = SharedMonkey.firefly;
                 player = SharedMonkey.player;
-                flagMultiFF = SharedMonkey.nFF > 1;
 
-                if (flagMultiFF)
-                {
-                    var str = "";
-                    for (int i = 0; i < SharedMonkey.nFF; i++)
-                    {
-                        str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
-                    }
-                    sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                }
-                else
-                {
-                    if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
-                    {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                    }
-                    else
-                    {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                    }
-                }
+                string firstLine = "TrialNum,TrialTime,BackendPhase,OnOff,PosX,PosY,PosZ,RotX,RotY,RotZ,RotW,CleanLinearVelocity,CleanAngularVelocity,FFX,FFY,FFZ,FFV/linear,GazeX,GazeY,GazeZ,GazeX0,GazeY0,GazeZ0,HitX,HitY,HitZ,GazeDist," +
+                "LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,CIFFPhase,FFTrueLocationDegree,FFnoiseDegree,frameCounter,FFV/degrees,SelfMotionSpeed," +
+                "Mapping Context,Confidence,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY,CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ";
+                sb.Append(firstLine + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
 
                 timeSync.UpdateTimeSync();
             }

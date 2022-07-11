@@ -8,7 +8,6 @@ using PupilLabs;
 public class FPSDisplay : MonoBehaviour
 {
 	public static FPSDisplay FPScounter;
-	public Monkey2D reward;
 
 	float deltaTime = 0.0f;
 	public Transform target;
@@ -50,18 +49,7 @@ public class FPSDisplay : MonoBehaviour
 		float msec = deltaTime * 1000.0f;
 		fps = 1.0f / deltaTime;
 		string text;
-		if (!SharedJoystick.BrakeFlag && !SharedJoystick.StopFlag)
-        {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Trial", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
-		}
-		else if (SharedJoystick.StopFlag)
-        {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Stop", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
-		}
-        else
-        {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Brake", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
-		}
+		text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Phase: {4}", msec, fps, SharedMonkey.points, SharedMonkey.trialNum, SharedMonkey.GFFPhaseFlag);
 		GUI.Label(rect, text, style);
 		if (keyboard.spaceKey.isPressed)
 		{
@@ -72,16 +60,6 @@ public class FPSDisplay : MonoBehaviour
 			GUI.contentColor = Color.black;
 		}
 		GUI.Box(new Rect(0f, 120f, 50f, 50f), texture);
-
-		if (reward.stimulating /*|| Keyboard.current.rightAltKey.isPressed*/)
-		{
-			GUI.contentColor = Color.green;
-		}
-		else
-		{
-			GUI.contentColor = Color.black;
-		}
-		GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
 	}
 
 	public float GetFPS()
