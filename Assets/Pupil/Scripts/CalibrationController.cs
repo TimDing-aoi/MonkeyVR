@@ -1061,9 +1061,27 @@ namespace PupilLabs
 
                 tLastSample = tNow;
 
+                if (tTotalFix >= secondsPerTarget && !isAuto && marker.gameObject.activeInHierarchy)
+                {
+                    string toSend = "ij" + juiceTime.ToString();
+                    try
+                    {
+                        flagReward = true;
+                        sp.Write(toSend);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log(e);
+                    }
+
+                    numCorrect++;
+
+                    tTotalFix = 0.0f;
+                }
+
                 if (tNow - tLastTarget >= totalTime)
                 {
-                    if (tTotalFix >= secondsPerTarget)
+                    if (tTotalFix >= secondsPerTarget && isAuto)
                     {
                         string toSend = "ij" + juiceTime.ToString();
                         try
