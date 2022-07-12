@@ -435,6 +435,11 @@ PrefabInstance:
       propertyPath: InitialModule.startColor.maxColor.b
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7646396383011959555, guid: ea33a426973330542aeb637a1c390467,
         type: 3}
       propertyPath: m_SortingOrder
@@ -1734,6 +1739,8 @@ MonoBehaviour:
   particle_System2: {fileID: 1402599323}
   stimulating: 0
   offset: -0.3
+  DistFlowSpeed: 0
+  DistFlowRot: 0
   sbPacket: 
 --- !u!114 &1242841537
 MonoBehaviour:

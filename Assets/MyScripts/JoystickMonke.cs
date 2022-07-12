@@ -765,7 +765,7 @@ public class JoystickMonke : MonoBehaviour
     {
         float gamma;
         float delta;
-        if (!ProcessNoiseFlag && CtrlDynamicsFlag)
+        if (!ProcessNoiseFlag /*&& CtrlDynamicsFlag*/)
         {
             gamma = 0;
 

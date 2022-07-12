@@ -386,6 +386,8 @@ public class Monkey2D : MonoBehaviour
     float prevVelObsZet = 0;
     float prevRotObsEps = 0;
     float prevRotObsZet = 0;
+    public float DistFlowSpeed = 0;
+    public float DistFlowRot = 0;
 
     float separation;
 
@@ -792,30 +794,21 @@ public class Monkey2D : MonoBehaviour
             if (flagMultiFF)
             {
                 var str = "";
-                for (int i = 0; i < nFF; i++)
+                for (int i = 0; i < SharedMonkey.nFF; i++)
                 {
                     str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                 }
-                sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV," +
-                    "MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,", str) 
-                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
             }
             else
             {
                 if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
                 {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity," +
-                        "FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ," +
-                        "RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," +
-                        "ptbJoyVelValue,ptbJoyRotValue,ptbJoyFlag,currentSpeed,currentRot,speedPrePtb,rotPrePtb,RawX,RawY," +
-                        PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
                 else
                 {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence," +
-                        "GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," +
-                        "VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + 
-                        PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
             }
         }
@@ -859,8 +852,8 @@ public class Monkey2D : MonoBehaviour
         if (isObsNoise)
         {
 
-            float DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
-            float DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
+            DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
+            DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
 
             //print(DistFlowSpeed);
             //print(DistFlowRot);
@@ -868,7 +861,7 @@ public class Monkey2D : MonoBehaviour
             PS2.startSpeed = DistFlowSpeed;
             particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
             float step = DistFlowRot;
-            particle_System2.transform.Rotate(Vector3.up * step);
+            particle_System2.transform.RotateAround(player.transform.position, Vector3.up, step);
         }
         particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
         //print(particle_System.transform.position);
@@ -1118,6 +1111,8 @@ public class Monkey2D : MonoBehaviour
             var currentRotTmp = SharedJoystick.currentRot;
             var speedPrePtbTmp = SharedJoystick.speedPrePtb;
             var rotPrePtbTmp = SharedJoystick.rotPrePtb;
+            var ObsLinNoise = DistFlowSpeed;
+            var ObsAngNoise = DistFlowRot;
 
             if (flagMultiFF)
             {
@@ -1132,7 +1127,7 @@ public class Monkey2D : MonoBehaviour
             }
             if (SharedJoystick.CtrlDynamicsFlag)
             {
-                sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
+                sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
                     trial,
                     (double)Time.realtimeSinceStartup - timeProgStart,
                     epoch,
@@ -1158,16 +1153,17 @@ public class Monkey2D : MonoBehaviour
                     CleanLV,
                     CleanRV,
                     RawX,
-                    RawY));
+                    RawY,
+                    ObsLinNoise,
+                    ObsAngNoise));
             }
             else
             {
-                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36}",
+                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29}",
                         trial, (double)Time.realtimeSinceStartup - timeProgStart, epoch, onoff, position, rotation,
                         linear, angular, FFposition, FFlinear, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, ptbJoyVelValueTmp, ptbJoyRotValueTmp, ptbJoyFlagTmp, currentSpeedTmp, currentRotTmp, speedPrePtbTmp,
-                        rotPrePtbTmp, RawX, RawY);                
+                        0, 0, 0, 0, ObsLinNoise, ObsAngNoise);                
                 
                 sb.AppendLine(lllin);
             }
@@ -2666,7 +2662,7 @@ public class Monkey2D : MonoBehaviour
         zeta = kappa * prevVelObsZet + lamda * epsilon;
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) 
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
-        result_speed = SharedJoystick.currentSpeed + zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
         prevVelObsEps = epsilon;
         prevVelObsZet = zeta;
 
@@ -2688,7 +2684,7 @@ public class Monkey2D : MonoBehaviour
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
 
-        result_speed = SharedJoystick.currentRot + zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
         prevRotObsEps = epsilon;
         prevRotObsZet = zeta;
 
@@ -3443,4 +3439,20 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteEndDocument();
         xmlWriter.Close();
     }
+
+    /*public void ReadCSV()
+    {
+        StreamReader strReader = new StreamReader(path + "\\Config_2FF.csv");
+        bool endoffile = false;
+        while (!endoffile)
+        {
+            string data_string = strReader.ReadLine();
+            if(data_string == null)
+            {
+                endoffile = true;
+                break;
+            }
+            var data_values
+        }
+    }*/
 }

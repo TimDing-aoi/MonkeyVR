@@ -166,20 +166,20 @@ namespace PupilLabs
                     var onoff = firefly.activeInHierarchy ? 1 : 0;
                     var position = player.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
                     var rotation = player.transform.rotation.ToString("F5").Trim('(', ')').Replace(" ", "");
-                    var linear = SharedJoystick.currentSpeed;
-                    var angular = SharedJoystick.currentRot;
                     var FFlinear = SharedMonkey.velocity;
                     var FFposition = string.Empty;
                     var VKsi = SharedJoystick.velKsi;
                     var VEta = SharedJoystick.velEta;
                     var RKsi = SharedJoystick.rotKsi;
                     var REta = SharedJoystick.rotEta;
-                    var PTBLV = SharedJoystick.currentSpeed;
-                    var PTBRV = SharedJoystick.currentRot;
+                    var FinalSpeed = SharedJoystick.currentSpeed;
+                    var FinalRot = SharedJoystick.currentRot;
                     var RawX = SharedJoystick.rawX;
                     var RawY = SharedJoystick.rawY;
                     var CleanLV = SharedJoystick.cleanVel;
                     var CleanRV = SharedJoystick.cleanRot;
+                    var ObsLinNoise = SharedMonkey.DistFlowSpeed;
+                    var ObsAngNoise = SharedMonkey.DistFlowRot;
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)
@@ -238,62 +238,37 @@ namespace PupilLabs
                             "NaN, NaN, NaN"));
                     }
 #else
-                    if (SharedJoystick.CtrlDynamicsFlag)
-                    {
-                        flagRecording = true;
-                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25}\n",
-                            trial,
-                            (double)Time.realtimeSinceStartup - timeProgStart,
-                            epoch,
-                            onoff,
-                            position,
-                            rotation,
-                            FFposition,
-                            FFlinear,
-                            gazeDataNow.MappingContext,
-                            gazeDataNow.Confidence,
-                            gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeDistance,
-                            gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            VKsi,
-                            VEta,
-                            RKsi,
-                            REta,
-                            PTBLV,
-                            PTBRV,
-                            CleanLV,
-                            CleanRV,
-                            RawX,
-                            RawY);
-                        sb.Append(sbPacket);
-                    }
-                    else
-                    {
-                        flagRecording = true;
-                        sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
-                                trial,
-                                (double)Time.realtimeSinceStartup - timeProgStart,
-                                epoch,
-                                onoff,
-                                position,
-                                rotation,
-                                linear,
-                                angular,
-                                FFposition,
-                                FFlinear,
-                                gazeDataNow.MappingContext,
-                                gazeDataNow.Confidence,
-                                gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeDistance,
-                                gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                                gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""));
-                        sb.Append(sbPacket);
-                    }
+                    flagRecording = true;
+                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+                        trial,
+                        (double)Time.realtimeSinceStartup - timeProgStart,
+                        epoch,
+                        onoff,
+                        position,
+                        rotation,
+                        FinalSpeed,
+                        FinalRot,
+                        FFposition,
+                        FFlinear,
+                        gazeDataNow.MappingContext,
+                        gazeDataNow.Confidence,
+                        gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.GazeDistance,
+                        gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                        VKsi,
+                        VEta,
+                        RKsi,
+                        REta,
+                        CleanLV,
+                        CleanRV,
+                        RawX,
+                        RawY,
+                        ObsLinNoise,
+                        ObsAngNoise);
+                    sb.Append(sbPacket);
 #endif
                 }
 #if USING_NAN
@@ -356,18 +331,11 @@ namespace PupilLabs
                     {
                         str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                     }
-                    sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
                 else
                 {
-                    if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
-                    {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                    }
-                    else
-                    {
-                        sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                    }
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,finalLinVel,finalAngVel,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ProcNoiseVKsi,ProcNoiseVeta,ProcNoiseRotKsi,ProcNoiseRotEta,CleanLV,CleanRV,RawX,RawY,ObsNoiseLV,ObsNoiseRV," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
 
                 timeSync.UpdateTimeSync();
