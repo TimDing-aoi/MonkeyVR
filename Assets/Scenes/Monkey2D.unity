@@ -438,7 +438,7 @@ PrefabInstance:
     - target: {fileID: 7646396383011959554, guid: ea33a426973330542aeb637a1c390467,
         type: 3}
       propertyPath: moveWithTransform
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7646396383011959555, guid: ea33a426973330542aeb637a1c390467,
         type: 3}

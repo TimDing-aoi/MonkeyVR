@@ -852,16 +852,16 @@ public class Monkey2D : MonoBehaviour
         if (isObsNoise)
         {
 
-            DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
-            DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
+            float DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
+            float DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
 
-            //print(DistFlowSpeed);
-            //print(DistFlowRot);
+            print(DistFlowSpeed);
+            print(DistFlowRot);
             var PS2 = particle_System2.main;
             PS2.startSpeed = DistFlowSpeed;
             particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
             float step = DistFlowRot;
-            particle_System2.transform.RotateAround(player.transform.position, Vector3.up, step);
+            particle_System2.transform.Rotate(Vector3.up * step);
         }
         particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
         //print(particle_System.transform.position);
@@ -2658,7 +2658,7 @@ public class Monkey2D : MonoBehaviour
 
         kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
         lamda = 1 - kappa;
-        epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
+        epsilon = kappa * prevVelObsEps + lamda * Gain * SharedJoystick.MaxSpeed * BoxMullerGaussianSample();
         zeta = kappa * prevVelObsZet + lamda * epsilon;
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) 
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
@@ -2679,7 +2679,7 @@ public class Monkey2D : MonoBehaviour
 
         kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
         lamda = 1 - kappa;
-        epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
+        epsilon = kappa * prevRotObsEps + lamda * Gain * SharedJoystick.RotSpeed * BoxMullerGaussianSample();
         zeta = kappa * prevRotObsZet + lamda * epsilon;
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
