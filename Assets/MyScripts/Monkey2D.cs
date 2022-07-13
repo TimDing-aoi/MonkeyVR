@@ -852,8 +852,8 @@ public class Monkey2D : MonoBehaviour
         if (isObsNoise)
         {
 
-            float DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
-            float DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
+            DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
+            DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
 
             print(DistFlowSpeed);
             print(DistFlowRot);
@@ -2658,7 +2658,7 @@ public class Monkey2D : MonoBehaviour
 
         kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
         lamda = 1 - kappa;
-        epsilon = kappa * prevVelObsEps + lamda * Gain * SharedJoystick.MaxSpeed * BoxMullerGaussianSample();
+        epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
         zeta = kappa * prevVelObsZet + lamda * epsilon;
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) 
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
@@ -2679,7 +2679,7 @@ public class Monkey2D : MonoBehaviour
 
         kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
         lamda = 1 - kappa;
-        epsilon = kappa * prevRotObsEps + lamda * Gain * SharedJoystick.RotSpeed * BoxMullerGaussianSample();
+        epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
         zeta = kappa * prevRotObsZet + lamda * epsilon;
         float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
             + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
