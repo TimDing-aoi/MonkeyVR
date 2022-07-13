@@ -40,6 +40,7 @@ using System;
 using UnityEngine.XR;
 using UnityEngine.InputSystem;
 using System.IO.Ports;
+using System.Globalization;
 using PupilLabs;
 
 public class Monkey2D : MonoBehaviour
@@ -420,7 +421,7 @@ public class Monkey2D : MonoBehaviour
     bool FF2shown = false;
     float COMlambda;
     float FF2delay;
-
+    readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -861,6 +862,7 @@ public class Monkey2D : MonoBehaviour
             PS2.startSpeed = DistFlowSpeed;
             particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
             float step = DistFlowRot;
+            particle_System2.transform.rotation = player.transform.rotation;
             particle_System2.transform.Rotate(Vector3.up * step);
         }
         particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
@@ -996,13 +998,13 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            if (isCOM && Time.time - startTime >= FF2delay && !FF2shown)
+            print(Time.realtimeSinceStartup - startTime);
+            if (isCOM && Time.realtimeSinceStartup - startTime >= FF2delay && !FF2shown)
             {
-                //print(FF2delay);
                 FF2shown = true;
                 float playerDistance = (float)Math.Sqrt(player.transform.position.x * player.transform.position.x + player.transform.position.y * player.transform.position.y);
                 Vector3 position;
-                float r = playerDistance + (maxDrawDistance - playerDistance) * (float)rand.NextDouble();
+                float r = playerDistance + (maxDrawDistance - minDrawDistance) * (float)rand.NextDouble();
                 float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
                 if (LR != 0.5f)
                 {
@@ -1015,7 +1017,7 @@ public class Monkey2D : MonoBehaviour
                 }
                 position.y = 0.0001f;
                 pooledFF[1].transform.position = position;
-                pooledFF[1].SetActive(true);
+                OnOff(pooledFF[1]);
                 //ffPositions[1] = position;
             }
 
@@ -1366,9 +1368,8 @@ public class Monkey2D : MonoBehaviour
         }
         else if (isCOM)
         {
-            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velocityThreshold);
             print(COMlambda);
-            FF2delay = GetPoisson(COMlambda);
+            FF2delay = 1f;
         }
 
         player_origin = player.transform.position;
@@ -1564,9 +1565,16 @@ public class Monkey2D : MonoBehaviour
                             lifeSpan = durations[4];
                         }
                         onDur.Add(lifeSpan);
-                        foreach (GameObject FF in pooledFF)
+                        if (isCOM)
                         {
-                            OnOff(FF);
+                            OnOff(pooledFF[0]);
+                        }
+                        else
+                        {
+                            foreach (GameObject FF in pooledFF)
+                            {
+                                OnOff(FF);
+                            }
                         }
                     }
                     break;
@@ -2704,75 +2712,6 @@ public class Monkey2D : MonoBehaviour
         return u1 * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
     }
 
-    public int GetPoisson(double lambda)
-    {
-        return (lambda < 30.0) ? PoissonSmall(lambda) : PoissonLarge(lambda);
-    }
-
-    private int PoissonSmall(double lambda)
-    {
-        // Algorithm due to Donald Knuth, 1969.
-        double p = 1.0, L = Math.Exp(-lambda);
-        int k = 0;
-        do
-        {
-            k++;
-            p *= GetUniform();
-        }
-        while (p > L);
-        return k - 1;
-    }
-
-    private int PoissonLarge(double lambda)
-    {
-        // "Rejection method PA" from "The Computer Generation of 
-        // Poisson Random Variables" by A. C. Atkinson,
-        // Journal of the Royal Statistical Society Series C 
-        // (Applied Statistics) Vol. 28, No. 1. (1979)
-        // The article is on pages 29-35. 
-        // The algorithm given here is on page 32.
-
-        double c = 0.767 - 3.36 / lambda;
-        double beta = Math.PI / Math.Sqrt(3.0 * lambda);
-        double alpha = beta * lambda;
-        double k = Math.Log(c) - lambda - Math.Log(beta);
-
-        for (; ; )
-        {
-            double u = GetUniform();
-            double x = (alpha - Math.Log((1.0 - u) / u)) / beta;
-            int n = (int)Math.Floor(x + 0.5);
-            if (n < 0)
-                continue;
-            double v = GetUniform();
-            double y = alpha - beta * x;
-            double temp = 1.0 + Math.Exp(y);
-            double lhs = y + Math.Log(v / (temp * temp));
-            double rhs = k + n * Math.Log(lambda) - LogFactorial(n);
-            if (lhs <= rhs)
-                return n;
-        }
-    }
-
-    public double LogFactorial(int n)
-    {
-        if (n < 0)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-        else
-        {
-            double x = n + 1;
-            return (x - 0.5) * Math.Log(x) - x + 0.5 * Math.Log(2 * Math.PI) + 1.0 / (12.0 * x);
-        }
-    }
-
-    public double GetUniform()
-    {
-        double answer = rand.NextDouble();
-        return answer;
-    }
-
     public void SaveConfigs()
     {
         print("Saving Configs");
@@ -3440,7 +3379,7 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.Close();
     }
 
-    /*public void ReadCSV()
+    public void ReadCoordCSV()
     {
         StreamReader strReader = new StreamReader(path + "\\Config_2FF.csv");
         bool endoffile = false;
@@ -3449,10 +3388,14 @@ public class Monkey2D : MonoBehaviour
             string data_string = strReader.ReadLine();
             if(data_string == null)
             {
-                endoffile = true;
                 break;
             }
-            var data_values
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[0], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            FFcoordsList.Add(New_Coord_Tuple);
         }
-    }*/
+    }
 }
