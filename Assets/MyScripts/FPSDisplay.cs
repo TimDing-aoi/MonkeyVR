@@ -82,6 +82,12 @@ public class FPSDisplay : MonoBehaviour
 			GUI.contentColor = Color.black;
 		}
 		GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
+
+        if (SharedMonkey.isCOM)
+        {
+			text = string.Format("Normal: {0}\nStatic2FF:{1}\nCOM2FF:{2}",SharedMonkey.isNormal,SharedMonkey.isStatic2FF,SharedMonkey.isCOM2FF);
+		}
+		GUI.Label(new Rect(300f, 0f, 50f, 50f), text, style);
 	}
 
 	public float GetFPS()

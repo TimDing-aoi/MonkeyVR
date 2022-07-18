@@ -174,7 +174,7 @@ public class Monkey2D : MonoBehaviour
         //question = 3,
         juice = 3,
         ITI = 4,
-        none = 9
+        none = 9,
     }
     [HideInInspector] public Phases phase;
 
@@ -417,11 +417,20 @@ public class Monkey2D : MonoBehaviour
 
     bool SMtrial = false;
 
-    bool isCOM = false;
+    readonly List<float> COMtrialtype = new List<float>();
+    public bool isNormal = false;
+    public bool isStatic2FF = false;
+    public bool isCOM2FF = false;
+    public bool isCOM = false;
     bool FF2shown = false;
     float COMlambda;
     float FF2delay;
+    float normalRatio;
+    float normal2FFRatio;
+    float COM2FFRatio;
+    int FF1index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -482,6 +491,8 @@ public class Monkey2D : MonoBehaviour
 
         SharedMonkey = this;
 
+        timeout = PlayerPrefs.GetFloat("Timeout");
+        path = PlayerPrefs.GetString("Path");
         ntrials = (int)PlayerPrefs.GetFloat("Num Trials");
         if (ntrials == 0) ntrials = 9999;
         seed = UnityEngine.Random.Range(1, 10000);
@@ -517,8 +528,17 @@ public class Monkey2D : MonoBehaviour
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
-        if (isCOM) nFF = 2;
-        COMlambda = PlayerPrefs.GetFloat("COMEx");
+        if (isCOM)
+        {
+            nFF = 2;
+            FFcoordsList.Clear();
+            ReadCoordCSV();
+        }
+        normalRatio = PlayerPrefs.GetFloat("COMNormal");
+        normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
+        COM2FFRatio = PlayerPrefs.GetFloat("COM2FF");
+        normal2FFRatio += normalRatio;
+        COM2FFRatio += normal2FFRatio;
 
         if (isObsNoise)
         {
@@ -778,9 +798,6 @@ public class Monkey2D : MonoBehaviour
             firefly.SetActive(false);
         }
 
-        timeout = PlayerPrefs.GetFloat("Timeout");
-        path = PlayerPrefs.GetString("Path");
-
         trialNum = 0;
 
         currPhase = Phases.begin;
@@ -856,8 +873,8 @@ public class Monkey2D : MonoBehaviour
             DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
             DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
 
-            print(DistFlowSpeed);
-            print(DistFlowRot);
+            //print(DistFlowSpeed);
+            //print(DistFlowRot);
             var PS2 = particle_System2.main;
             PS2.startSpeed = DistFlowSpeed;
             particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
@@ -871,6 +888,7 @@ public class Monkey2D : MonoBehaviour
         {
             switch (phase)
             {
+
                 case Phases.begin:
                     phase = Phases.none;
                     if (mode == Modes.ON)
@@ -998,25 +1016,40 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            print(Time.realtimeSinceStartup - startTime);
-            if (isCOM && Time.realtimeSinceStartup - startTime >= FF2delay && !FF2shown)
+            //print(Time.realtimeSinceStartup - startTime);
+            if (isCOM2FF && Time.realtimeSinceStartup - startTime >= FF2delay && !FF2shown)
             {
                 FF2shown = true;
-                float playerDistance = (float)Math.Sqrt(player.transform.position.x * player.transform.position.x + player.transform.position.y * player.transform.position.y);
+                float r;
+                float angle;
                 Vector3 position;
-                float r = playerDistance + (maxDrawDistance - minDrawDistance) * (float)rand.NextDouble();
-                float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-                if (LR != 0.5f)
+                FFvisibleList.Add(FFcoordsList[0]);
+                foreach (var coord in FFcoordsList)
                 {
-                    float side = rand.NextDouble() < LR ? 1 : -1;
-                    position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle * side, Vector3.up) * player.transform.forward * r;
-                }
-                else
-                {
+                    r = coord.Item1;
+                    angle = coord.Item2;
                     position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                    float coord_diff_ratio = (player.transform.position.x - position.x) / (player.transform.position.z - position.z);
+                    float rotation_diff = (float)Math.Abs(Math.Atan(coord_diff_ratio) - player.transform.rotation.eulerAngles.y);
+                    if(r > Math.Sqrt(player.transform.position.x * player.transform.position.x + player.transform.position.z * player.transform.position.z) && rotation_diff < 45)
+                    {
+                        if(!(coord.Item1 == FFcoordsList[FF1index].Item1 && coord.Item2 == FFcoordsList[FF1index].Item2))
+                        {
+
+                            FFvisibleList.Add(coord);
+                        }
+                    }
                 }
+                print("possible FFs: " + FFvisibleList.Count.ToString());
+                int FFindex = rand.Next(FFvisibleList.Count);
+                r = FFvisibleList[FFindex].Item1;
+                angle = FFvisibleList[FFindex].Item2;
+                position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
                 position.y = 0.0001f;
                 pooledFF[1].transform.position = position;
+                print("Trial FF2 r:" + r.ToString());
+                print("Trial FF2 a:" + angle.ToString());
+                FFvisibleList.Clear();
                 OnOff(pooledFF[1]);
                 //ffPositions[1] = position;
             }
@@ -1247,24 +1280,40 @@ public class Monkey2D : MonoBehaviour
         if (isCOM)
         {
             Vector3 position;
-            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
-            float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-            if (LR != 0.5f)
-            {
-                float side = rand.NextDouble() < LR ? 1 : -1;
-                position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle * side, Vector3.up) * player.transform.forward * r;
-            }
-            else
-            {
-                position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
-            }
+            int FFindex = rand.Next(FFcoordsList.Count);
+            FF1index = FFindex;
+            float r = FFcoordsList[FFindex].Item1;
+            float angle = FFcoordsList[FFindex].Item2;
+            position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             position.y = 0.0001f;
             pooledFF[0].transform.position = position;
-            //ffPositions[0] = position;
             Vector3 position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
             pooledFF[1].transform.position = position1;
             pooledFF[1].SetActive(false);
-            //ffPositions[1] = position1;
+            print("Trial FF r:" + r.ToString());
+            print("Trial FF a:" + angle.ToString());
+            float COMdecider = (float)rand.NextDouble();
+            if(COMdecider < normalRatio)
+            {
+                isNormal = true;
+                isStatic2FF = false;
+                isCOM2FF = false;
+                COMtrialtype.Add(1);
+            }
+            else if(COMdecider < normal2FFRatio)
+            {
+                isNormal = false;
+                isStatic2FF = true;
+                isCOM2FF = false;
+                COMtrialtype.Add(2);
+            }
+            else
+            {
+                isNormal = false;
+                isStatic2FF = false;
+                isCOM2FF = true;
+                COMtrialtype.Add(3);
+            }
         }
         else if (nFF > 1 && multiMode == 1)
         {
@@ -1339,6 +1388,24 @@ public class Monkey2D : MonoBehaviour
             ffPositions.Add(position);
         }
 
+        if (isStatic2FF)
+        {
+            Vector3 position;
+            int FFindex = rand.Next(FFcoordsList.Count);
+            while (FFindex == FF1index)
+            {
+                FFindex = rand.Next(FFcoordsList.Count);
+            }
+            float r = FFcoordsList[FFindex].Item1;
+            float angle = FFcoordsList[FFindex].Item2;
+            position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+            position.y = 0.0001f;
+            pooledFF[1].transform.position = position;
+            pooledFF[1].SetActive(false);
+            print("Trial FF r:" + r.ToString());
+            print("Trial FF a:" + angle.ToString());
+        }
+
         // Here, I do something weird to the Vector3. "F5" is how many digits I want when I
         // convert to string, Trim takes off the parenthesis at the beginning and end of 
         // the converted Vector3 (Vector3.zero.ToString("F2"), for example, outputs:
@@ -1366,10 +1433,10 @@ public class Monkey2D : MonoBehaviour
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) <= velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) <= rotationThreshold); // Used to be rb.velocity.magnitude
             }
         }
-        else if (isCOM)
+        else if (isCOM2FF)
         {
             print(COMlambda);
-            FF2delay = 1f;
+            FF2delay = FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed;
         }
 
         player_origin = player.transform.position;
@@ -1568,6 +1635,10 @@ public class Monkey2D : MonoBehaviour
                         if (isCOM)
                         {
                             OnOff(pooledFF[0]);
+                            if (isStatic2FF)
+                            {
+                                OnOff(pooledFF[1]);
+                            }
                         }
                         else
                         {
@@ -1674,6 +1745,21 @@ public class Monkey2D : MonoBehaviour
             motion_toggle = false;
         }
 
+        if (isCOM)
+        {
+            foreach (var coord in FFcoordsList)
+            {
+                float r1 = coord.Item1;
+                float angle1 = coord.Item2;
+                Vector3 position2 = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle1, Vector3.up) * player.transform.forward * r1;
+                position2.y = 0.0001f;
+                pooledFF[0].transform.position = position2;
+                pooledFF[0].SetActive(true);
+                await new WaitForSeconds(1f);
+                pooledFF[0].SetActive(false);
+            }
+        }
+
         if (ptb != 2)
         {
             print("PTB trial started");
@@ -1705,6 +1791,7 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
+            isIntertrail = false;
             var t = Task.Run(async () => {
                 await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
             }, source.Token);
@@ -1824,7 +1911,23 @@ public class Monkey2D : MonoBehaviour
             audioSource.clip = loseSound;
         }
 
-        if (nFF > 1 && multiMode == 1)
+        if (isCOM)
+        {
+            for (int i = 0; i < nFF; i++)
+            {
+                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
+                distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
+                //print(distance);
+                if (distance <= fireflyZoneRadius && distance < curdistance)
+                {
+                    curdistance = distance;
+                    proximity = true;
+                    colorhit = i;
+                }
+                distances.Add(distance);
+            }
+        }
+        else if (nFF > 1 && multiMode == 1)
         {
             ffPosStr = string.Concat(ffPosStr, ",", pooledFF[loopCount].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
             distance = Vector3.Distance(pPos, pooledFF[loopCount].transform.position);
@@ -1861,7 +1964,33 @@ public class Monkey2D : MonoBehaviour
 
         if (isReward && proximity)
         {
-            if (nFF > 1 && multiMode == 1)
+             if (isCOM && PlayerPrefs.GetInt("isColored") == 1)
+            {
+                print(colorhit);
+                print(colorchosen[(int)colorhit]);
+                juiceTime = colorrewards[(int)colorchosen[(int)colorhit] - 1];
+                audioSource.clip = winSound;
+                juiceDuration.Add(juiceTime);
+                audioSource.Play();
+                points++;
+                SendMarker("j", juiceTime);
+                await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
+                juiceTime = 0;
+            }
+            else if (isCOM)
+            {
+                audioSource.clip = winSound;
+                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
+                //print(juiceTime);
+                juiceDuration.Add(juiceTime);
+                audioSource.Play();
+
+                points++;
+                SendMarker("j", juiceTime);
+
+                await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
+            }
+            else if (nFF > 1 && multiMode == 1)
             {
                 if (loopCount + 1 < nFF)
                 {
@@ -1886,19 +2015,6 @@ public class Monkey2D : MonoBehaviour
                     juiceTime = 0;
                     //Debug.Log("Juice: " + DateTime.Now.ToLongTimeString());
                 }
-            }
-            else if (nFF > 1 && PlayerPrefs.GetInt("isColored") == 1)
-            {
-                print(colorhit);
-                print(colorchosen[(int)colorhit]);
-                juiceTime = colorrewards[(int)colorchosen[(int)colorhit] - 1];
-                audioSource.clip = winSound;
-                juiceDuration.Add(juiceTime);
-                audioSource.Play();
-                points++;
-                SendMarker("j", juiceTime);
-                await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
-                juiceTime = 0;
             }
             else
             {
@@ -2253,50 +2369,16 @@ public class Monkey2D : MonoBehaviour
                     checkStr = string.Concat(checkStr, string.Format("checkTime{0},", i));
                 }
 
-                if (nFF > 1 && multiMode == 1)
-                {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,{2}rewardTime,endTime,checkWait,interWait,ObsDensityRatio", ffPosStr, distStr, checkStr);
-                }
-                else if (PlayerPrefs.GetInt("isColored") == 1)
-                {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,FF1colorID,FF2coloID,ObsDensityRatio", ffPosStr, distStr);
-                }
-                else
-                {
-                    firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio", ffPosStr, distStr);
-                }
-            }/*
-            else if (PlayerPrefs.GetInt("Perturbation On") == 1)
-            {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,TimeCntPTBStart,ptbJoyVelGain,ptbJoyRotGain,ptbJoyFlagTrial,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-            }
-            else if (CtrlDynamicsFlag != 2)
-            {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,NoiseTau,RotNoiseGain,VelNoiseGain,nTaus,minTaus,maxTaus,MeanDist,MeanTravelTime,VelThresh,RotThresh,,ObsDensityRatio" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-            }
-            else if (SharedJoystick.ptbJoyOn>0) 
-            {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio,"
-                   + "ptbStart,ptbVelGain," +
-                    "ptbRotGain,ptbTrial," +
-                    "" + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-            }
-            else
-            {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded,timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,ObsDensityRatio," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-            }
-
-            if (PlayerPrefs.GetInt("isFFstimu") == 1)
-            {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
-                    "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,StimulationTime,StimulationDuration,ObsDensityRatio," 
+                firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
+                    "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
-            }*/
+            }
             else
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -2345,6 +2427,10 @@ public class Monkey2D : MonoBehaviour
                 temp.Add(timeStimuStart.Count);
                 temp.Add(trialStimuDur.Count);
             }
+            if (isCOM)
+            {
+                temp.Add(COMtrialtype.Count);
+            }
             //foreach (int count in temp)
             //{
             //    print(count);
@@ -2364,259 +2450,84 @@ public class Monkey2D : MonoBehaviour
                 j = 0;
             }
 
-            /*if (CtrlDynamicsFlag != 2)
+            for (int i = j; i < temp[0]; i++)
             {
-                int i = 0;
-                print(temp[0]);
-                var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTime[i].ToString("F5"),
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i],
-                        CurrentTau[i]);
-                var secondline = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
-                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
+                var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
+                    n[i],
+                    max_v[i],
+                    max_w[i],
+                    fv[i],
+                    onDur[i],
+                    densities[i],
+                    origin[i],
+                    heading[i],
+                    ffPos[i],
+                    cPos[i],
+                    cRot[i],
+                    dist[i],
+                    score[i],
+                    timedout[i],
+                    juiceDuration[i],
+                    beginTime[i],
+                    checkTime[i].ToString("F5"),
+                    rewardTime[i],
+                    endTime[i],
+                    checkWait[i],
+                    interWait[i]);
+
+                if (ptb != 2)
+                {
+                    line = line + "," + CurrentTau[i];
+                    line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+            PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
+            + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold + ',' + PlayerPrefs.GetFloat("velBrakeThresh")
+            + ',' + PlayerPrefs.GetFloat("rotBrakeThresh");
+                }
+                else
+                {
+                    line += string.Format(",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+                }
 
                 if (PlayerPrefs.GetInt("isFFstimu") == 1)
                 {
-                    secondline += string.Format(",{0},{1}", timeStimuStart[0], trialStimuDur[0]);
+                    line += string.Format(",{0},{1},{2}", timeStimuStart[i], trialStimuDur[i], stimuratio);
                 }
-
-                secondline += string.Format(",{0}", densities_obsRatio[0]);
-
-                csvDisc.AppendLine(secondline);
-            }*/
-
-            if (multiMode == 1)
-            {
-                for (int i = j; i < temp[0]; i++)
+                else
                 {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTimeStrList[i],
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i]);
-
-                    if (ptb != 2)
-                    {
-                        line = line + "," + CurrentTau[i];
-                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
-                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
-                    }
-
-                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
-                    {
-                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
-                    }
-
-                    line += string.Format(",{0}", densities_obsRatio[i]);
-
-                    csvDisc.AppendLine(line);
-
-                    totalScore += score[i];
+                    line += string.Format(",0,0,0");
                 }
+
+                if (isObsNoise)
+                {
+                    line += string.Format(",{0},{1},{2},{3}", ObsNoiseTau, ObsVelocityNoiseGain, ObsRotationNoiseGain, densities_obsRatio[i]);
+                }
+                else
+                {
+                    line += string.Format(",0,0,0,0");
+                }
+
+                if (PlayerPrefs.GetInt("isColored") == 1)
+                {
+                    line += string.Format(",{0}", ffCol[i]);
+                }
+                else
+                {
+                    line += string.Format(",0");
+                }
+
+                if (isCOM)
+                {
+                    line += string.Format(",{0}", COMtrialtype[i]);
+                }
+                else
+                {
+                    line += string.Format(",0");
+                }
+
+                csvDisc.AppendLine(line);
+
+                totalScore += score[i];
             }
-            else
-            {
-                for (int i = j; i < temp[0]; i++)
-                {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTime[i].ToString("F5"),
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i]);
-
-                    if (ptb != 2)
-                    {
-                        line = line + "," + CurrentTau[i];
-                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
-                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold + ',' + PlayerPrefs.GetFloat("velBrakeThresh")
-                + ',' + PlayerPrefs.GetFloat("rotBrakeThresh");
-                    }
-                    else
-                    {
-                        line += string.Format(",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
-                    }
-
-                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
-                    {
-                        line += string.Format(",{0},{1},{2}", timeStimuStart[i], trialStimuDur[i], stimuratio);
-                    }
-                    else
-                    {
-                        line += string.Format(",0,0,0");
-                    }
-
-                    if (isObsNoise)
-                    {
-                        line += string.Format(",{0},{1},{2},{3}", ObsNoiseTau, ObsVelocityNoiseGain, ObsRotationNoiseGain, densities_obsRatio[i]);
-                    }
-                    else
-                    {
-                        line += string.Format(",0,0,0,0");
-                    }
-
-                    if (PlayerPrefs.GetInt("isColored") == 1)
-                    {
-                        line += string.Format(",{0}", ffCol[i]);
-                    }
-                    else
-                    {
-                        line += string.Format(",0");
-                    }
-
-                    csvDisc.AppendLine(line);
-
-                    totalScore += score[i];
-                }
-            }
-            /*else if (PlayerPrefs.GetInt("Perturbation On") == 1)
-            {
-                for (int i = j; i < temp[0]; i++)
-                {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
-                        "{21},{22},{23},{24}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTime[i].ToString("F5"),
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i],
-                        timeCntPTBStart[i],
-                        ptbJoyVelGain[i],
-                        ptbJoyRotGain[i],
-                        ptbJoyFlagTrial[i]);
-
-                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
-                    {
-                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
-                    }
-
-                    line += string.Format(",{0}", densities_obsRatio[i]);
-
-                    csvDisc.AppendLine(line);
-
-                    totalScore += score[i];
-                }
-            }
-            else
-            {
-                for (int i = j; i < temp[0]; i++)
-                {
-                    var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
-                        n[i],
-                        max_v[i],
-                        max_w[i],
-                        fv[i],
-                        onDur[i],
-                        densities[i],
-                        origin[i],
-                        heading[i],
-                        ffPos[i],
-                        cPos[i],
-                        cRot[i],
-                        dist[i],
-                        score[i],
-                        timedout[i],
-                        juiceDuration[i],
-                        beginTime[i],
-                        checkTime[i].ToString("F5"),
-                        rewardTime[i],
-                        endTime[i],
-                        checkWait[i],
-                        interWait[i]);
-
-                    if (CtrlDynamicsFlag != 2)
-                    {
-                        line = line + "," + CurrentTau[i];
-                        line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
-                PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
-                + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold;
-                    }
-
-                    if (PlayerPrefs.GetInt("isFFstimu") == 1)
-                    {
-                        line += string.Format(",{0},{1}", timeStimuStart[i], trialStimuDur[i]);
-                    }
-
-                    line += string.Format(",{0}", densities_obsRatio[i]);
-
-                    csvDisc.AppendLine(line);
-
-                    totalScore += score[i];
-                }
-            }*/
-
-            // DateTime.Today.ToString("dd-MM-yyyy")
             string discPath = path + "/discontinuous_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".txt";
 
             File.WriteAllText(discPath, csvDisc.ToString());
@@ -3394,7 +3305,7 @@ public class Monkey2D : MonoBehaviour
             Tuple<float, float> New_Coord_Tuple;
             float x = float.Parse(data_values[0], CultureInfo.InvariantCulture.NumberFormat);
             float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
-            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            New_Coord_Tuple = new Tuple<float, float>(x/10, y);
             FFcoordsList.Add(New_Coord_Tuple);
         }
     }
