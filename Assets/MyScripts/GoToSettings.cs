@@ -190,7 +190,10 @@ public class GoToSettings : MonoBehaviour
 
     public void ToMainMenu()
     {
-        saveStimConfig();
+        if (PlayerPrefs.GetInt("isFFstimu") == 1)
+        {
+            saveStimConfig();
+        }
         //Camera.main.transform.position = new Vector3(0, 9, 0);
         mainMenu.enabled = true;
         //taskSelectMenu.enabled = false;

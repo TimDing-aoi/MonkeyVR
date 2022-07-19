@@ -1747,7 +1747,7 @@ public class Monkey2D : MonoBehaviour
 
         if (isCOM)
         {
-            foreach (var coord in FFcoordsList)
+            /*foreach (var coord in FFcoordsList)
             {
                 float r1 = coord.Item1;
                 float angle1 = coord.Item2;
@@ -1757,7 +1757,7 @@ public class Monkey2D : MonoBehaviour
                 pooledFF[0].SetActive(true);
                 await new WaitForSeconds(1f);
                 pooledFF[0].SetActive(false);
-            }
+            }*/
         }
 
         if (ptb != 2)
@@ -2628,7 +2628,7 @@ public class Monkey2D : MonoBehaviour
         print("Saving Configs");
 
         System.IO.Directory.CreateDirectory(path + "/configs/");
-        string configPath = path + "/configs/" + "config" + "_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".xml";
+        string configPath = path + "/configs/" + "config" + "_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("yyyyMMdd") + "_" + PlayerPrefs.GetInt("Run Number").ToString("D3") + ".xml";
 
         var settings = new XmlWriterSettings();
         settings.OmitXmlDeclaration = true;
