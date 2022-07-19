@@ -50,7 +50,24 @@ public class FPSDisplay : MonoBehaviour
 		float msec = deltaTime * 1000.0f;
 		fps = 1.0f / deltaTime;
 		string text;
-		if (!SharedJoystick.BrakeFlag && !SharedJoystick.StopFlag)
+        if (PlayerPrefs.GetInt("is2FFCOM") == 1)
+        {
+			string trialtypestring = "none";
+            if (SharedMonkey.isNormal)
+            {
+				trialtypestring = "Normal";
+            }
+			else if (SharedMonkey.isStatic2FF)
+            {
+				trialtypestring = "Static2FF";
+			}
+			else if (SharedMonkey.isCOM2FF)
+            {
+				trialtypestring = "COM2FF";
+			}
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\nTrialType:{4}",msec, fps, reward.points, reward.trialNum,trialtypestring);
+		}
+		else if (!SharedJoystick.BrakeFlag && !SharedJoystick.StopFlag)
         {
 			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Trial", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
 		}
@@ -82,12 +99,6 @@ public class FPSDisplay : MonoBehaviour
 			GUI.contentColor = Color.black;
 		}
 		GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
-
-        if (SharedMonkey.isCOM)
-        {
-			text = string.Format("Normal: {0}\nStatic2FF:{1}\nCOM2FF:{2}",SharedMonkey.isNormal,SharedMonkey.isStatic2FF,SharedMonkey.isCOM2FF);
-		}
-		GUI.Label(new Rect(300f, 0f, 50f, 50f), text, style);
 	}
 
 	public float GetFPS()

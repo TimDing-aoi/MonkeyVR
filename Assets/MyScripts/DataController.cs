@@ -323,11 +323,19 @@ namespace PupilLabs
                 firefly = SharedMonkey.firefly;
                 player = SharedMonkey.player;
                 flagMultiFF = SharedMonkey.nFF > 1;
+                if(PlayerPrefs.GetInt("is2FFCOM") == 1){
+                    flagMultiFF = true;
+                }
 
                 if (flagMultiFF)
                 {
                     var str = "";
-                    for (int i = 0; i < SharedMonkey.nFF; i++)
+                    int FFNum = (int)SharedMonkey.nFF;
+                    if (PlayerPrefs.GetInt("is2FFCOM") == 1)
+                    {
+                        FFNum = 2;
+                    }
+                    for (int i = 0; i < FFNum; i++)
                     {
                         str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                     }

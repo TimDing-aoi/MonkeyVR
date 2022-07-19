@@ -22,6 +22,7 @@ public class GoToSettings : MonoBehaviour
     public GameObject settingMenu1;
     public GameObject settingMenu2;
     public GameObject settingMenu3;
+    public GameObject errormsg;
     public UnityEngine.UI.Button saveButton;
     public UnityEngine.UI.Button loadButton;
     private TMP_InputField input;
@@ -194,8 +195,18 @@ public class GoToSettings : MonoBehaviour
         {
             saveStimConfig();
         }
-        //Camera.main.transform.position = new Vector3(0, 9, 0);
+
         mainMenu.enabled = true;
+        if (PlayerPrefs.GetInt("is2FFCOM") == 1)
+        {
+            string Config2FFpath = PlayerPrefs.GetString("Path") + "\\Config_2FF.csv";
+            if (!File.Exists(Config2FFpath))
+            {
+                mainMenu.enabled = false;
+                errormsg.SetActive(true);
+            }
+        }
+        //Camera.main.transform.position = new Vector3(0, 9, 0);
         //taskSelectMenu.enabled = false;
         human2DMenu.enabled = false;
         //humanArenaMenu.enabled = false;

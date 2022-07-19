@@ -3284,6 +3284,22 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetInt("isColored").ToString());
         xmlWriter.WriteEndElement();
 
+        xmlWriter.WriteStartElement("is2FFCOM");
+        xmlWriter.WriteString(PlayerPrefs.GetInt("is2FFCOM").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("COMNormal");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("COMNormal").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("COM2FF");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("COM2FF").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("Sta2FF");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Sta2FF").ToString());
+        xmlWriter.WriteEndElement();
+
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndDocument();
