@@ -128,6 +128,91 @@ public class GoToSettings : MonoBehaviour
         human2DMenu.enabled = false;
         //humanArenaMenu.enabled = false;
         taskSelectMenu.enabled = true;
+        foreach (Transform child in settingMenu1.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "Eye Mode" || children.name == "FP Mode" || children.name == "Multiple Firefly Mode")
+                    {
+                        TMP_Dropdown drop = children.GetComponent<TMP_Dropdown>();
+                        int LastValue = PlayerPrefs.GetInt(children.name);
+                        drop.value = LastValue;
+                    }
+                    else if (children.name == "Perturbation On" || children.name == "Moving ON" || children.name == "Feedback ON" || children.name == "AboveBelow" || children.name == "VertHor" || children.name == "Full ON")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else if (children.name == "Path" || children.name == "Name" || children.name == "Date")
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        string LastValue = PlayerPrefs.GetString(children.name);
+                        field.text = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        field.text = LastValue.ToString();
+                    }
+                }
+            }
+        }
+
+        settingMenu2.SetActive(true);
+
+        foreach (Transform child in settingMenu2.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "isAuto" || children.name == "isProcessNoise" || children.name == "isFFstimu" || children.name == "isObsNoise")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        field.text = LastValue.ToString();
+                    }
+                }
+            }
+        }
+
+        settingMenu2.SetActive(false);
+        settingMenu3.SetActive(true);
+
+        foreach (Transform child in settingMenu3.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        field.text = LastValue.ToString();
+                    }
+                }
+            }
+        }
+
+        settingMenu3.SetActive(false);
+        settingMenu1.SetActive(true);
     }
 
     public void ToHuman2DSettings()
@@ -610,21 +695,6 @@ public class GoToSettings : MonoBehaviour
                                 }
                             }
                         }
-                        //else if (children.name == "VertHor")
-                        //{
-                        //    TMP_InputField field = children.GetComponent<TMP_InputField>();
-                        //    foreach (XmlNode node in doc.DocumentElement.ChildNodes)
-                        //    {
-                        //        foreach (XmlNode setting in node.ChildNodes)
-                        //        {
-                        //            if (setting.Name == children.name.Replace(" ", ""))
-                        //            {
-                        //                field.text = setting.InnerText;
-                        //                PlayerPrefs.SetInt(children.name, int.Parse(field.text));
-                        //            }
-                        //        }
-                        //    }
-                        //}
                         else if (children.name == "Path" || children.name == "Name" || children.name == "Date")
                         {
                             TMP_InputField field = children.GetComponent<TMP_InputField>();
@@ -686,21 +756,6 @@ public class GoToSettings : MonoBehaviour
                                 }
                             }
                         }
-                        //else if (children.name == "")
-                        //{
-                        //    TMP_InputField field = children.GetComponent<TMP_InputField>();
-                        //    foreach (XmlNode node in doc.DocumentElement.ChildNodes)
-                        //    {
-                        //        foreach (XmlNode setting in node.ChildNodes)
-                        //        {
-                        //            if (setting.Name == children.name.Replace(" ", ""))
-                        //            {
-                        //                field.text = setting.InnerText;
-                        //                PlayerPrefs.SetInt(children.name, int.Parse(field.text));
-                        //            }
-                        //        }
-                        //    }
-                        //}
                         else
                         {
                             TMP_InputField field = children.GetComponent<TMP_InputField>();
@@ -729,7 +784,7 @@ public class GoToSettings : MonoBehaviour
                 {
                     if (children.gameObject.CompareTag("Setting"))
                     {
-                        if (children.name == "isColored")
+                        if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
                         {
                             UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                             foreach (XmlNode node in doc.DocumentElement.ChildNodes)

@@ -200,6 +200,9 @@ public class JoystickMonke : MonoBehaviour
     public float velbrakeThresh;
     public float rotbrakeThresh;
 
+    public float JstLinearThreshold;
+    public float JstAngularThreshold;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -280,6 +283,8 @@ public class JoystickMonke : MonoBehaviour
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
+        JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
+        JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
         float velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
         float rotStopThreshold = PlayerPrefs.GetFloat("rotStopThreshold");
 
@@ -471,7 +476,7 @@ public class JoystickMonke : MonoBehaviour
             }
             else
             {
-                if (moveX > 0.11f || moveX < -0.11f)
+                if (Mathf.Abs(moveX) > JstLinearThreshold)
                 {
                     currentSpeed = -moveX * MaxSpeed;
                 }
@@ -480,7 +485,7 @@ public class JoystickMonke : MonoBehaviour
                     currentSpeed = 0.0f;
                 }
                 
-                if (moveY > 0.11f || moveY < -0.11f)
+                if (Mathf.Abs(moveY) > JstAngularThreshold)
                 {
                     currentRot = moveY * RotSpeed;
                 }
@@ -493,19 +498,11 @@ public class JoystickMonke : MonoBehaviour
                 velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
                 rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                 ProcessNoise();
-
-                if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
+                if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
                 {
-                    if (Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position) > (minR + maxR) / 2)
-                    {
-                        currentSpeed = 0.0f;
-                    }
-                    else
-                    {
-                        currentSpeed = 1.0f;
-                    }
+                    currentSpeed = 0;
+                    currentRot = 0;
                 }
-
                 speedPrePtb = currentSpeed;
                 rotPrePtb = currentRot;
 
@@ -515,12 +512,6 @@ public class JoystickMonke : MonoBehaviour
                 }
                 else
                 {
-                    //print("ptbJoy");
-                    //if (SharedMonkey.phase == Phases.check)
-                    //{
-                    //    ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= ptbJoyRatio);
-                    //}
-
                     if (ptbJoyFlagTrial > 0) 
                     {
 
@@ -531,7 +522,6 @@ public class JoystickMonke : MonoBehaviour
                             moveY = 0;
                             timeCounter = 0;
                             timeCounterMovement = 0;
-                            //timeCntSecCurr = Time.realtimeSinceStartup;
                             timeCntSecStart = Time.realtimeSinceStartup;
                             ptbJoyEnableTime = 0;
 
@@ -581,63 +571,11 @@ public class JoystickMonke : MonoBehaviour
                 }
                 
             }
-            
-            if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
-            {
-                moveY = PlayerPrefs.GetFloat("FixedYSpeed");
-                //print(Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position));
 
-                float speedMultiplier = 3 / (3 - SharedMonkey.lifeSpan);
-                if (SharedMonkey.toggle)
-                {
-                    speedMultiplier = 3 / (3 - 0.15f);
-                }
-
-                float movingFFmode = PlayerPrefs.GetFloat("MovingFFmode");
-                bool self_motion = movingFFmode < 3;
-                if (Vector3.Distance(new Vector3(0f, 0f, 0f), transform.position) > (minR + maxR) / 2 || SharedMonkey.firefly.activeSelf && !SharedMonkey.toggle && !self_motion
-                    || SharedMonkey.motion_toggle && !self_motion)
-                {
-                    //print("out of ring");
-                    moveX = 0;
-                    moveY = 0;
-                    timeCounter = 0;
-                    circX = 0;
-                }
-                else
-                {
-                    timeCounter += 0.005f * speedMultiplier;
-                    if (movingFFmode == 1 || movingFFmode == 3)
-                    {
-                        circX -= moveX * (float)Math.PI / 180;
-                        float x = Mathf.Cos(circX);
-                        float z = Mathf.Sin(circX);
-                        transform.position = new Vector3(moveY * timeCounter * x, 0f, moveY * timeCounter * z);
-                        FF = GameObject.Find("Firefly");
-                        Vector3 lookatpos = transform.position * 2;
-                        transform.LookAt(lookatpos);
-                        transform.position = new Vector3(moveY * timeCounter * x, 1f, moveY * timeCounter * z);
-                    }
-                    else
-                    {
-                        circX -= moveX * (float)Math.PI / (180 * timeCounter);
-                        float x = Mathf.Cos(circX);
-                        float z = Mathf.Sin(circX);
-                        transform.position = new Vector3(moveY * timeCounter * x, 0f, moveY * timeCounter * z);
-                        FF = GameObject.Find("Firefly");
-                        Vector3 lookatpos = transform.position * 2;
-                        transform.LookAt(lookatpos);
-                        transform.position = new Vector3(moveY * timeCounter * x, 1f, moveY * timeCounter * z);
-                    }
-                }
-            }
-            else
-            {
-                //print(string.Format("current speed:{0}", currentSpeed));
-                //print(string.Format("current rotation:{0}", currentRot));
-                transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
-                transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
-            }
+            //print(string.Format("current speed:{0}", currentSpeed));
+            //print(string.Format("current rotation:{0}", currentRot));
+            transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
+            transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
         }
     }
 
