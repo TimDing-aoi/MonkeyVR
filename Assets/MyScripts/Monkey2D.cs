@@ -60,9 +60,6 @@ public class Monkey2D : MonoBehaviour
     // public GameObject outer;
     //wrmhl juiceBox = new wrmhl();
 
-    [Tooltip("SerialPort of your device.")]
-    [HideInInspector] public string portName;
-
     [Tooltip("Baudrate")]
     [HideInInspector] public int baudRate = 2000000;
 
@@ -466,7 +463,6 @@ public class Monkey2D : MonoBehaviour
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
-        portName = PlayerPrefs.GetString("Port");
         XRSettings.occlusionMaskScale = 10f;
         XRSettings.useOcclusionMesh = false;
         Lcam.ResetProjectionMatrix();
@@ -1018,8 +1014,9 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-
-            if (isCOM2FF && Mathf.Abs(SharedJoystick.currentSpeed) >= velbrakeThresh && !startedMoving)
+            float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
+            float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
+            if (isCOM2FF && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
             {
                 startedMoving = true;
                 MoveStartTime = Time.realtimeSinceStartup;
@@ -1301,7 +1298,7 @@ public class Monkey2D : MonoBehaviour
             FF1index = FFindex;
             float r = FFcoordsList[FFindex].Item1;
             float angle = FFcoordsList[FFindex].Item2;
-            position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
             position.y = 0.0001f;
             pooledFF[0].transform.position = position;
             Vector3 position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
@@ -1415,7 +1412,7 @@ public class Monkey2D : MonoBehaviour
             }
             float r = FFcoordsList[FFindex].Item1;
             float angle = FFcoordsList[FFindex].Item2;
-            position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
             position.y = 0.0001f;
             pooledFF[1].transform.position = position;
             pooledFF[1].SetActive(false);

@@ -128,6 +128,14 @@ public class GoToSettings : MonoBehaviour
         human2DMenu.enabled = false;
         //humanArenaMenu.enabled = false;
         taskSelectMenu.enabled = true;
+    }
+
+    public void ToHuman2DSettings()
+    {
+        mainMenu.enabled = false;
+        human2DMenu.enabled = true;
+        PlayerPrefs.SetInt("Scene", 0);
+        if (obj.GetComponentInChildren<TMP_Text>().text == "monkey2d") PlayerPrefs.SetInt("Scene", 9);
         foreach (Transform child in settingMenu1.transform)
         {
             foreach (Transform children in child)
@@ -156,7 +164,10 @@ public class GoToSettings : MonoBehaviour
                     {
                         TMP_InputField field = children.GetComponent<TMP_InputField>();
                         float LastValue = PlayerPrefs.GetFloat(children.name);
-                        field.text = LastValue.ToString();
+                        if(field != null)
+                        {
+                            field.text = LastValue.ToString();
+                        }
                     }
                 }
             }
@@ -213,14 +224,6 @@ public class GoToSettings : MonoBehaviour
 
         settingMenu3.SetActive(false);
         settingMenu1.SetActive(true);
-    }
-
-    public void ToHuman2DSettings()
-    {
-        mainMenu.enabled = false;
-        human2DMenu.enabled = true;
-        PlayerPrefs.SetInt("Scene", 0);
-        if (obj.GetComponentInChildren<TMP_Text>().text == "monkey2d") PlayerPrefs.SetInt("Scene", 9);
     }
 
     public void ToHumanArenaSettings()
@@ -435,24 +438,6 @@ public class GoToSettings : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogException(e, this);
-        }
-    }
-
-    public void SwitchPtb()
-    {
-        if (obj.GetComponent<UnityEngine.UI.Toggle>().isOn)
-        {
-            vmin.interactable = true;
-            vmax.interactable = true;
-            rmin.interactable = true;
-            rmax.interactable = true;
-        }
-        else
-        {
-            vmin.interactable = false;
-            vmax.interactable = false;
-            rmin.interactable = false;
-            rmax.interactable = false;
         }
     }
 
