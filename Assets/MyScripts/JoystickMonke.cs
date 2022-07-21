@@ -476,7 +476,7 @@ public class JoystickMonke : MonoBehaviour
             }
             else
             {
-                if (Mathf.Abs(moveX) > JstLinearThreshold)
+                /*if (Mathf.Abs(moveX) > JstLinearThreshold)
                 {
                     currentSpeed = -moveX * MaxSpeed;
                 }
@@ -492,7 +492,9 @@ public class JoystickMonke : MonoBehaviour
                 else
                 {
                     currentRot = 0.0f;
-                }
+                }*/
+                currentSpeed = -moveX * MaxSpeed;
+                currentRot = moveY * RotSpeed;
                 cleanVel = currentSpeed;
                 cleanRot = currentRot;
                 velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");

@@ -1816,6 +1816,9 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
+            float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
+            float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
+
             isIntertrail = false;
             var t = Task.Run(async () => {
                 await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
@@ -1827,7 +1830,7 @@ public class Monkey2D : MonoBehaviour
 
             if (await Task.WhenAny(t, t1) == t || player == null)
             {
-                await new WaitUntil(() => ((SharedJoystick.currentSpeed == 0.0f && SharedJoystick.currentRot == 0.0f && !SharedJoystick.CtrlDynamicsFlag) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
+                await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinearThreshold && Mathf.Abs(SharedJoystick.currentRot) <= JstAngularThreshold && !SharedJoystick.CtrlDynamicsFlag) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
                 if (t1.IsCompleted) isTimeout = true;
             }
             else
