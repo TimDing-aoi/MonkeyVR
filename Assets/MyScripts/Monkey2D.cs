@@ -1419,8 +1419,8 @@ public class Monkey2D : MonoBehaviour
             position.y = 0.0001f;
             pooledFF[1].transform.position = position;
             pooledFF[1].SetActive(false);
-            print("Trial FF r:" + r.ToString());
-            print("Trial FF a:" + angle.ToString());
+            print("Trial FF2 r:" + r.ToString());
+            print("Trial FF2 a:" + angle.ToString());
         }
 
         // Here, I do something weird to the Vector3. "F5" is how many digits I want when I
@@ -2771,8 +2771,8 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteStartElement("Setting");
         xmlWriter.WriteAttributeString("Type", "Firefly Settings");
 
-        xmlWriter.WriteStartElement("Size");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Size").ToString());
+        xmlWriter.WriteStartElement("RadiusFF");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("RadiusFF").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("RewardZoneRadius");
