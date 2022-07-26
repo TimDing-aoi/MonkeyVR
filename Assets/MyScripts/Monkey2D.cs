@@ -1026,7 +1026,24 @@ public class Monkey2D : MonoBehaviour
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 FF2shown = true;
-                float r;
+                Vector3 position;
+                int FFindex = rand.Next(FFcoordsList.Count);
+                float r = FFcoordsList[FFindex].Item1;
+                float angle = FFcoordsList[FFindex].Item2;
+                position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                position.y = 0.0001f;
+                pooledFF[1].transform.position = position;
+                while(Vector3.Distance(position, pooledFF[0].transform.position) < 1.666666 * fireflyZoneRadius)
+                {
+                    FFindex = rand.Next(FFcoordsList.Count);
+                    r = FFcoordsList[FFindex].Item1;
+                    angle = FFcoordsList[FFindex].Item2;
+                    position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                    position.y = 0.0001f;
+                    pooledFF[1].transform.position = position;
+                }
+                OnOff(pooledFF[1]);
+                /*float r;
                 float angle;
                 Vector3 position;
                 foreach (var coord in FFcoordsList)
@@ -1038,7 +1055,7 @@ public class Monkey2D : MonoBehaviour
                     Vector3 FF_vec = new Vector3(position.x - player.transform.position.x, 0, position.z - player.transform.position.z);
                     float AngleBetween = Vector3.Angle(player_vec, FF_vec);
                     //print(FF_vec);
-                    if(AngleBetween < 45)
+                    if(AngleBetween < 45 && Vector3.Distance(position, pooledFF[0].transform.position) > 1.666666 * fireflyZoneRadius)
                     {
                         if(!(coord.Item1 == FFcoordsList[FF1index].Item1 && coord.Item2 == FFcoordsList[FF1index].Item2))
                         {
@@ -1065,7 +1082,7 @@ public class Monkey2D : MonoBehaviour
                     FFvisibleList.Clear();
                     OnOff(pooledFF[1]);
                     //ffPositions[1] = position;
-                }
+                }*/
             }
 
             if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
@@ -1406,14 +1423,18 @@ public class Monkey2D : MonoBehaviour
         {
             Vector3 position;
             int FFindex = rand.Next(FFcoordsList.Count);
-            while (FFindex == FF1index)
-            {
-                FFindex = rand.Next(FFcoordsList.Count);
-            }
             float r = FFcoordsList[FFindex].Item1;
             float angle = FFcoordsList[FFindex].Item2;
             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
             position.y = 0.0001f;
+            while (FFindex == FF1index || Vector3.Distance(position,pooledFF[0].transform.position) <= 1.666666 * fireflyZoneRadius)
+            {
+                FFindex = rand.Next(FFcoordsList.Count);
+                r = FFcoordsList[FFindex].Item1;
+                angle = FFcoordsList[FFindex].Item2;
+                position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                position.y = 0.0001f;
+            }
             pooledFF[1].transform.position = position;
             pooledFF[1].SetActive(false);
             print("Trial FF2 r:" + r.ToString());
@@ -1455,7 +1476,7 @@ public class Monkey2D : MonoBehaviour
         else if (isCOM2FF)
         {
             //TODO: save delays in disc
-            FF2delay = (float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
+            FF2delay = (float)rand.NextDouble();//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
         }
 
         player_origin = player.transform.position;
