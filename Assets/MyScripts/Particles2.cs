@@ -27,7 +27,7 @@ public class Particles2 : MonoBehaviour
     {
         particles2 = this;
 
-        seed = (uint)UnityEngine.Random.Range(1, 10000);
+        seed = (uint)UnityEngine.Random.Range(10000, 20000);
         PlayerPrefs.SetInt("Optic Flow Seed", (int)seed);
         lifeSpan = PlayerPrefs.GetFloat("Life Span");
         dist = PlayerPrefs.GetFloat("Draw Distance");
@@ -41,7 +41,7 @@ public class Particles2 : MonoBehaviour
 
         particleSystem.Stop();
 
-        if (particleSystem.isStopped) particleSystem.randomSeed = seed;
+        particleSystem.randomSeed = seed;
 
         particleSystem.Play();
 

@@ -70,6 +70,17 @@ public class JoystickMonke : MonoBehaviour
     public float RotSpeed = 0.0f;
     public float MaxSpeed = 0.0f;
 
+    //Observation Noise
+    float prevVelObsEps = 0;
+    float prevVelObsZet = 0;
+    float prevRotObsEps = 0;
+    float prevRotObsZet = 0;
+    public float DistFlowSpeed = 0;
+    public float DistFlowRot = 0;
+    private float ObsNoiseTau;
+    private float ObsVelocityNoiseGain;
+    private float ObsRotationNoiseGain;
+
     //readonly List<float> t = new List<float>();
     //readonly List<bool> isPtb = new List<bool>();
     //readonly List<float> rawX = new List<float>();
@@ -287,6 +298,10 @@ public class JoystickMonke : MonoBehaviour
         JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
         float velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
         float rotStopThreshold = PlayerPrefs.GetFloat("rotStopThreshold");
+
+        ObsNoiseTau = PlayerPrefs.GetFloat("ObsNoiseTau");
+        ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
+        ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
 
         if (PlayerPrefs.GetFloat("ThreshTauMultiplier") != 0)
         {
@@ -576,8 +591,20 @@ public class JoystickMonke : MonoBehaviour
 
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
-            transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
-            transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
+            if(transform.name == "MonkeDrunk")
+            {
+                DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
+                DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
+                //print(DistFlowSpeed);
+                //print(DistFlowRot);
+                transform.position = transform.position + transform.forward * (currentSpeed + DistFlowSpeed) * Time.fixedDeltaTime;
+                transform.Rotate(0f, (currentRot + DistFlowRot) * Time.fixedDeltaTime, 0f);
+            }
+            else
+            {
+                transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
+                transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
+            }
         }
     }
 
@@ -859,5 +886,48 @@ public class JoystickMonke : MonoBehaviour
         cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
         //print(RotSpeed);
         //print(cleanRot);
+    }
+
+    float observationNoiseVel(float tau, float Gain)
+    {
+        float kappa;
+        float lamda;
+        float epsilon;
+        float zeta;
+        float result_speed;
+
+        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
+        lamda = 1 - kappa;
+        epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
+        zeta = kappa * prevVelObsZet + lamda * epsilon;
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
+            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
+        prevVelObsEps = epsilon;
+        prevVelObsZet = zeta;
+
+        return result_speed;
+    }
+
+    float observationNoiseRot(float tau, float Gain)
+    {
+        float kappa;
+        float lamda;
+        float epsilon;
+        float zeta;
+        float result_speed;
+
+        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
+        lamda = 1 - kappa;
+        epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
+        zeta = kappa * prevRotObsZet + lamda * epsilon;
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
+            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
+
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
+        prevRotObsEps = epsilon;
+        prevRotObsZet = zeta;
+
+        return result_speed;
     }
 }

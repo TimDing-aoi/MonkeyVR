@@ -53,6 +53,9 @@ public class Monkey2D : MonoBehaviour
     //public GameObject panel;
     public Camera Lcam;
     public Camera Rcam;
+    public Camera LObscam;
+    public Camera RObscam;
+    public Camera DrunkCam;
     public GameObject FP;
     [HideInInspector] public GazeVisualizer gazeVisualizer;
     //public GameObject Marker;
@@ -94,6 +97,7 @@ public class Monkey2D : MonoBehaviour
     // Pulse Width; how long in seconds it stays on during one period
     private float PW;
     public GameObject player;
+    public GameObject drunkplayer;
     public AudioSource audioSource;
     public AudioClip winSound;
     public AudioClip neutralSound;
@@ -381,10 +385,6 @@ public class Monkey2D : MonoBehaviour
     float tPrev = 0.0f;
 
     //observation noise
-    float prevVelObsEps = 0;
-    float prevVelObsZet = 0;
-    float prevRotObsEps = 0;
-    float prevRotObsZet = 0;
     public float DistFlowSpeed = 0;
     public float DistFlowRot = 0;
 
@@ -461,12 +461,16 @@ public class Monkey2D : MonoBehaviour
         programT0 = Time.realtimeSinceStartup;
 
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
+        UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(LObscam, true);
+        UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(RObscam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
         XRSettings.occlusionMaskScale = 10f;
         XRSettings.useOcclusionMesh = false;
         Lcam.ResetProjectionMatrix();
         Rcam.ResetProjectionMatrix();
+        LObscam.ResetProjectionMatrix();
+        RObscam.ResetProjectionMatrix();
 
         lm = Lcam.projectionMatrix;
         lm02 = lm.m02;
@@ -478,6 +482,17 @@ public class Monkey2D : MonoBehaviour
         rm.m02 = rm02 - offset;
         Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
         Rcam.projectionMatrix = rm;
+
+        lm = LObscam.projectionMatrix;
+        lm02 = lm.m02;
+        rm = RObscam.projectionMatrix;
+        rm02 = rm.m02;
+        lm.m02 = lm02 + offset;
+        LObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
+        LObscam.projectionMatrix = lm;
+        rm.m02 = rm02 - offset;
+        RObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
+        RObscam.projectionMatrix = rm;
 
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
@@ -543,11 +558,13 @@ public class Monkey2D : MonoBehaviour
             print("Activating Observe Noise");
             var em = particle_System2.emission;
             em.enabled = true;
+            //drunkplayer.SetActive(true);
         }
         else
         {
             var em = particle_System2.emission;
             em.enabled = false;
+            drunkplayer.SetActive(false);
         }
 
         if (ptb != 2)
@@ -803,6 +820,8 @@ public class Monkey2D : MonoBehaviour
 
         player.transform.position = Vector3.up * p_height;
         player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        drunkplayer.transform.position = Vector3.up * p_height;
+        drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         if (PlayerPrefs.GetFloat("calib") == 0)
         {
@@ -867,18 +886,7 @@ public class Monkey2D : MonoBehaviour
     {
         if (isObsNoise)
         {
-
-            DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
-            DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
-
-            //print(DistFlowSpeed);
-            //print(DistFlowRot);
-            var PS2 = particle_System2.main;
-            PS2.startSpeed = DistFlowSpeed;
-            particle_System2.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
-            float step = DistFlowRot;
-            particle_System2.transform.rotation = player.transform.rotation;
-            particle_System2.transform.Rotate(Vector3.up * step);
+            particle_System2.transform.position = drunkplayer.transform.position - (Vector3.up * (p_height - 0.0002f));
         }
         particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
         //print(particle_System.transform.position);
@@ -1440,19 +1448,6 @@ public class Monkey2D : MonoBehaviour
             print("Trial FF2 r:" + r.ToString());
             print("Trial FF2 a:" + angle.ToString());
         }
-
-        // Here, I do something weird to the Vector3. "F5" is how many digits I want when I
-        // convert to string, Trim takes off the parenthesis at the beginning and end of 
-        // the converted Vector3 (Vector3.zero.ToString("F2"), for example, outputs:
-        //
-        //      "(0.00, 0.00, 0.00)"
-        //
-        // Replace(" ", "") removes all whitespace characters, so the above string would
-        // look like this:
-        //
-        //      "0.00,0.00,0.00"
-        //
-        // Which is csv format.
 
         float velocityThreshold = PlayerPrefs.GetFloat("velBrakeThresh");
         float rotationThreshold = PlayerPrefs.GetFloat("rotBrakeThresh");
@@ -2121,6 +2116,8 @@ public class Monkey2D : MonoBehaviour
 
                     player.transform.position = Vector3.up * p_height;
                     player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    drunkplayer.transform.position = Vector3.up * p_height;
+                    drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
                     score.Add(isReward && proximity ? 1 : 0);
                     timedout.Add(isTimeout ? 1 : 0);
@@ -2297,6 +2294,8 @@ public class Monkey2D : MonoBehaviour
             {
                 player.transform.position = Vector3.up * p_height;
                 player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                drunkplayer.transform.position = Vector3.up * p_height;
+                drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
                 await new WaitForSeconds(wait);
             }
@@ -2306,6 +2305,8 @@ public class Monkey2D : MonoBehaviour
                 await new WaitForSeconds(wait);
                 player.transform.position = Vector3.up * p_height;
                 player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                drunkplayer.transform.position = Vector3.up * p_height;
+                drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             }
 
             phase = Phases.begin;
@@ -2624,49 +2625,6 @@ public class Monkey2D : MonoBehaviour
         points[segments] = points[0];
         lr.positionCount = segments + 1;
         lr.SetPositions(points);
-    }
-
-    float observationNoiseVel(float tau, float Gain)
-    {
-        float kappa;
-        float lamda;
-        float epsilon;
-        float zeta;
-        float result_speed;
-
-        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
-        lamda = 1 - kappa;
-        epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
-        zeta = kappa * prevVelObsZet + lamda * epsilon;
-        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) 
-            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
-        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
-        prevVelObsEps = epsilon;
-        prevVelObsZet = zeta;
-
-        return result_speed;
-    }
-
-    float observationNoiseRot(float tau, float Gain)
-    {
-        float kappa;
-        float lamda;
-        float epsilon;
-        float zeta;
-        float result_speed;
-
-        kappa = Mathf.Exp(-Time.fixedDeltaTime / tau);
-        lamda = 1 - kappa;
-        epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
-        zeta = kappa * prevRotObsZet + lamda * epsilon;
-        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
-            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
-
-        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
-        prevRotObsEps = epsilon;
-        prevRotObsZet = zeta;
-
-        return result_speed;
     }
 
     public float BoxMullerGaussianSample()
