@@ -1644,10 +1644,30 @@ PrefabInstance:
       propertyPath: far clip plane
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 262144
+      objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: far clip plane
       value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 262144
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}

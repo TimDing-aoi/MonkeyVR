@@ -178,8 +178,8 @@ namespace PupilLabs
                     var RawY = SharedJoystick.rawY;
                     var CleanLV = SharedJoystick.cleanVel;
                     var CleanRV = SharedJoystick.cleanRot;
-                    var ObsLinNoise = SharedMonkey.DistFlowSpeed;
-                    var ObsAngNoise = SharedMonkey.DistFlowRot;
+                    var ObsLinNoise = SharedJoystick.DistFlowSpeed;
+                    var ObsAngNoise = SharedJoystick.DistFlowRot;
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)
