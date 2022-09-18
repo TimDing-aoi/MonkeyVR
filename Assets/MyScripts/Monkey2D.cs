@@ -574,8 +574,8 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            velStopThreshold = 1.0f;
-            rotStopThreshold = 1.0f;
+            velStopThreshold = 0.1f;
+            rotStopThreshold = 0.1f;
         }
 
         if (nFF > 1 && PlayerPrefs.GetInt("isColored") == 1)
