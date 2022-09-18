@@ -1834,7 +1834,7 @@ public class Monkey2D : MonoBehaviour
 
             isIntertrail = false;
             var t = Task.Run(async () => {
-                await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) >= velbrakeThresh); // Used to be rb.velocity.magnitude
             }, source.Token);
 
             var t1 = Task.Run(async () => {
