@@ -1050,6 +1050,7 @@ public class Monkey2D : MonoBehaviour
                 }
                 else
                 {
+                    FF2shown = true;
                     float r;
                     float angle;
                     Vector3 position;
