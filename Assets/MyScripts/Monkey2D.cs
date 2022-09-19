@@ -427,6 +427,7 @@ public class Monkey2D : MonoBehaviour
     float normalRatio;
     float normal2FFRatio;
     float COM2FFRatio;
+    float COMmode; 
     int FF1index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
@@ -526,6 +527,7 @@ public class Monkey2D : MonoBehaviour
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
+        COMmode = PlayerPrefs.GetFloat("COMmode");
         if (isCOM)
         {
             nFF = 2;
@@ -1025,64 +1027,70 @@ public class Monkey2D : MonoBehaviour
             //print(Time.realtimeSinceStartup - MoveStartTime);
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
-                FF2shown = true;
-                Vector3 position;
-                int FFindex = rand.Next(FFcoordsList.Count);
-                float r = FFcoordsList[FFindex].Item1;
-                float angle = FFcoordsList[FFindex].Item2;
-                position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
-                position.y = 0.0001f;
-                pooledFF[1].transform.position = position;
-                while(Vector3.Distance(position, pooledFF[0].transform.position) < 1.666666 * fireflyZoneRadius)
+                if(COMmode == 1)
                 {
-                    FFindex = rand.Next(FFcoordsList.Count);
-                    r = FFcoordsList[FFindex].Item1;
-                    angle = FFcoordsList[FFindex].Item2;
+                    FF2shown = true;
+                    Vector3 position;
+                    int FFindex = rand.Next(FFcoordsList.Count);
+                    float r = FFcoordsList[FFindex].Item1;
+                    float angle = FFcoordsList[FFindex].Item2;
                     position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
                     position.y = 0.0001f;
                     pooledFF[1].transform.position = position;
-                }
-                OnOff(pooledFF[1]);
-                /*float r;
-                float angle;
-                Vector3 position;
-                foreach (var coord in FFcoordsList)
-                {
-                    r = coord.Item1;
-                    angle = coord.Item2;
-                    position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                    Vector3 player_vec = Quaternion.AngleAxis(player.transform.rotation.eulerAngles.y, Vector3.up) * Vector3.forward;
-                    Vector3 FF_vec = new Vector3(position.x - player.transform.position.x, 0, position.z - player.transform.position.z);
-                    float AngleBetween = Vector3.Angle(player_vec, FF_vec);
-                    //print(FF_vec);
-                    if(AngleBetween < 45 && Vector3.Distance(position, pooledFF[0].transform.position) > 1.666666 * fireflyZoneRadius)
+                    while (Vector3.Distance(position, pooledFF[0].transform.position) < 1.666666 * fireflyZoneRadius)
                     {
-                        if(!(coord.Item1 == FFcoordsList[FF1index].Item1 && coord.Item2 == FFcoordsList[FF1index].Item2))
-                        {
-
-                            FFvisibleList.Add(coord);
-                        }
+                        FFindex = rand.Next(FFcoordsList.Count);
+                        r = FFcoordsList[FFindex].Item1;
+                        angle = FFcoordsList[FFindex].Item2;
+                        position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                        position.y = 0.0001f;
+                        pooledFF[1].transform.position = position;
                     }
-                }
-                //print("possible FFs: " + FFvisibleList.Count.ToString());
-                if(FFvisibleList.Count == 0)
-                {
-                    print("No possible FF for COM. Converting to normal.");
+                    OnOff(pooledFF[1]);
                 }
                 else
                 {
-                    int FFindex = rand.Next(FFvisibleList.Count);
-                    r = FFvisibleList[FFindex].Item1;
-                    angle = FFvisibleList[FFindex].Item2;
-                    position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                    position.y = 0.0001f;
-                    pooledFF[1].transform.position = position;
-                    print("Trial FF2 r:" + r.ToString());
-                    print("Trial FF2 a:" + angle.ToString());
-                    FFvisibleList.Clear();
-                    OnOff(pooledFF[1]);
-                    //ffPositions[1] = position;
-                }*/
+                    float r;
+                    float angle;
+                    Vector3 position;
+                    foreach (var coord in FFcoordsList)
+                    {
+                        r = coord.Item1;
+                        angle = coord.Item2;
+                        position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                        Vector3 player_vec = Quaternion.AngleAxis(player.transform.rotation.eulerAngles.y, Vector3.up) * Vector3.forward;
+                        Vector3 FF_vec = new Vector3(position.x - player.transform.position.x, 0, position.z - player.transform.position.z);
+                        float AngleBetween = Vector3.Angle(player_vec, FF_vec);
+                        //print(FF_vec);
+                        if (AngleBetween < 45 && Vector3.Distance(position, pooledFF[0].transform.position) > 1.666666 * fireflyZoneRadius)
+                        {
+                            if (!(coord.Item1 == FFcoordsList[FF1index].Item1 && coord.Item2 == FFcoordsList[FF1index].Item2))
+                            {
+
+                                FFvisibleList.Add(coord);
+                            }
+                        }
+                    }
+                    //print("possible FFs: " + FFvisibleList.Count.ToString());
+                    if (FFvisibleList.Count == 0)
+                    {
+                        print("No possible FF for COM. Converting to normal.");
+                    }
+                    else
+                    {
+                        int FFindex = rand.Next(FFvisibleList.Count);
+                        r = FFvisibleList[FFindex].Item1;
+                        angle = FFvisibleList[FFindex].Item2;
+                        position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                        position.y = 0.0001f;
+                        pooledFF[1].transform.position = position;
+                        print("Trial FF2 r:" + r.ToString());
+                        print("Trial FF2 a:" + angle.ToString());
+                        FFvisibleList.Clear();
+                        OnOff(pooledFF[1]);
+                        //ffPositions[1] = position;
+                    }
+                }
             }
 
             if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
