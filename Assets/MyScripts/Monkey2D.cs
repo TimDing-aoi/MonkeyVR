@@ -1507,7 +1507,9 @@ public class Monkey2D : MonoBehaviour
         else if (isCOM2FF)
         {
             //TODO: save delays in disc
-            FF2delay = (float)rand.NextDouble();//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
+            float DelayMin = PlayerPrefs.GetFloat("FF2Delaymin");
+            float DelayMax = PlayerPrefs.GetFloat("FF2Delaymax");
+            FF2delay = DelayMin + (float)rand.NextDouble() * (DelayMax - DelayMin);//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
         }
 
         player_origin = player.transform.position;
