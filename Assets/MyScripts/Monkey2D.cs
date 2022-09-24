@@ -1339,6 +1339,8 @@ public class Monkey2D : MonoBehaviour
 
         if (isCOM)
         {
+            player.transform.position = Vector3.up * p_height;
+            player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             Vector3 position;
             int FFindex = rand.Next(FFcoordsList.Count);
             FF1index = FFindex;
