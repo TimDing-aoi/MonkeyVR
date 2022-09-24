@@ -534,6 +534,7 @@ public class Monkey2D : MonoBehaviour
             nFF = 2;
             FFcoordsList.Clear();
             ReadCoordCSV();
+            ReadCoord2CSV();
         }
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
@@ -1096,7 +1097,6 @@ public class Monkey2D : MonoBehaviour
                 else {
                     FF2shown = true;
                     Vector3 position;
-                    print(FF2coordsList.Count);
                     int FFindex = rand.Next(FF2coordsList.Count);
                     float VectorX = FF2coordsList[FFindex].Item1;
                     float VectorY = FF2coordsList[FFindex].Item2;
