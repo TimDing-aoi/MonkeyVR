@@ -1108,6 +1108,8 @@ public class Monkey2D : MonoBehaviour
                     position.z += VectorY;
                     position = Quaternion.Euler(0, angle, 0) * position;
                     pooledFF[1].transform.position = position;
+                    print("Trial FF2 x:" + position.x);
+                    print("Trial FF2 y:" + position.z);
                     OnOff(pooledFF[1]);
                 }
             }
