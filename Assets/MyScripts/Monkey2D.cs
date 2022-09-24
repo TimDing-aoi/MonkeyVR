@@ -533,6 +533,7 @@ public class Monkey2D : MonoBehaviour
         {
             nFF = 2;
             FFcoordsList.Clear();
+            FF2coordsList.Clear();
             ReadCoordCSV();
             ReadCoord2CSV();
         }
