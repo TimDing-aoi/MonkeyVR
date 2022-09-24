@@ -430,6 +430,7 @@ public class Monkey2D : MonoBehaviour
     float COMmode; 
     int FF1index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
     private void Awake()
     {
@@ -1048,7 +1049,7 @@ public class Monkey2D : MonoBehaviour
                     }
                     OnOff(pooledFF[1]);
                 }
-                else
+                else if(COMmode == 0)
                 {
                     FF2shown = true;
                     float r;
@@ -1091,6 +1092,21 @@ public class Monkey2D : MonoBehaviour
                         OnOff(pooledFF[1]);
                         //ffPositions[1] = position;
                     }
+                }
+                else {
+                    FF2shown = true;
+                    Vector3 position;
+                    int FFindex = rand.Next(FF2coordsList.Count);
+                    float VectorX = FF2coordsList[FFindex].Item1;
+                    float VectorY = FF2coordsList[FFindex].Item2;
+                    float r = FFcoordsList[FF1index].Item1;
+                    float angle = FFcoordsList[FF1index].Item2;
+                    position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
+                    position.x += VectorX;
+                    position.z += VectorY;
+                    position = position * Quaternion.Euler(0, angle, 0);
+                    pooledFF[1].transform.position = position;
+                    OnOff(pooledFF[1]);
                 }
             }
 
@@ -3399,6 +3415,26 @@ public class Monkey2D : MonoBehaviour
             float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
             New_Coord_Tuple = new Tuple<float, float>(x/10, y);
             FFcoordsList.Add(New_Coord_Tuple);
+        }
+    }
+
+    public void ReadCoord2CSV()
+    {
+        StreamReader strReader = new StreamReader(path + "\\Config_2FF_2.csv");
+        bool endoffile = false;
+        while (!endoffile)
+        {
+            string data_string = strReader.ReadLine();
+            if (data_string == null)
+            {
+                break;
+            }
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[0], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x,y);
+            FF2coordsList.Add(New_Coord_Tuple);
         }
     }
 }
