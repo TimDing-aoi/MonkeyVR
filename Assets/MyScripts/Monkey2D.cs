@@ -529,14 +529,13 @@ public class Monkey2D : MonoBehaviour
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
         COMmode = PlayerPrefs.GetFloat("COMmode");
-        COMmode = 1;
         if (isCOM)
         {
             nFF = 2;
             FFcoordsList.Clear();
-            //FF2coordsList.Clear();
+            FF2coordsList.Clear();
             ReadCoordCSV();
-            //ReadCoord2CSV();
+            ReadCoord2CSV();
         }
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
