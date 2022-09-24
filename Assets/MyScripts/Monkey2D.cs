@@ -1104,7 +1104,7 @@ public class Monkey2D : MonoBehaviour
                     position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
                     position.x += VectorX;
                     position.z += VectorY;
-                    position = position * Quaternion.Euler(0, angle, 0);
+                    position = Quaternion.Euler(0, angle, 0) * position;
                     pooledFF[1].transform.position = position;
                     OnOff(pooledFF[1]);
                 }
