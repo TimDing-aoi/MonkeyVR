@@ -1096,6 +1096,7 @@ public class Monkey2D : MonoBehaviour
                 else {
                     FF2shown = true;
                     Vector3 position;
+                    print(FF2coordsList.Count);
                     int FFindex = rand.Next(FF2coordsList.Count);
                     float VectorX = FF2coordsList[FFindex].Item1;
                     float VectorY = FF2coordsList[FFindex].Item2;
