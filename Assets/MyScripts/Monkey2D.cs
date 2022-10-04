@@ -327,11 +327,11 @@ public class Monkey2D : MonoBehaviour
     private bool isTrial = false;
     private bool isCheck = false;
     private bool isEnd = false;
-    [HideInInspector] public bool isIntertrail = false;
+    public bool isIntertrail = false;
     private float startTime;
     private float MoveStartTime;
 
-    [HideInInspector] public Phases currPhase;
+    public Phases currPhase;
 
     readonly private List<GameObject> pooledFF = new List<GameObject>();
 
