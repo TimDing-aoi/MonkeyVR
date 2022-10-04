@@ -439,7 +439,7 @@ public class JoystickMonke : MonoBehaviour
             if (CtrlDynamicsFlag)
             {
                 updateControlDynamics();
-                if (SharedMonkey.isIntertrail)
+                if (Monkey2D.isIntertrail)
                 {
                     //print("stoping");
                     moveX = 0;
@@ -570,7 +570,7 @@ public class JoystickMonke : MonoBehaviour
 
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
-            if (SharedMonkey.isCOM && SharedMonkey.isIntertrail)
+            if (SharedMonkey.isCOM && Monkey2D.isIntertrail)
                 {
                     print("stopping");
                     currentSpeed = 0;
