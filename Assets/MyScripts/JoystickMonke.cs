@@ -570,6 +570,7 @@ public class JoystickMonke : MonoBehaviour
 
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
+            print(Monkey2D.isIntertrail);
             if (SharedMonkey.isCOM && Monkey2D.isIntertrail)
                 {
                     print("stopping");
