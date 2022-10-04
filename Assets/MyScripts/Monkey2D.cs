@@ -327,7 +327,7 @@ public class Monkey2D : MonoBehaviour
     private bool isTrial = false;
     private bool isCheck = false;
     private bool isEnd = false;
-    public static bool isIntertrail = false;
+    [HideInInspector] public bool isIntertrail = false;
     private float startTime;
     private float MoveStartTime;
 
