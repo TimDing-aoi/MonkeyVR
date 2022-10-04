@@ -439,7 +439,7 @@ public class JoystickMonke : MonoBehaviour
             if (CtrlDynamicsFlag)
             {
                 updateControlDynamics();
-                if (Monkey2D.isIntertrail)
+                if (SharedMonkey.isIntertrail)
                 {
                     //print("stoping");
                     moveX = 0;
