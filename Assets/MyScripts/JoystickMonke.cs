@@ -512,7 +512,7 @@ public class JoystickMonke : MonoBehaviour
                     {
 
                         //Monkey2D.Phase;                
-                        if (SharedMonkey.phase == Phases.check)
+                        if (SharedMonkey.currPhase == Phases.check)
                         {
                             moveX = 0;
                             moveY = 0;
@@ -570,8 +570,7 @@ public class JoystickMonke : MonoBehaviour
 
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
-            //print(Monkey2D.isIntertrail);
-            if (SharedMonkey.isCOM && (SharedMonkey.phase == Phases.check || SharedMonkey.phase == Phases.ITI))
+            if (SharedMonkey.isCOM && (SharedMonkey.currPhase == Phases.check || SharedMonkey.currPhase == Phases.ITI))
                 {
                     print("stopping");
                     currentSpeed = 0;
