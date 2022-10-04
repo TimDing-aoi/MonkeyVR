@@ -328,6 +328,7 @@ public class Monkey2D : MonoBehaviour
     private bool isCheck = false;
     private bool isEnd = false;
     public bool isIntertrail = false;
+    public bool COMisIntertrial = false;
     private float startTime;
     private float MoveStartTime;
 
@@ -2335,10 +2336,12 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
+                COMisIntertrial = true;
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold);
                 player.transform.position = Vector3.up * p_height;
                 player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                 await new WaitForSeconds(wait);
+                COMisIntertrial = false;
             }
 
             phase = Phases.begin;

@@ -568,8 +568,6 @@ public class JoystickMonke : MonoBehaviour
                 
             }
 
-            print(SharedMonkey.isIntertrail);
-            print(SharedMonkey.isCOM);
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
             if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
