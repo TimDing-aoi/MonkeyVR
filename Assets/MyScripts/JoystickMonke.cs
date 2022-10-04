@@ -432,7 +432,11 @@ public class JoystickMonke : MonoBehaviour
             //save filtered joystick X & Y
             rawX = moveY;
             rawY = -moveX;
-
+            if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
+            {
+                moveX = 0;
+                moveY = 0;
+            }
             //print(CtrlDynamicsFlag);
             //Akis PTB noise
             //print(SharedMonkey.isAccelControlTrial);

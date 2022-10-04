@@ -2335,10 +2335,12 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
+                isIntertrail = true;
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold);
-                await new WaitForSeconds(wait);
                 player.transform.position = Vector3.up * p_height;
                 player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                await new WaitForSeconds(wait);
+                isIntertrail = false;
             }
 
             phase = Phases.begin;
