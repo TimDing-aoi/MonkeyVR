@@ -1263,6 +1263,7 @@ public class Monkey2D : MonoBehaviour
                 sb.AppendLine(lllin);
             }
         }
+        print(isIntertrail);
     }
 
     /// <summary>
