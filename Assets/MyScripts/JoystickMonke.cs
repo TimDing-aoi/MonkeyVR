@@ -432,11 +432,6 @@ public class JoystickMonke : MonoBehaviour
             //save filtered joystick X & Y
             rawX = moveY;
             rawY = -moveX;
-            if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
-            {
-                moveX = 0;
-                moveY = 0;
-            }
             //print(CtrlDynamicsFlag);
             //Akis PTB noise
             //print(SharedMonkey.isAccelControlTrial);
@@ -504,11 +499,6 @@ public class JoystickMonke : MonoBehaviour
                 velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
                 rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                 ProcessNoise();
-                if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
-                {
-                    currentSpeed = 0;
-                    currentRot = 0;
-                }
                 speedPrePtb = currentSpeed;
                 rotPrePtb = currentRot;
 
@@ -580,6 +570,11 @@ public class JoystickMonke : MonoBehaviour
 
             //print(string.Format("current speed:{0}", currentSpeed));
             //print(string.Format("current rotation:{0}", currentRot));
+            if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
+                {
+                    currentSpeed = 0;
+                    currentRot = 0;
+                }
             transform.position = transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime;
             transform.Rotate(0f, currentRot * Time.fixedDeltaTime, 0f);
         }
