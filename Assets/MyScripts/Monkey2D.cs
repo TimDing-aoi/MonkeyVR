@@ -54,6 +54,8 @@ public class Monkey2D : MonoBehaviour
     public Camera Lcam;
     public Camera Rcam;
     public GameObject FP;
+    public GameObject leftMask;
+    public GameObject rightMask;
     [HideInInspector] public GazeVisualizer gazeVisualizer;
     //public GameObject Marker;
     // public GameObject inner;
@@ -1165,6 +1167,15 @@ public class Monkey2D : MonoBehaviour
         {
             isEnd = false;
             SendMarker("e", 1000.0f);
+        }
+
+        if(currPhase == Phases.ITI){
+            rightMask.SetActive(true);
+            leftMask.SetActive(true);
+        }
+        else{
+            rightMask.SetActive(false);
+            leftMask.SetActive(false);
         }
 
         if (playing && tNow - tPrev > 0.001f)
