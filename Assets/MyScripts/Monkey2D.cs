@@ -1389,12 +1389,11 @@ public class Monkey2D : MonoBehaviour
             }
 
             if(isNormal){
-                Vector3 position;
-                int FFindex = rand.Next(FF2coordsList.Count);
+                FFindex = rand.Next(FF2coordsList.Count);
                 float VectorX = FF2coordsList[FFindex].Item1;
                 float VectorY = FF2coordsList[FFindex].Item2;
-                float r = FFcoordsList[FF1index].Item1;
-                float angle = FFcoordsList[FF1index].Item2;
+                r = FFcoordsList[FF1index].Item1;
+                angle = FFcoordsList[FF1index].Item2;
                 position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
                 position.x += VectorX;
                 position.z += VectorY;
