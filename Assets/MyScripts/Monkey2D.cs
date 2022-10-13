@@ -1023,14 +1023,14 @@ public class Monkey2D : MonoBehaviour
         {
             float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
             float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
-            if (isCOM2FF && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
+            if ((isCOM2FF || isStatic2FF) && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
             {
                 startedMoving = true;
                 MoveStartTime = Time.realtimeSinceStartup;
             }
 
             //print(Time.realtimeSinceStartup - MoveStartTime);
-            if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
+            if ((isCOM2FF || isStatic2FF) && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 if(COMmode == 1)
                 {
@@ -1387,6 +1387,20 @@ public class Monkey2D : MonoBehaviour
                 isCOM2FF = true;
                 COMtrialtype.Add(3);
             }
+
+            if(isNormal){
+                Vector3 position;
+                int FFindex = rand.Next(FF2coordsList.Count);
+                float VectorX = FF2coordsList[FFindex].Item1;
+                float VectorY = FF2coordsList[FFindex].Item2;
+                float r = FFcoordsList[FF1index].Item1;
+                float angle = FFcoordsList[FF1index].Item2;
+                position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
+                position.x += VectorX;
+                position.z += VectorY;
+                position = Quaternion.Euler(0, angle, 0) * position;
+                pooledFF[0].transform.position = position;
+            }
         }
         else if (nFF > 1 && multiMode == 1)
         {
@@ -1461,28 +1475,6 @@ public class Monkey2D : MonoBehaviour
             ffPositions.Add(position);
         }
 
-        if (isStatic2FF)
-        {
-            Vector3 position;
-            int FFindex = rand.Next(FFcoordsList.Count);
-            float r = FFcoordsList[FFindex].Item1;
-            float angle = FFcoordsList[FFindex].Item2;
-            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-            position.y = 0.0001f;
-            while (FFindex == FF1index || Vector3.Distance(position,pooledFF[0].transform.position) <= 1.666666 * fireflyZoneRadius)
-            {
-                FFindex = rand.Next(FFcoordsList.Count);
-                r = FFcoordsList[FFindex].Item1;
-                angle = FFcoordsList[FFindex].Item2;
-                position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                position.y = 0.0001f;
-            }
-            pooledFF[1].transform.position = position;
-            pooledFF[1].SetActive(false);
-            print("Trial FF2 r:" + r.ToString());
-            print("Trial FF2 a:" + angle.ToString());
-        }
-
         // Here, I do something weird to the Vector3. "F5" is how many digits I want when I
         // convert to string, Trim takes off the parenthesis at the beginning and end of 
         // the converted Vector3 (Vector3.zero.ToString("F2"), for example, outputs:
@@ -1515,12 +1507,15 @@ public class Monkey2D : MonoBehaviour
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) <= velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) <= rotationThreshold); // Used to be rb.velocity.magnitude
             }
         }
-        else if (isCOM2FF)
+        else if (isCOM2FF || isStatic2FF)
         {
             //TODO: save delays in disc
             float DelayMin = PlayerPrefs.GetFloat("FF2Delaymin");
             float DelayMax = PlayerPrefs.GetFloat("FF2Delaymax");
             FF2delay = DelayMin + (float)rand.NextDouble() * (DelayMax - DelayMin);//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
+            if(isStatic2FF){
+                FF2delay = 0;
+            }
         }
 
         player_origin = player.transform.position;
@@ -1719,10 +1714,6 @@ public class Monkey2D : MonoBehaviour
                         if (isCOM)
                         {
                             OnOff(pooledFF[0]);
-                            if (isStatic2FF)
-                            {
-                                OnOff(pooledFF[1]);
-                            }
                         }
                         else
                         {
