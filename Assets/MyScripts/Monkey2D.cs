@@ -1030,7 +1030,7 @@ public class Monkey2D : MonoBehaviour
             }
 
             //print(Time.realtimeSinceStartup - MoveStartTime);
-            if ((isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown) || isStatic2FF)
+            if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 if(COMmode == 1)
                 {
@@ -1391,18 +1391,16 @@ public class Monkey2D : MonoBehaviour
                 COMtrialtype.Add(3);
             }
 
-            if(isNormal){
-                FFindex = rand.Next(FF2coordsList.Count);
-                float VectorX = FF2coordsList[FFindex].Item1;
-                float VectorY = FF2coordsList[FFindex].Item2;
-                r = FFcoordsList[FF1index].Item1;
-                angle = FFcoordsList[FF1index].Item2;
-                position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
-                position.x += VectorX;
-                position.z += VectorY;
-                position = Quaternion.Euler(0, angle, 0) * position;
-                pooledFF[0].transform.position = position;
-            }
+            FFindex = rand.Next(FF2coordsList.Count);
+            float VectorX = FF2coordsList[FFindex].Item1;
+            float VectorY = FF2coordsList[FFindex].Item2;
+            r = FFcoordsList[FF1index].Item1;
+            angle = FFcoordsList[FF1index].Item2;
+            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(0, Vector3.up) * Vector3.forward * r;
+            position.x += VectorX;
+            position.z += VectorY;
+            position = Quaternion.Euler(0, angle, 0) * position;
+            pooledFF[0].transform.position = position;
         }
         else if (nFF > 1 && multiMode == 1)
         {
@@ -1509,15 +1507,12 @@ public class Monkey2D : MonoBehaviour
                 await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) <= velocityThreshold && Mathf.Abs(SharedJoystick.currentRot) <= rotationThreshold); // Used to be rb.velocity.magnitude
             }
         }
-        else if (isCOM2FF || isStatic2FF)
+        else if (isCOM2FF)
         {
             //TODO: save delays in disc
             float DelayMin = PlayerPrefs.GetFloat("FF2Delaymin");
             float DelayMax = PlayerPrefs.GetFloat("FF2Delaymax");
             FF2delay = DelayMin + (float)rand.NextDouble() * (DelayMax - DelayMin);//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
-            if(isStatic2FF){
-                FF2delay = 0;
-            }
         }
 
         player_origin = player.transform.position;
@@ -1675,7 +1670,7 @@ public class Monkey2D : MonoBehaviour
                     }
                     break;
                 case Modes.Fixed:
-                    if (toggle && !isCOM || toggle && isNormal)
+                    if (toggle && !isCOM)
                     {
                         foreach (GameObject FF in pooledFF)
                         {
@@ -1713,9 +1708,28 @@ public class Monkey2D : MonoBehaviour
                             lifeSpan = durations[4];
                         }
                         onDur.Add(lifeSpan);
-                        if (isCOM)
+                        if (isCOM && (isNormal || isCOM2FF)
                         {
                             OnOff(pooledFF[0]);
+                        }
+                        else if(isCOM && isStatic2FF){
+                            Vector3 position;
+                            int FFindex = rand.Next(FF2coordsList.Count);
+                            float VectorX = FF2coordsList[FFindex].Item1;
+                            float VectorY = FF2coordsList[FFindex].Item2;
+                            float r = FFcoordsList[FF1index].Item1;
+                            float angle = FFcoordsList[FF1index].Item2;
+                            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                            position.y = 0.0001f;
+                            Vector3 rotation;
+                            rotation = Vector3.zero;
+                            rotation.x += VectorX;
+                            rotation.z += VectorY;
+                            rotation = Quaternion.Euler(0, angle, 0) * rotation;
+                            pooledFF[1].transform.position = position + rotation;
+                            print("Trial FF2 x:" + position.x);
+                            print("Trial FF2 y:" + position.z);
+                            OnOff2(pooledFF[0], pooledFF[1]);
                         }
                         else
                         {
@@ -2392,6 +2406,15 @@ public class Monkey2D : MonoBehaviour
         obj.SetActive(true);
         await new WaitForSeconds(lifeSpan);
         obj.SetActive(false);
+    }
+
+    public async void OnOff2(GameObject obj1, GameObject obj2)
+    {
+        obj1.SetActive(true);
+        obj2.SetActive(true);
+        await new WaitForSeconds(lifeSpan);
+        obj1.SetActive(false);
+        obj2.SetActive(false);
     }
 
     public async void SendMarker(string mark, float time)
