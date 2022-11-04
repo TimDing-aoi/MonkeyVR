@@ -1708,7 +1708,7 @@ public class Monkey2D : MonoBehaviour
                             lifeSpan = durations[4];
                         }
                         onDur.Add(lifeSpan);
-                        if (isCOM && (isNormal || isCOM2FF)
+                        if (isCOM && (isNormal || isCOM2FF))
                         {
                             OnOff(pooledFF[0]);
                         }
