@@ -1718,7 +1718,7 @@ public class Monkey2D : MonoBehaviour
                             float VectorX = FF2coordsList[FFindex].Item1;
                             float VectorY = FF2coordsList[FFindex].Item2;
                             r = FFcoordsList[FF1index].Item1;
-                            angle = FFcoordsList[FF1index].Item2;
+                            float angle = FFcoordsList[FF1index].Item2;
                             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
                             position.y = 0.0001f;
                             Vector3 rotation;
