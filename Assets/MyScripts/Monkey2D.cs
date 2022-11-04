@@ -1023,14 +1023,14 @@ public class Monkey2D : MonoBehaviour
         {
             float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
             float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
-            if ((isCOM2FF || isStatic2FF) && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
+            if (isCOM2FF && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
             {
                 startedMoving = true;
                 MoveStartTime = Time.realtimeSinceStartup;
             }
 
             //print(Time.realtimeSinceStartup - MoveStartTime);
-            if ((isCOM2FF || isStatic2FF) && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
+            if ((isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown) || isStatic2FF)
             {
                 if(COMmode == 1)
                 {

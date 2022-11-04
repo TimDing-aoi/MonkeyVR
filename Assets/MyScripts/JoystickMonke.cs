@@ -572,7 +572,7 @@ public class JoystickMonke : MonoBehaviour
             //print(string.Format("current rotation:{0}", currentRot));
             if (SharedMonkey.isCOM && (SharedMonkey.currPhase == Phases.check || SharedMonkey.currPhase == Phases.ITI))
                 {
-                    print("stopping");
+                    //print("stopping");
                     currentSpeed = 0;
                     currentRot = 0;
                 }
