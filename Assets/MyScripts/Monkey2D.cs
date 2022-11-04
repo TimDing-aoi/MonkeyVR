@@ -1021,7 +1021,7 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            //print(Time.realtimeSinceStartup - MoveStartTime);
+            print(Time.realtimeSinceStartup - MoveStartTime);
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 if(COMmode == 1)
