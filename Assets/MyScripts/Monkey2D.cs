@@ -1018,10 +1018,8 @@ public class Monkey2D : MonoBehaviour
             SendMarker("s", 1000.0f);
         }
 
-        if (isTrial)
+        if (isCOM)
         {
-            print("isTrial");
-            print(Time.realtimeSinceStartup - MoveStartTime);
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 if(COMmode == 1)
