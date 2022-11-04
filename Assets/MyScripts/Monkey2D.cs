@@ -1959,6 +1959,8 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     async Task Check()
     {
+        MoveStartTime = 99999f;
+
         FF2shown = false;
         proximity = false;
 
