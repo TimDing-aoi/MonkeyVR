@@ -1020,8 +1020,8 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
+            print("isTrial");
             print(Time.realtimeSinceStartup - MoveStartTime);
-            print(FF2delay);
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 if(COMmode == 1)
@@ -1703,6 +1703,7 @@ public class Monkey2D : MonoBehaviour
                         if (isCOM && (isNormal || isCOM2FF))
                         {
                             OnOff(pooledFF[0]);
+                            MoveStartTime = Time.realtimeSinceStartup;
                         }
                         else if(isCOM && isStatic2FF){
                             Vector3 position;
@@ -1795,7 +1796,6 @@ public class Monkey2D : MonoBehaviour
 
         phase = Phases.trial;
         currPhase = Phases.trial;
-        MoveStartTime = Time.realtimeSinceStartup;
     }
 
     /// <summary>
@@ -1880,7 +1880,7 @@ public class Monkey2D : MonoBehaviour
 
             isIntertrail = false;
             var t = Task.Run(async () => {
-                await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false); // Used to be rb.velocity.magnitude
+                await new WaitUntil(() => Vector3.Distance(player_origin, player.transform.position) > 0.5f || playing == false);
             }, source.Token);
 
             var t1 = Task.Run(async () => {
