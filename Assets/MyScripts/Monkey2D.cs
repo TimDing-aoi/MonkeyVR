@@ -1021,14 +1021,6 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
-            float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
-            if (isCOM2FF && Mathf.Abs(SharedJoystick.currentSpeed) >= JstLinearThreshold && !startedMoving)
-            {
-                startedMoving = true;
-                MoveStartTime = Time.realtimeSinceStartup;
-            }
-
             //print(Time.realtimeSinceStartup - MoveStartTime);
             if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
@@ -1803,6 +1795,7 @@ public class Monkey2D : MonoBehaviour
 
         phase = Phases.trial;
         currPhase = Phases.trial;
+        MoveStartTime = Time.realtimeSinceStartup;
     }
 
     /// <summary>
