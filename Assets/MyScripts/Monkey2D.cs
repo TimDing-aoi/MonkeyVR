@@ -423,7 +423,6 @@ public class Monkey2D : MonoBehaviour
     public bool isCOM2FF = false;
     public bool isCOM = false;
     bool FF2shown = false;
-    bool startedMoving = false;
     float COMlambda;
     float FF2delay;
     float normalRatio;
@@ -1805,9 +1804,6 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     async Task Trial()
     {
-        MoveStartTime = 999999f;
-        startedMoving = false;
-
         isTrial = true;
 
         //Debug.Log("Trial Phase Start.");
