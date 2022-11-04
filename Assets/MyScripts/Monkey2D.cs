@@ -1889,9 +1889,11 @@ public class Monkey2D : MonoBehaviour
             {
                 await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinearThreshold && Mathf.Abs(SharedJoystick.currentRot) <= JstAngularThreshold && !SharedJoystick.CtrlDynamicsFlag) && prevVel == 0.0f && prevPrevVel == 0.0f) || t1.IsCompleted); // Used to be rb.velocity.magnitude // || (angleL > 3.0f or angleR > 3.0f)
                 if (t1.IsCompleted) isTimeout = true;
+                isIntertrail = true;
             }
             else
             {
+                isIntertrail = true;
                 //print("Timed out");
                 isTimeout = true;
             }
