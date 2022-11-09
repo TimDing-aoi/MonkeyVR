@@ -123,6 +123,8 @@ public class Monkey2D : MonoBehaviour
     readonly public List<float> colorrewards = new List<float>();
     private List<float> colorchosen = new List<float>();
     private float colorhit = 0;
+    readonly public List<float> FF1s = new List<float>();
+    readonly public List<float> FF2s = new List<float>();
     readonly public List<float> v_noises = new List<float>();
     readonly public List<Vector3> directions = new List<Vector3>()
     {
@@ -1091,6 +1093,7 @@ public class Monkey2D : MonoBehaviour
                     FF2shown = true;
                     Vector3 position;
                     int FFindex = rand.Next(FF2coordsList.Count);
+                    FF2s.Add(FFindex);
                     float VectorX = FF2coordsList[FFindex].Item1;
                     float VectorY = FF2coordsList[FFindex].Item2;
                     float r = FFcoordsList[FF1index].Item1;
@@ -1347,6 +1350,7 @@ public class Monkey2D : MonoBehaviour
             player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             Vector3 position;
             int FFindex = rand.Next(FFcoordsList.Count);
+            FF1s.Add(FFindex);
             FF1index = FFindex;
             float r = FFcoordsList[FFindex].Item1;
             float angle = FFcoordsList[FFindex].Item2;
@@ -1365,6 +1369,7 @@ public class Monkey2D : MonoBehaviour
                 isStatic2FF = false;
                 isCOM2FF = false;
                 COMtrialtype.Add(1);
+                FF2s.Add(-1);
             }
             else if(COMdecider < normal2FFRatio)
             {
@@ -1695,6 +1700,7 @@ public class Monkey2D : MonoBehaviour
                         else if(isCOM && isStatic2FF){
                             Vector3 position;
                             int FFindex = rand.Next(FF2coordsList.Count);
+                            FF2s.Add(FFindex);
                             float VectorX = FF2coordsList[FFindex].Item1;
                             float VectorY = FF2coordsList[FFindex].Item2;
                             r = FFcoordsList[FF1index].Item1;
@@ -2471,14 +2477,14 @@ public class Monkey2D : MonoBehaviour
 
                 firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -2618,9 +2624,13 @@ public class Monkey2D : MonoBehaviour
                 if (isCOM)
                 {
                     line += string.Format(",{0}", COMtrialtype[i]);
+                    line += string.Format(",{0}", FF1s[i]);
+                    line += string.Format(",{0}", FF2s[i]);
                 }
                 else
                 {
+                    line += string.Format(",0");
+                    line += string.Format(",0");
                     line += string.Format(",0");
                 }
 
