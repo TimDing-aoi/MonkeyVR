@@ -2531,10 +2531,10 @@ public class Monkey2D : MonoBehaviour
             {
                 temp.Add(COMtrialtype.Count);
             }
-            //foreach (int count in temp)
-            //{
-            //    print(count);
-            //}
+            foreach (int count in temp)
+            {
+                print(count);
+            }
             temp.Sort();
 
             var totalScore = 0;
