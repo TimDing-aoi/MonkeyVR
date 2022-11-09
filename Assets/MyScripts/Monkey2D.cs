@@ -2011,8 +2011,8 @@ public class Monkey2D : MonoBehaviour
                         colorhit = i;
                     }
                 }
+                distances.Add(distance);
             }
-            distances.Add(distance);
         }
         else if (nFF > 1 && multiMode == 1)
         {
