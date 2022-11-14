@@ -1999,9 +1999,9 @@ public class Monkey2D : MonoBehaviour
         {
             for (int i = 0; i < 2; i++)
             {
-                if(!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
+                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+                if (!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
                 {
-                    ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
                     distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
                     //print(distance);
                     if (distance <= fireflyZoneRadius && distance < curdistance)
@@ -2016,7 +2016,7 @@ public class Monkey2D : MonoBehaviour
         }
         else if (nFF > 1 && multiMode == 1)
         {
-            ffPosStr = string.Concat(ffPosStr, ",", pooledFF[loopCount].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
+            ffPosStr = string.Concat(ffPosStr, ",", pooledFF[loopCount].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             distance = Vector3.Distance(pPos, pooledFF[loopCount].transform.position);
             //print(distance);
             distances.Add(distance);
@@ -2029,7 +2029,7 @@ public class Monkey2D : MonoBehaviour
         {
             for (int i = 0; i < nFF; i++)
             {
-                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
+                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
                 distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
                 //print(distance);
                 if (distance <= fireflyZoneRadius && distance < curdistance)
