@@ -998,7 +998,6 @@ public class Monkey2D : MonoBehaviour
 
         if (isTrial)
         {
-            print(Time.realtimeSinceStartup - startTime);
             if (isCOM && Time.realtimeSinceStartup - startTime >= FF2delay && !FF2shown)
             {
                 FF2shown = true;
@@ -1653,7 +1652,6 @@ public class Monkey2D : MonoBehaviour
         isTrial = true;
 
         //Debug.Log("Trial Phase Start.");
-        startTime = Time.realtimeSinceStartup;
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
@@ -2173,6 +2171,7 @@ public class Monkey2D : MonoBehaviour
         firefly.SetActive(true);
         await new WaitForSeconds(lifeSpan);
         firefly.SetActive(false);
+        startTime = Time.realtimeSinceStartup;
     }
 
     public async void OnOff(GameObject obj)
@@ -2180,6 +2179,7 @@ public class Monkey2D : MonoBehaviour
         obj.SetActive(true);
         await new WaitForSeconds(lifeSpan);
         obj.SetActive(false);
+        startTime = Time.realtimeSinceStartup;
     }
 
     public async void SendMarker(string mark, float time)
@@ -2296,7 +2296,7 @@ public class Monkey2D : MonoBehaviour
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,StimulationAmplitude,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -2494,11 +2494,12 @@ public class Monkey2D : MonoBehaviour
 
                     if (PlayerPrefs.GetInt("isFFstimu") == 1)
                     {
-                        line += string.Format(",{0},{1},{2}", timeStimuStart[i], trialStimuDur[i], stimuratio);
+                        float stimAmp = PlayerPrefs.GetFloat("StimuAmp");
+                        line += string.Format(",{0},{1},{2},{3}", timeStimuStart[i], trialStimuDur[i], stimuratio, stimAmp);
                     }
                     else
                     {
-                        line += string.Format(",0,0,0");
+                        line += string.Format(",0,0,0,0");
                     }
 
                     if (isObsNoise)
