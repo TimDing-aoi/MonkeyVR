@@ -1652,6 +1652,7 @@ public class Monkey2D : MonoBehaviour
         isTrial = true;
 
         //Debug.Log("Trial Phase Start.");
+        startTime = Time.realtimeSinceStartup;
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
@@ -2171,7 +2172,6 @@ public class Monkey2D : MonoBehaviour
         firefly.SetActive(true);
         await new WaitForSeconds(lifeSpan);
         firefly.SetActive(false);
-        startTime = Time.realtimeSinceStartup;
     }
 
     public async void OnOff(GameObject obj)
@@ -2179,7 +2179,6 @@ public class Monkey2D : MonoBehaviour
         obj.SetActive(true);
         await new WaitForSeconds(lifeSpan);
         obj.SetActive(false);
-        startTime = Time.realtimeSinceStartup;
     }
 
     public async void SendMarker(string mark, float time)
