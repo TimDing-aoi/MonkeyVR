@@ -331,6 +331,7 @@ public class Monkey2D : MonoBehaviour
     private bool isCheck = false;
     private bool isEnd = false;
     public bool isIntertrail = false;
+    public bool trialStimulated = false;
     private float startTime;
 
     [HideInInspector] public Phases currPhase;
@@ -1020,9 +1021,10 @@ public class Monkey2D : MonoBehaviour
                 //ffPositions[1] = position;
             }
 
-            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
+            print(string.Format("trial elapsed: {0}", tNow - startTime));
+            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle && !trialStimulated)
             {
-                isTrial = false;
+                trialStimulated = true;
                 float stimr = (float)rand.NextDouble();
                 if(stimr < stimuratio)
                 {
@@ -1635,7 +1637,7 @@ public class Monkey2D : MonoBehaviour
 
         if (PlayerPrefs.GetInt("isFFstimu") == 1)
         {
-            trialStimuGap = microStimuGap * (float)rand.NextDouble();
+            trialStimuGap = microStimuGap * (float)rand.NextDouble() + lifeSpan;
         }
 
         phase = Phases.trial;
@@ -1722,6 +1724,13 @@ public class Monkey2D : MonoBehaviour
                 //print("Timed out");
                 isTimeout = true;
             }
+        }
+
+        if (stimulatedTrial)
+        {
+            float stimuwait = microStimuDur + trialStimuGap; //wait more if it was a stimulated trail
+            print(stimuwait);
+            await new WaitForSeconds(stimuwait);
         }
 
         source.Cancel();
@@ -2114,7 +2123,7 @@ public class Monkey2D : MonoBehaviour
             if (PlayerPrefs.GetInt("isFFstimu") == 1 && stimulatedTrial)
             {
                 stimulatedTrial = false;
-                wait += microStimuDur; //wait more if it was a stimulated trail
+                trialStimulated = false;
             }
 
             currPhase = Phases.ITI;
