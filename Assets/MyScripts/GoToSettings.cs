@@ -684,21 +684,6 @@ public class GoToSettings : MonoBehaviour
                                 }
                             }
                         }
-                        //else if (children.name == "VertHor")
-                        //{
-                        //    TMP_InputField field = children.GetComponent<TMP_InputField>();
-                        //    foreach (XmlNode node in doc.DocumentElement.ChildNodes)
-                        //    {
-                        //        foreach (XmlNode setting in node.ChildNodes)
-                        //        {
-                        //            if (setting.Name == children.name.Replace(" ", ""))
-                        //            {
-                        //                field.text = setting.InnerText;
-                        //                PlayerPrefs.SetInt(children.name, int.Parse(field.text));
-                        //            }
-                        //        }
-                        //    }
-                        //}
                         else if (children.name == "Path" || children.name == "Name" || children.name == "Date")
                         {
                             TMP_InputField field = children.GetComponent<TMP_InputField>();
@@ -760,21 +745,6 @@ public class GoToSettings : MonoBehaviour
                                 }
                             }
                         }
-                        //else if (children.name == "")
-                        //{
-                        //    TMP_InputField field = children.GetComponent<TMP_InputField>();
-                        //    foreach (XmlNode node in doc.DocumentElement.ChildNodes)
-                        //    {
-                        //        foreach (XmlNode setting in node.ChildNodes)
-                        //        {
-                        //            if (setting.Name == children.name.Replace(" ", ""))
-                        //            {
-                        //                field.text = setting.InnerText;
-                        //                PlayerPrefs.SetInt(children.name, int.Parse(field.text));
-                        //            }
-                        //        }
-                        //    }
-                        //}
                         else
                         {
                             TMP_InputField field = children.GetComponent<TMP_InputField>();
@@ -803,7 +773,7 @@ public class GoToSettings : MonoBehaviour
                 {
                     if (children.gameObject.CompareTag("Setting"))
                     {
-                        if (children.name == "isColored")
+                        if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
                         {
                             UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
