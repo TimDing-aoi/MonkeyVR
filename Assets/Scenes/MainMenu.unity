@@ -39413,9 +39413,9 @@ MonoBehaviour:
   human2DMenu: {fileID: 478170140}
   humanArenaMenu: {fileID: 0}
   obj: {fileID: 682919493}
-  settingMenu1: {fileID: 0}
-  settingMenu2: {fileID: 0}
-  settingMenu3: {fileID: 0}
+  settingMenu1: {fileID: 1431257420}
+  settingMenu2: {fileID: 1273225176}
+  settingMenu3: {fileID: 395900389}
   saveButton: {fileID: 0}
   loadButton: {fileID: 0}
   freq: {fileID: 0}
