@@ -135,6 +135,94 @@ public class GoToSettings : MonoBehaviour
         human2DMenu.enabled = true;
         PlayerPrefs.SetInt("Scene", 0);
         if (obj.GetComponentInChildren<TMP_Text>().text == "monkey2d") PlayerPrefs.SetInt("Scene", 9);
+        foreach (Transform child in settingMenu1.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "Eye Mode" || children.name == "FP Mode" || children.name == "Multiple Firefly Mode")
+                    {
+                        TMP_Dropdown drop = children.GetComponent<TMP_Dropdown>();
+                        int LastValue = PlayerPrefs.GetInt(children.name);
+                        drop.value = LastValue;
+                    }
+                    else if (children.name == "Perturbation On" || children.name == "Moving ON" || children.name == "Feedback ON" || children.name == "AboveBelow" || children.name == "VertHor" || children.name == "Full ON")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else if (children.name == "Path" || children.name == "Name" || children.name == "Date")
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        string LastValue = PlayerPrefs.GetString(children.name);
+                        field.text = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        if (field != null)
+                        {
+                            field.text = LastValue.ToString();
+                        }
+                    }
+                }
+            }
+        }
+
+        settingMenu2.SetActive(true);
+
+        foreach (Transform child in settingMenu2.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "isAuto" || children.name == "isProcessNoise" || children.name == "isFFstimu" || children.name == "isObsNoise")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        field.text = LastValue.ToString();
+                    }
+                }
+            }
+        }
+
+        settingMenu2.SetActive(false);
+        settingMenu3.SetActive(true);
+
+        foreach (Transform child in settingMenu3.transform)
+        {
+            foreach (Transform children in child)
+            {
+                if (children.gameObject.CompareTag("Setting"))
+                {
+                    if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
+                    {
+                        UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                        bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
+                        toggle.isOn = LastValue;
+                    }
+                    else
+                    {
+                        TMP_InputField field = children.GetComponent<TMP_InputField>();
+                        float LastValue = PlayerPrefs.GetFloat(children.name);
+                        field.text = LastValue.ToString();
+                    }
+                }
+            }
+        }
+
+        settingMenu3.SetActive(false);
+        settingMenu1.SetActive(true);
     }
 
     public void ToHumanArenaSettings()
