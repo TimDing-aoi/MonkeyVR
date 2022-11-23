@@ -818,10 +818,8 @@ public class Monkey2D : MonoBehaviour
         currPhase = Phases.begin;
         phase = Phases.begin;
 
-        player.transform.position = Vector3.up * p_height;
-        player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        drunkplayer.transform.position = Vector3.up * p_height;
-        drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        player.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+        drunkplayer.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
 
         if (PlayerPrefs.GetFloat("calib") == 0)
         {
