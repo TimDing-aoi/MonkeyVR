@@ -1726,12 +1726,12 @@ public class Monkey2D : MonoBehaviour
             }
         }
 
-        if (stimulatedTrial)
+        /*if (stimulatedTrial)
         {
             float stimuwait = microStimuDur + trialStimuGap; //wait more if it was a stimulated trail
             print(stimuwait);
             await new WaitForSeconds(stimuwait);
-        }
+        }*/
 
         source.Cancel();
 
@@ -3380,6 +3380,10 @@ public class Monkey2D : MonoBehaviour
 
         xmlWriter.WriteStartElement("isColored");
         xmlWriter.WriteString(PlayerPrefs.GetInt("isColored").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("is2FFCOM");
+        xmlWriter.WriteString(PlayerPrefs.GetInt("is2FFCOM").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndElement();
