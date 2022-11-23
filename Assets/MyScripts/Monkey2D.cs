@@ -558,7 +558,7 @@ public class Monkey2D : MonoBehaviour
             print("Activating Observe Noise");
             var em = particle_System2.emission;
             em.enabled = true;
-            //drunkplayer.SetActive(true);
+            drunkplayer.SetActive(true);
         }
         else
         {

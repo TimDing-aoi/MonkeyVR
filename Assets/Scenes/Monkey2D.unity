@@ -1654,6 +1654,11 @@ PrefabInstance:
       propertyPath: m_CullingMask.m_Bits
       value: 262144
       objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_Depth
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: far clip plane
@@ -1668,6 +1673,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 262144
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_Depth
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -1788,6 +1798,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3311308390242819185, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3311308390243106901, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -2455,17 +2470,37 @@ PrefabInstance:
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_ClearFlags
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: far clip plane
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_Depth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: far clip plane
       value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_Depth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
