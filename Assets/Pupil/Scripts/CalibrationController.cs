@@ -771,6 +771,7 @@ namespace PupilLabs
             {
                 print("stimu gap");
                 previewMarkers[4].SetActive(false);
+                marker.gameObject.SetActive(false);
                 window.SetActive(false);
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 MicroStimuFlag = MicroStimuF.Trial;
