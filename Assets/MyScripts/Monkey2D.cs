@@ -1999,7 +1999,7 @@ public class Monkey2D : MonoBehaviour
         {
             for (int i = 0; i < 2; i++)
             {
-                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
                 if (!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
                 {
                     distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
