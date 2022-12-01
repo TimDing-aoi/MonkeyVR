@@ -8,18 +8,6 @@
 ///                                                                                     ///
 /// <summary>                                                                           ///
 /// This script takes care of the FF behavior.                                          ///
-///                                                                                     ///
-/// There are 3 modes: "ON, Flash, Fixed". ON means it's always on, Flash means it      ///
-/// flashes based on user-specified frequency and duty cycle. Fixed means it stays on   ///
-/// for a fixed amount of time that is specified by the user.                           ///
-///                                                                                     ///
-/// This code handles up to 5 FF. The code waits for the player to be completely still. ///
-/// Once that condition is met, the FF(s) spawn. After a user-specified amount of time, ///
-/// the trial will timeout, and the next one will begin once the player is completely   ///
-/// still. If the trial hasn't timed out, the code waits for the player to start        ///
-/// moving. Once the player moves, the code waits for the player to stop moving before  ///
-/// checking the player's position against a FF. If the player ends up near a FF, they  ///
-/// win; otherwise, they lose. This repeats until the user exits the application.       ///
 /// </summary>                                                                          ///
 ///////////////////////////////////////////////////////////////////////////////////////////
 
