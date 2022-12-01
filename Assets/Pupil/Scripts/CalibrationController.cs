@@ -88,6 +88,7 @@ namespace PupilLabs
         static List<int> targetIndex = new List<int>();
 
         static List<float> StimuGapTime = new List<float>();
+        static List<float> FixationTime = new List<float>();
         static List<float> StimuStartTime = new List<float>();
         readonly List<float> rewardStartTime = new List<float>();
         readonly List<float> beginTime = new List<float>();
@@ -156,6 +157,10 @@ namespace PupilLabs
         [HideInInspector]
         public float RewardGap = 0;
         [HideInInspector]
+        public float RewardThreshMin = 0;
+        [HideInInspector]
+        public float RewardThreshMax = 0;
+        [HideInInspector]
         public float RewardThresh = 0;
         [HideInInspector]
         public float TotalTrials = 0;
@@ -207,7 +212,9 @@ namespace PupilLabs
             StimuGapMin = PlayerPrefs.GetFloat("StimuGapMin");
             StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
             RewardGap = PlayerPrefs.GetFloat("RewardGap");
-            RewardThresh = PlayerPrefs.GetFloat("RewardThresh");
+            RewardThreshMin = PlayerPrefs.GetFloat("RewardThreshMin");
+            RewardThreshMax = PlayerPrefs.GetFloat("RewardThreshMax");
+            RewardThresh = (float)(RewardThreshMin + random.NextDouble() * (RewardThreshMax - RewardThreshMin));
 
             TotalTrials = PlayerPrefs.GetFloat("StimNumTrials");
 
@@ -861,6 +868,8 @@ namespace PupilLabs
             {
                 endMarkerFlag = false;
                 print("Next trial.");
+                FixationTime.Add(RewardThresh);
+                RewardThresh = (float)(RewardThreshMin + random.NextDouble() * (RewardThreshMax - RewardThreshMin));
                 trialNum++;
                 tLastITI = tNow;
                 tLastTrial = tNow;
@@ -1320,7 +1329,7 @@ namespace PupilLabs
 
         private void MicroStimuSave()
         {
-            string firstLine = "trial,Begin Time, End Time,Stimulation Gap Time,Stimulation Start Time,Reward Start Time";
+            string firstLine = "trial,Begin Time, End Time,Stimulation Gap Time,Stimulation Start Time,Reward Start Time,Fixation Time";
 
             List<int> temp;
 
@@ -1335,7 +1344,8 @@ namespace PupilLabs
                 StimuStartTime.Count,
                 beginTime.Count,
                 endTime.Count,
-                rewardStartTime.Count
+                rewardStartTime.Count,
+                FixationTime.Count
             };
 
             temp.Sort();
@@ -1343,13 +1353,14 @@ namespace PupilLabs
             //print(endTime.Count);
             for (int i = 0; i < temp[0]; i++)
             {
-                var line = string.Format("{0},{1},{2},{3},{4},{5}",
+                var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",
                     trialNumber[i],
                     beginTime[i],
                     endTime[i],
                     StimuGapTime[i],
                     StimuStartTime[i],
-                    rewardStartTime[i]);
+                    rewardStartTime[i],
+                    FixationTime[i]);
                 csvDisc.AppendLine(line);
             }
 

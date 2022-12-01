@@ -3258,8 +3258,12 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardGap").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("RewardThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThresh").ToString());
+        xmlWriter.WriteStartElement("RewardThreshMin");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThreshMin").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("RewardThreshMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("RewardThreshMax").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("StimuAmp");
