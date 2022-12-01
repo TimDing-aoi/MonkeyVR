@@ -2120,11 +2120,9 @@ public class Monkey2D : MonoBehaviour
             player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
             float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
-            if (PlayerPrefs.GetInt("isFFstimu") == 1 && stimulatedTrial)
-            {
-                stimulatedTrial = false;
-                trialStimulated = false;
-            }
+
+            stimulatedTrial = false;
+            trialStimulated = false;
 
             currPhase = Phases.ITI;
 
