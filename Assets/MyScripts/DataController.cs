@@ -182,7 +182,7 @@ namespace PupilLabs
                     var ObsAngNoise = SharedJoystick.DistFlowRot;
                     if (flagMultiFF)
                     {
-                        foreach (Vector3 pos in SharedMonkey.ffPositions)
+                        foreach (Vector3 pos in SharedMonkey.FF_positions)
                         {
                             FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
                         }

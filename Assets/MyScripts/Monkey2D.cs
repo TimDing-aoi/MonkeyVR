@@ -33,115 +33,102 @@ using PupilLabs;
 
 public class Monkey2D : MonoBehaviour
 {
+    //Shared instance of script
     public static Monkey2D SharedMonkey;
 
+    //FF
     public GameObject firefly;
-    private float timeCounter = 0;
-    //public GameObject marker;
-    //public GameObject panel;
+    //Size of FF (diameter)
+    public float fireflySize;
+    //Maximum distance allowed from center of firefly
+    public float fireflyZoneRadius;
+    //Min/max of which FF can spawn
+    public float minDrawDistance;
+    public float maxDrawDistance;
+    //Min/max angle from forward(y) axis FF can spawn
+    public float minPhi;
+    public float maxPhi;
+    //Left-Right ratio, spawn FF more on the left or right, [0:0.5:5] = [left:equal:right]
+    public float LR;
+    //Lifespan of the FF, if applicable
+    public float lifeSpan;
+    //possible Lifespans and ratios
+    readonly public List<float> lifespan_durations = new List<float>();
+    readonly public List<float> lifespan_ratios = new List<float>();
+    //Number of FFs, if applicable
+    public float nFF;
+    //Multiple FF mode, 0 for don't apply, 1 for normal multiple, 2 for COM
+    int multiple_FF_mode;
+
+    //Moving FF, FF velocities and their corresponding ratios, and noises
+    private bool isMoving;
+    readonly public List<float> velocities = new List<float>();
+    readonly public List<float> v_ratios = new List<float>();
+    readonly public List<float> v_noises = new List<float>();
+    //FF moves left-right or forward-backward? true for lr, false for fb
+    private bool LRFB;
+    //FF move direction
+    private Vector3 direction = new Vector3();
+    private bool noised_moving_FF;
+    public GameObject line;
+    private bool lineOnOff;
+
+    //Cameras
     public Camera Lcam;
     public Camera Rcam;
     public Camera LObscam;
     public Camera RObscam;
     public Camera DrunkCam;
-    public GameObject FP;
+
+    //Gaze visualized from eye tracker
     [HideInInspector] public GazeVisualizer gazeVisualizer;
-    //public GameObject Marker;
-    // public GameObject inner;
-    // public GameObject outer;
-    //wrmhl juiceBox = new wrmhl();
 
-    [Tooltip("Baudrate")]
-    [HideInInspector] public int baudRate = 2000000;
+    //Arduino
+    public int baudRate = 2000000;
+    public int ReadTimeout = 5000;
 
-    [Tooltip("Timeout")]
-    [HideInInspector] public int ReadTimeout = 5000;
-
-    [Tooltip("QueueLength")]
-    [HideInInspector] public int QueueLength = 1;
-    [Tooltip("Diameter of firefly")]
-    [HideInInspector] public float fireflySize;
-    [Tooltip("Maximum distance allowed from center of firefly")]
-    [HideInInspector] public float fireflyZoneRadius;
-    // Enumerable experiment mode selector
-    private enum Modes
-    {
-        ON,
-        Flash,
-        Fixed
-    }
-    private Modes mode;
-    // Toggle for whether trial is an always on trial or not
-    public bool toggle;
-    // Toggle for self motion
-    public bool motion_toggle = false;
-
-    [Tooltip("Ratio of trials that will have fireflies always on")]
-    [HideInInspector] public float ratio;
-    [Tooltip("Frequency of flashing firefly (Flashing Firefly Only)")]
-    [HideInInspector] public float freq;
-    [Tooltip("Duty cycle for flashing firefly (percentage of one period determing how long it stays on during one period) (Flashing Firefly Only)")]
-    [HideInInspector] public float duty;
+    // Use flashing FF?(for training, normal FF task only)
+    public bool flashing;
+    //Frequency of flashing firefly(Flashing Firefly Only)
+    public float flashing_frequency;
+    //Flashing duty cycle
+    public float duty_cycle;
     // Pulse Width; how long in seconds it stays on during one period
-    private float PW;
+    private float Pulse_Width;
+
+    // Toggle for whether trial is an always on trial or not
+    public bool is_always_on_trial;
+    //Ratio of trials that will have fireflies always on
+    public float ratio_always_on;
+
+    //player objects, real and fake
     public GameObject player;
     public GameObject drunkplayer;
+    //player height
+    public float p_height;
+
+    //sounds
     public AudioSource audioSource;
     public AudioClip winSound;
     public AudioClip neutralSound;
     public AudioClip loseSound;
-    [Tooltip("Minimum distance firefly can spawn")]
-    [HideInInspector] public float minDrawDistance;
-    [Tooltip("Maximum distance firefly can spawn")]
-    [HideInInspector] public float maxDrawDistance;
-    [Tooltip("Ranges for which firefly n spawns inside")]
-    [HideInInspector] public List<float> ranges = new List<float>();
-    [Tooltip("Minimum angle from forward axis that firefly can spawn")]
-    [HideInInspector] public float minPhi;
-    [Tooltip("Maximum angle from forward axis that firefly can spawn")]
-    [HideInInspector] public float maxPhi;
-    [Tooltip("Indicates whether firefly spawns more on the left or right; < 0.5 means more to the left, > 0.5 means more to the right, = 0.5 means equally distributed between left and right")]
-    [HideInInspector] public float LR;
-    [Tooltip("How long the firefly stays from the beginning of the trial (Fixed Firefly Only)")]
-    [HideInInspector] public float lifeSpan;
-    [Tooltip("How many fireflies can appear at once")]
-    [HideInInspector] public float nFF;
-    int multiMode;
-    readonly public List<float> velocities = new List<float>();
-    readonly public List<float> v_ratios = new List<float>();
+
+    //Colored FF
     readonly public List<float> colorratios = new List<float>();
     readonly public List<float> colorrewards = new List<float>();
     private List<float> colorchosen = new List<float>();
     private float colorhit = 0;
-    readonly public List<float> v_noises = new List<float>();
-    readonly public List<Vector3> directions = new List<Vector3>()
-    {
-        Vector3.left,
-        Vector3.right,
-        Vector3.forward,
-        Vector3.back
-    };
-    readonly public List<float> durations = new List<float>();
-    readonly public List<float> ratios = new List<float>();
-    private bool isMoving;
-    private bool LRFB;
-    private float movingFFmode;
-    public GameObject line;
-    [HideInInspector] public int lineOnOff = 1;
 
     private Vector3 move;
-    [Tooltip("Trial timeout (how much time player can stand still before trial ends")]
-    [HideInInspector] public float timeout;
-    [Tooltip("Minimum x value to plug into exponential distribution from which time to wait before check is pulled")]
-    [HideInInspector] public float checkMin;
-    [Tooltip("Maximum x value to plug into exponential distribution from which time to wait before check is pulled")]
-    [HideInInspector] public float checkMax;
-    [Tooltip("Minimum x value to plug into exponential distribution from which time to wait before new trial is pulled")]
-    [HideInInspector] public float interMax;
-    [Tooltip("Maximum x value to plug into exponential distribution from which time to wait before new trial is pulled")]
-    [HideInInspector] public float interMin;
-    [Tooltip("Player height")]
-    [HideInInspector] public float p_height;
+    //Trial timeout (how much time player can stand still before trial ends
+    public float timeout;
+    //Check time interval min max
+    public float checkMin;
+    public float checkMax;
+    //Intertrail interval min max
+    public float interMax;
+    public float interMin;
+
     // 1 / Mean for check time exponential distribution
     private float c_lambda;
     // 1 / Mean for intertrial time exponential distribution
@@ -151,6 +138,8 @@ public class Monkey2D : MonoBehaviour
     private float c_max;
     private float i_min;
     private float i_max;
+
+    //Speed max and min
     private float velMin;
     private float velMax;
     private float rotMin;
@@ -160,46 +149,40 @@ public class Monkey2D : MonoBehaviour
         begin = 0,
         trial = 1,
         check = 2,
-        //question = 3,
         juice = 3,
         ITI = 4,
         none = 9,
     }
     [HideInInspector] public Phases phase;
 
-    private Vector3 pPos;
+    //Player position
+    private Vector3 player_position;
+
+    //Trial timeout?
     private bool isTimeout = false;
 
+    // Discontinuous Data
     // Trial number
-    readonly List<int> n = new List<int>();
-
+    readonly List<int> trial_number = new List<int>();
     // Firefly ON Duration
-    readonly List<float> onDur = new List<float>();
-
+    readonly List<float> FF_on_duration = new List<float>();
     //Firefly Colors
-    readonly List<string> ffCol = new List<string>();
-
+    readonly List<string> FF_color = new List<string>();
     // Firefly Check Coords
-    readonly List<string> ffPos = new List<string>();
-    public readonly List<Vector3> ffPositions = new List<Vector3>();
-
+    readonly List<string> FF_final_positions = new List<string>();
+    // FF individual positions
+    public readonly List<Vector3> FF_positions = new List<Vector3>();
     // Player position at Check()
-    readonly List<string> cPos = new List<string>();
-    readonly List<string> cPosTemp = new List<string>();
-
+    readonly List<string> player_final_position = new List<string>();
     // Player rotation at Check()
-    readonly List<string> cRot = new List<string>();
-    readonly List<string> cRotTemp = new List<string>();
-
+    readonly List<string> player_final_rotation = new List<string>();
     // Player origin at beginning of trial
-    readonly List<string> origin = new List<string>();
-
+    readonly List<string> player_starting_position = new List<string>();
     // Player rotation at origin
-    readonly List<string> heading = new List<string>();
-
+    readonly List<string> player_starting_rotation = new List<string>();
     // Player linear and angular velocity
-    readonly List<float> max_v = new List<float>();
-    readonly List<float> max_w = new List<float>();
+    readonly List<float> player_max_vel = new List<float>();
+    readonly List<float> player_max_rot = new List<float>();
 
     //PTBTau
     readonly List<float> CurrentTau = new List<float>();
@@ -331,16 +314,11 @@ public class Monkey2D : MonoBehaviour
 
     [HideInInspector] public float initialD = 0.0f;
 
-    private Vector3 direction = new Vector3();
     [HideInInspector] public float velocity;
     [HideInInspector] public float noise_SD;
     [HideInInspector] public float velocity_Noised;
 
     [HideInInspector] public Vector3 player_origin;
-
-    private string contPath;
-
-    private float ipd;
 
     public ParticleSystem particle_System;
     public ParticleSystem particle_System2;
@@ -514,7 +492,7 @@ public class Monkey2D : MonoBehaviour
         rotMin = PlayerPrefs.GetFloat("Min Angular Speed");
         rotMax = PlayerPrefs.GetFloat("Max Angular Speed");
         nFF = PlayerPrefs.GetFloat("Number of Fireflies");
-        multiMode = PlayerPrefs.GetInt("Multiple Firefly Mode");
+        multiple_FF_mode = PlayerPrefs.GetInt("Multiple Firefly Mode");
         separation = PlayerPrefs.GetFloat("Separation");
         minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
@@ -566,59 +544,18 @@ public class Monkey2D : MonoBehaviour
             rotStopThreshold = 1.0f;
         }
 
-        if (nFF > 1 && PlayerPrefs.GetInt("isColored") == 1)
+        if (multiple_FF_mode == 2)
         {
-            multiMode = 2;
+            FF_positions.Add(Vector3.zero);
+            FF_positions.Add(Vector3.zero);
         }
-
-        if (isCOM)
-        {
-            ffPositions.Add(Vector3.zero);
-            ffPositions.Add(Vector3.zero);
-        }
-        else if (nFF > 1 && multiMode == 1)
-        {
-            ranges.Add(minDrawDistance);
-            ffPositions.Add(Vector3.zero);
-
-            if (nFF < 3)
-            {
-                ranges.Add(PlayerPrefs.GetFloat("Range One"));
-                ffPositions.Add(Vector3.zero);
-            }
-
-            if (nFF >= 3 && nFF < 4)
-            {
-                ranges.Add(PlayerPrefs.GetFloat("Range Two"));
-                ffPositions.Add(Vector3.zero);
-            }
-
-            if (nFF >= 4 && nFF < 5)
-            {
-                ranges.Add(PlayerPrefs.GetFloat("Range Three"));
-                ffPositions.Add(Vector3.zero);
-            }
-
-            if (nFF >= 5 && nFF < 6)
-            {
-                ranges.Add(PlayerPrefs.GetFloat("Range Four"));
-                ffPositions.Add(Vector3.zero);
-            }
-
-            ranges.Add(maxDrawDistance);
-        }
-        else if (nFF > 1 && multiMode == 2)
+        else if (multiple_FF_mode == 1)
         {
             for (int i = 0; i < nFF; i++)
             {
-                ffPositions.Add(Vector3.zero);
+                FF_positions.Add(Vector3.zero);
             }
         }
-
-        //foreach (float range in ranges)
-        //{
-        //    print(range);
-        //}
 
         minJuiceTime = PlayerPrefs.GetFloat("Min Juice Time");
         maxJuiceTime = PlayerPrefs.GetFloat("Max Juice Time");
@@ -636,7 +573,7 @@ public class Monkey2D : MonoBehaviour
         fireflyZoneRadius = PlayerPrefs.GetFloat("Reward Zone Radius");
         fireflySize = PlayerPrefs.GetFloat("RadiusFF") * 2;
         firefly.transform.localScale = new Vector3(fireflySize, fireflySize, 1);
-        ratio = PlayerPrefs.GetFloat("Ratio");
+        ratio_always_on = PlayerPrefs.GetFloat("Ratio");
 
         velocities.Add(PlayerPrefs.GetFloat("V1"));
         velocities.Add(PlayerPrefs.GetFloat("V2"));
@@ -682,37 +619,30 @@ public class Monkey2D : MonoBehaviour
             v_ratios[i] = v_ratios[i] + v_ratios[i - 1];
         }
 
-        durations.Add(PlayerPrefs.GetFloat("D1"));
-        durations.Add(PlayerPrefs.GetFloat("D2"));
-        durations.Add(PlayerPrefs.GetFloat("D3"));
-        durations.Add(PlayerPrefs.GetFloat("D4"));
-        durations.Add(PlayerPrefs.GetFloat("D5"));
+        lifespan_durations.Add(PlayerPrefs.GetFloat("D1"));
+        lifespan_durations.Add(PlayerPrefs.GetFloat("D2"));
+        lifespan_durations.Add(PlayerPrefs.GetFloat("D3"));
+        lifespan_durations.Add(PlayerPrefs.GetFloat("D4"));
+        lifespan_durations.Add(PlayerPrefs.GetFloat("D5"));
 
-        ratios.Add(PlayerPrefs.GetFloat("R1"));
-        ratios.Add(PlayerPrefs.GetFloat("R2"));
-        ratios.Add(PlayerPrefs.GetFloat("R3"));
-        ratios.Add(PlayerPrefs.GetFloat("R4"));
-        ratios.Add(PlayerPrefs.GetFloat("R5"));
+        lifespan_ratios.Add(PlayerPrefs.GetFloat("R1"));
+        lifespan_ratios.Add(PlayerPrefs.GetFloat("R2"));
+        lifespan_ratios.Add(PlayerPrefs.GetFloat("R3"));
+        lifespan_ratios.Add(PlayerPrefs.GetFloat("R4"));
+        lifespan_ratios.Add(PlayerPrefs.GetFloat("R5"));
 
         for (int i = 1; i < 5; i++)
         {
-            ratios[i] = ratios[i] + ratios[i - 1];
+            lifespan_ratios[i] = lifespan_ratios[i] + lifespan_ratios[i - 1];
         }
 
         isMoving = PlayerPrefs.GetInt("Moving ON") == 1;
         LRFB = PlayerPrefs.GetInt("VertHor") == 0;
-        movingFFmode = PlayerPrefs.GetFloat("MovingFFmode");
+        noised_moving_FF = PlayerPrefs.GetFloat("MovingFFmode") == 1;
 
-        if (movingFFmode > 0)
-        {
-            lineOnOff = 1;//(int)PlayerPrefs.GetFloat("Line OnOff");
-        }
-        else
-        {
-            lineOnOff = 0;
-        }
+        lineOnOff = false;
         line.transform.localScale = new Vector3(10000f, 0.125f * p_height * 10, 1);
-        if (lineOnOff == 1)
+        if (lineOnOff)
         {
             line.SetActive(true);
         }
@@ -746,17 +676,14 @@ public class Monkey2D : MonoBehaviour
         {
             switch (PlayerPrefs.GetString("Switch Behavior"))
             {
-                case "always on":
-                    mode = Modes.ON;
-                    break;
                 case "flashing":
-                    mode = Modes.Flash;
-                    freq = PlayerPrefs.GetFloat("Frequency");
-                    duty = PlayerPrefs.GetFloat("Duty Cycle") / 100f;
-                    PW = duty / freq;
+                    flashing = true;
+                    flashing_frequency = PlayerPrefs.GetFloat("Frequency");
+                    duty_cycle = PlayerPrefs.GetFloat("Duty Cycle") / 100f;
+                    Pulse_Width = duty_cycle / flashing_frequency;
                     break;
                 case "fixed":
-                    mode = Modes.Fixed;
+                    flashing = false;
                     break;
                 default:
                     throw new System.Exception("No mode selected, defaulting to FIXED");
@@ -765,7 +692,7 @@ public class Monkey2D : MonoBehaviour
         catch (System.Exception e)
         {
             UnityEngine.Debug.LogError(e, this);
-            mode = Modes.Fixed;
+            flashing = false;
         }
         if (nFF > 1)
         {
@@ -776,27 +703,6 @@ public class Monkey2D : MonoBehaviour
                 pooledFF.Add(obj);
                 obj.SetActive(true);
                 obj.GetComponent<SpriteRenderer>().enabled = true;
-                if (multiMode == 1)
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            obj.GetComponent<SpriteRenderer>().color = Color.black;
-                            break;
-                        case 1:
-                            obj.GetComponent<SpriteRenderer>().color = Color.red;
-                            break;
-                        case 2:
-                            obj.GetComponent<SpriteRenderer>().color = Color.blue;
-                            break;
-                        case 3:
-                            obj.GetComponent<SpriteRenderer>().color = Color.yellow;
-                            break;
-                        case 4:
-                            obj.GetComponent<SpriteRenderer>().color = Color.green;
-                            break;
-                    }
-                }
             }
             firefly.SetActive(false);
         }
@@ -857,7 +763,7 @@ public class Monkey2D : MonoBehaviour
     /// 
     /// Switch phases here to ensure that each phase occurs on a frame
     /// 
-    /// For Flashing and Fixed, toggle will be true or false depending on whether or not
+    /// For Flashing and Fixed, is_always_on_trial will be true or false depending on whether or not
     /// nextDouble returns a number smaller than or equal to the ratio
     /// 
     /// In the case of multiple FF, I turned the sprite renderer on and off, rather than
@@ -883,17 +789,7 @@ public class Monkey2D : MonoBehaviour
 
                 case Phases.begin:
                     phase = Phases.none;
-                    if (mode == Modes.ON)
-                    {
-                        if (nFF > 1)
-                        {
-                            toggle = true;
-                        }
-                    }
-                    else
-                    {
-                        toggle = rand.NextDouble() <= ratio;
-                    }
+                    is_always_on_trial = rand.NextDouble() <= ratio_always_on;
                     currentTask = Begin();
                     break;
 
@@ -904,20 +800,6 @@ public class Monkey2D : MonoBehaviour
 
                 case Phases.check:
                     phase = Phases.none;
-                    if (mode == Modes.ON)
-                    {
-                        if (nFF > 1)
-                        {
-                            for (int i = 0; i < nFF; i++)
-                            {
-                                pooledFF[i].SetActive(false);
-                            }
-                        }
-                        else
-                        {
-                            firefly.SetActive(false);
-                        }
-                    }
                     currentTask = Check();
                     break;
 
@@ -927,7 +809,7 @@ public class Monkey2D : MonoBehaviour
 
             if (isMoving && nFF < 2)
             {
-                if(movingFFmode == 0)
+                if(!noised_moving_FF)
                 {
                     firefly.transform.position += move * Time.deltaTime;
                 }
@@ -941,26 +823,11 @@ public class Monkey2D : MonoBehaviour
                                                                //double randNormal =
                                                                //mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
                                                                //print(randStdNormal);
-                    if (PlayerPrefs.GetFloat("FixedYSpeed") != 0)
-                    {
-                        //print(timeCounter);
-                        timeCounter += velocity_Noised * 0.001f;
-                        velocity_Noised = velocity + (float)randStdNormal;
-                        float x = (minDrawDistance + maxDrawDistance) * Mathf.Cos(timeCounter) / 2;
-                        float y = 0.0001f;
-                        float z = (minDrawDistance + maxDrawDistance) * Mathf.Sin(timeCounter) / 2;
-                        //print(x);
-                        //print(z);
-                        firefly.transform.position = new Vector3(x, y, z);
-                    }
-                    else
-                    {
-                        Vector3 temp = move;
-                        move = move + (direction * (float)randStdNormal);
-                        velocity_Noised = velocity + (float)randStdNormal;
-                        firefly.transform.position += move * Time.deltaTime;
-                        move = temp;
-                    }
+                    Vector3 temp = move;
+                    move = move + (direction * (float)randStdNormal);
+                    velocity_Noised = velocity + (float)randStdNormal;
+                    firefly.transform.position += move * Time.deltaTime;
+                    move = temp;
                 }
             }
 
@@ -1000,7 +867,7 @@ public class Monkey2D : MonoBehaviour
             trialNum++;
             if (trialNum <= ntrials)
             {
-                n.Add(trialNum);
+                trial_number.Add(trialNum);
             }
 
             SendMarker("s", 1000.0f);
@@ -1079,7 +946,7 @@ public class Monkey2D : MonoBehaviour
                 }*/
             }
 
-            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
+            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !is_always_on_trial)
             {
                 isTrial = false;
                 float stimr = (float)rand.NextDouble();
@@ -1104,26 +971,7 @@ public class Monkey2D : MonoBehaviour
         if (isCheck)
         {
             isCheck = false;
-            if (nFF > 1 && multiMode == 1)
-            {
-                if (loopCount + 1 < nFF && (proximity && isReward))
-                {
-                    checkTimeString = string.Concat(checkTimeString, ",", (Time.realtimeSinceStartup - programT0).ToString("F5")).Substring(1);
-                }
-                else
-                {
-                    for (int i = loopCount; i < nFF; i++)
-                    {
-                        checkTimeString = string.Concat(checkTimeString, ",", "0.00000").Substring(1);
-                    }
-                    checkTimeStrList.Add(checkTimeString);
-                    checkTimeString = "";
-                }
-            }
-            else
-            {
-                checkTime.Add(Time.realtimeSinceStartup - programT0);
-            }
+            checkTime.Add(Time.realtimeSinceStartup - programT0);
         }
 
         if (isEnd)
@@ -1164,19 +1012,12 @@ public class Monkey2D : MonoBehaviour
             var CleanLV = SharedJoystick.cleanVel;
             var CleanRV = SharedJoystick.prevCleanRot;
 
-            var ptbJoyVelValueTmp = SharedJoystick.ptbJoyVelValue;
-            var ptbJoyRotValueTmp = SharedJoystick.ptbJoyRotValue;
-            var ptbJoyFlagTmp = SharedJoystick.ptbJoyFlag;
-            var currentSpeedTmp = SharedJoystick.currentSpeed;
-            var currentRotTmp = SharedJoystick.currentRot;
-            var speedPrePtbTmp = SharedJoystick.speedPrePtb;
-            var rotPrePtbTmp = SharedJoystick.rotPrePtb;
             var ObsLinNoise = DistFlowSpeed;
             var ObsAngNoise = DistFlowRot;
 
             if (flagMultiFF)
             {
-                foreach (Vector3 pos in ffPositions)
+                foreach (Vector3 pos in FF_positions)
                 {
                     FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
                 }
@@ -1271,14 +1112,14 @@ public class Monkey2D : MonoBehaviour
             }
             //tautau.Add(SharedJoystick.currentTau);
             //filterTau.Add(SharedJoystick.filterTau);
-            max_v.Add(SharedJoystick.MaxSpeed);
-            max_w.Add(SharedJoystick.RotSpeed);
+            player_max_vel.Add(SharedJoystick.MaxSpeed);
+            player_max_rot.Add(SharedJoystick.RotSpeed);
             CurrentTau.Add(SharedJoystick.savedTau);
         }
         else
         {
-            max_v.Add(SharedJoystick.MaxSpeed);
-            max_w.Add(SharedJoystick.RotSpeed);
+            player_max_vel.Add(SharedJoystick.MaxSpeed);
+            player_max_rot.Add(SharedJoystick.RotSpeed);
         }
 
         loopCount = 0;
@@ -1340,34 +1181,7 @@ public class Monkey2D : MonoBehaviour
                 COMtrialtype.Add(3);
             }
         }
-        else if (nFF > 1 && multiMode == 1)
-        {
-            for (int i = 0; i < nFF; i++)
-            {
-                bool tooClose;
-                do
-                {
-                    tooClose = false;
-                    Vector3 position;
-                    float r = ranges[i] + (ranges[i + 1] - ranges[i]) * Mathf.Sqrt((float)rand.NextDouble());
-                    float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-                    if (LR != 0.5f)
-                    {
-                        float side = rand.NextDouble() < LR ? 1 : -1;
-                        position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle * side, Vector3.up) * player.transform.forward * r;
-                    }
-                    else
-                    {
-                        position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
-                    }
-                    position.y = 0.0001f;
-                    if (i > 0) for (int k = 0; k < i; k++) { if (Vector3.Distance(position, pooledFF[k].transform.position) <= separation) tooClose = true; } // || Mathf.Abs(position.x - pooledFF[k - 1].transform.position.x) >= 0.5f || Mathf.Abs(position.z - pooledFF[k - 1].transform.position.z) <= 0.5f) tooClose = true; }
-                    pooledFF[i].transform.position = position;
-                    ffPositions[i] = position;
-                } while (tooClose);
-            }
-        }
-        else if (nFF > 1 && multiMode == 2)
+        else if (multiple_FF_mode == 1)
         {
             for (int i = 0; i < nFF; i++)
             {
@@ -1390,7 +1204,7 @@ public class Monkey2D : MonoBehaviour
                     position.y = 0.0001f;
                     if (i > 0) for (int k = 0; k < i; k++) { if (Vector3.Distance(position, pooledFF[k].transform.position) <= separation) tooClose = true; } // || Mathf.Abs(position.x - pooledFF[k - 1].transform.position.x) >= 0.5f || Mathf.Abs(position.z - pooledFF[k - 1].transform.position.z) <= 0.5f) tooClose = true; }
                     pooledFF[i].transform.position = position;
-                    ffPositions[i] = position;
+                    FF_positions[i] = position;
                 } while (tooClose);
             }
         }
@@ -1410,7 +1224,7 @@ public class Monkey2D : MonoBehaviour
             }
             position.y = 0.0001f;
             firefly.transform.position = position;
-            ffPositions.Add(position);
+            FF_positions.Add(position);
         }
 
         if (isStatic2FF)
@@ -1461,8 +1275,8 @@ public class Monkey2D : MonoBehaviour
         }
 
         player_origin = player.transform.position;
-        origin.Add(player_origin.ToString("F5").Trim(toTrim).Replace(" ", ""));
-        heading.Add(player.transform.rotation.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        player_starting_position.Add(player_origin.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        player_starting_rotation.Add(player.transform.rotation.ToString("F5").Trim(toTrim).Replace(" ", ""));
 
         if (isMoving && nFF < 2)
         {
@@ -1599,23 +1413,17 @@ public class Monkey2D : MonoBehaviour
                 }
             }
 
-            switch (mode)
+            switch (flashing)
             {
-                case Modes.ON:
-                    foreach (GameObject FF in pooledFF)
-                    {
-                        FF.SetActive(true);
-                    }
-                    break;
-                case Modes.Flash:
+                case true:
                     on = true;
                     foreach (GameObject FF in pooledFF)
                     {
                         flashTask = Flash(FF);
                     }
                     break;
-                case Modes.Fixed:
-                    if (toggle && !isCOM || toggle && isNormal)
+                case false:
+                    if (is_always_on_trial && !isCOM || is_always_on_trial && isNormal)
                     {
                         foreach (GameObject FF in pooledFF)
                         {
@@ -1627,32 +1435,32 @@ public class Monkey2D : MonoBehaviour
                     {
                         float r = (float)rand.NextDouble();
 
-                        if (r <= ratios[0])
+                        if (r <= lifespan_ratios[0])
                         {
                             // duration 1
-                            lifeSpan = durations[0];
+                            lifeSpan = lifespan_durations[0];
                         }
-                        else if (r > ratios[0] && r <= ratios[1])
+                        else if (r > lifespan_ratios[0] && r <= lifespan_ratios[1])
                         {
                             // duration 2
-                            lifeSpan = durations[1];
+                            lifeSpan = lifespan_durations[1];
                         }
-                        else if (r > ratios[1] && r <= ratios[2])
+                        else if (r > lifespan_ratios[1] && r <= lifespan_ratios[2])
                         {
                             // duration 3
-                            lifeSpan = durations[2];
+                            lifeSpan = lifespan_durations[2];
                         }
-                        else if (r > ratios[2] && r <= ratios[3])
+                        else if (r > lifespan_ratios[2] && r <= lifespan_ratios[3])
                         {
                             // duration 4
-                            lifeSpan = durations[3];
+                            lifeSpan = lifespan_durations[3];
                         }
                         else
                         {
                             // duration 5
-                            lifeSpan = durations[4];
+                            lifeSpan = lifespan_durations[4];
                         }
-                        onDur.Add(lifeSpan);
+                        FF_on_duration.Add(lifeSpan);
                         if (isCOM)
                         {
                             OnOff(pooledFF[0]);
@@ -1674,17 +1482,14 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            switch (mode)
+            switch (flashing)
             {
-                case Modes.ON:
-                    firefly.SetActive(true);
-                    break;
-                case Modes.Flash:
+                case true:
                     on = true;
                     flashTask = Flash(firefly);
                     break;
-                case Modes.Fixed:
-                    if (toggle)
+                case false:
+                    if (is_always_on_trial)
                     {
                         firefly.SetActive(true);
                         alwaysON.Add(true);
@@ -1694,32 +1499,32 @@ public class Monkey2D : MonoBehaviour
                         alwaysON.Add(false);
                         float r = (float)rand.NextDouble();
 
-                        if (r <= ratios[0])
+                        if (r <= lifespan_ratios[0])
                         {
                             // duration 1
-                            lifeSpan = durations[0];
+                            lifeSpan = lifespan_durations[0];
                         }
-                        else if (r > ratios[0] && r <= ratios[1])
+                        else if (r > lifespan_ratios[0] && r <= lifespan_ratios[1])
                         {
                             // duration 2
-                            lifeSpan = durations[1];
+                            lifeSpan = lifespan_durations[1];
                         }
-                        else if (r > ratios[1] && r <= ratios[2])
+                        else if (r > lifespan_ratios[1] && r <= lifespan_ratios[2])
                         {
                             // duration 3
-                            lifeSpan = durations[2];
+                            lifeSpan = lifespan_durations[2];
                         }
-                        else if (r > ratios[2] && r <= ratios[3])
+                        else if (r > lifespan_ratios[2] && r <= lifespan_ratios[3])
                         {
                             // duration 4
-                            lifeSpan = durations[3];
+                            lifeSpan = lifespan_durations[3];
                         }
                         else
                         {
                             // duration 5
-                            lifeSpan = durations[4];
+                            lifeSpan = lifespan_durations[4];
                         }
-                        onDur.Add(lifeSpan);
+                        FF_on_duration.Add(lifeSpan);
                         OnOff();
                     }
                     break;
@@ -1761,13 +1566,6 @@ public class Monkey2D : MonoBehaviour
         }
 
         source = new CancellationTokenSource();
-
-        if (toggle && isMoving)
-        {
-            motion_toggle = true;
-            await new WaitForSeconds(0.15f);
-            motion_toggle = false;
-        }
 
         if (isCOM)
         {
@@ -1841,33 +1639,14 @@ public class Monkey2D : MonoBehaviour
 
         source.Cancel();
 
-        if (mode == Modes.Flash)
+        if (flashing)
         {
             on = false;
         }
 
-        if (toggle)
+        if (is_always_on_trial)
         {
-            if (nFF > 1 && multiMode == 1)
-            {
-                if (isTimeout || Vector3.Distance(player.transform.position, pooledFF[loopCount].transform.position) > fireflyZoneRadius)
-                {
-                    foreach (GameObject FF in pooledFF)
-                    {
-                        FF.SetActive(false);
-                    }
-                }
-                else
-                {
-                    pooledFF[loopCount].SetActive(false);
-                }
-
-                if (toggle && (isTimeout || loopCount + 1 >= nFF))
-                {
-                    onDur.Add(Time.realtimeSinceStartup - beginTime[beginTime.Count - 1] - programT0);
-                }
-            }
-            else if (nFF > 1 && multiMode == 2)
+            if (multiple_FF_mode == 1)
             {
                 foreach (GameObject FF in pooledFF)
                 {
@@ -1879,10 +1658,7 @@ public class Monkey2D : MonoBehaviour
                 firefly.SetActive(false);
             }
 
-            if (toggle && multiMode != 1)
-            {
-                onDur.Add(Time.realtimeSinceStartup - beginTime[beginTime.Count - 1] - programT0);
-            }
+            FF_on_duration.Add(Time.realtimeSinceStartup - beginTime[beginTime.Count - 1] - programT0);
         }
 
         move = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1911,7 +1687,7 @@ public class Monkey2D : MonoBehaviour
         Vector3 pos;
         Quaternion rot;
 
-        pPos = player.transform.position - new Vector3(0.0f, p_height, 0.0f);
+        player_position = player.transform.position - new Vector3(0.0f, p_height, 0.0f);
 
         pos = player.transform.position;
         rot = player.transform.rotation;
@@ -1945,7 +1721,7 @@ public class Monkey2D : MonoBehaviour
                 if(!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
                 {
                     ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
-                    distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
+                    distance = Vector3.Distance(player_position, pooledFF[i].transform.position);
                     //print(distance);
                     if (distance <= fireflyZoneRadius && distance < curdistance)
                     {
@@ -1957,23 +1733,12 @@ public class Monkey2D : MonoBehaviour
             }
             distances.Add(distance);
         }
-        else if (nFF > 1 && multiMode == 1)
-        {
-            ffPosStr = string.Concat(ffPosStr, ",", pooledFF[loopCount].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
-            distance = Vector3.Distance(pPos, pooledFF[loopCount].transform.position);
-            //print(distance);
-            distances.Add(distance);
-            if (distances[loopCount] <= fireflyZoneRadius)
-            {
-                proximity = true;
-            }
-        }
-        else if (nFF > 1 && multiMode == 2)
+        else if (multiple_FF_mode == 1)
         {
             for (int i = 0; i < nFF; i++)
             {
                 ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
-                distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
+                distance = Vector3.Distance(player_position, pooledFF[i].transform.position);
                 //print(distance);
                 if (distance <= fireflyZoneRadius && distance < curdistance)
                 {
@@ -1986,8 +1751,8 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            if (Vector3.Distance(pPos, firefly.transform.position) <= fireflyZoneRadius) proximity = true;
-            distance = Vector3.Distance(pPos, firefly.transform.position);
+            if (Vector3.Distance(player_position, firefly.transform.position) <= fireflyZoneRadius) proximity = true;
+            distance = Vector3.Distance(player_position, firefly.transform.position);
             ffPosStr = firefly.transform.position.ToString("F5").Trim(toTrim).Replace(" ", "");
             distances.Add(distance);
         }
@@ -2020,32 +1785,6 @@ public class Monkey2D : MonoBehaviour
 
                 await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
             }
-            else if (nFF > 1 && multiMode == 1)
-            {
-                if (loopCount + 1 < nFF)
-                {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
-                    //Debug.Log(string.Format("Firefly {0} Hit.", loopCount + 1));
-                    audioSource.clip = neutralSound;
-                    audioSource.Play();
-
-                    player_origin = player.transform.position;
-                }
-                else
-                {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
-                    //Debug.Log(string.Format("Firefly {0} Hit. Reward: {1}", loopCount + 1, juiceTime));
-                    audioSource.clip = winSound;
-                    //print(juiceTime);
-                    juiceDuration.Add(juiceTime);
-                    audioSource.Play();
-                    points++;
-                    SendMarker("j", juiceTime);
-                    await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
-                    juiceTime = 0;
-                    //Debug.Log("Juice: " + DateTime.Now.ToLongTimeString());
-                }
-            }
             else
             {
                 audioSource.clip = winSound;
@@ -2072,104 +1811,14 @@ public class Monkey2D : MonoBehaviour
         }
 
 
-        if (nFF > 1 && multiMode == 1)
-        {
-            if (loopCount + 1 < nFF)
-            {
-                if (!isTimeout && isReward && proximity)
-                {
-                    distances.Add(Vector3.Distance(pPos, pooledFF[loopCount].transform.position));
-                    cPosTemp.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-                    cRotTemp.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
-
-                    loopCount++;
-
-                    phase = Phases.trial;
-                    currPhase = Phases.trial;
-                }
-                else
-                {
-                    if (loopCount + 1 < nFF)
-                    {
-                        for (int i = loopCount + 1; i < nFF; i++)
-                        {
-                            ffPosStr = string.Concat(ffPosStr, ",", pooledFF[loopCount].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
-                            distances.Add(Vector3.Distance(pPos, pooledFF[i].transform.position));
-                            cPosTemp.Add(Vector3.zero.ToString("F5").Trim(toTrim).Replace(" ", ""));
-                            cRotTemp.Add(Quaternion.identity.ToString("F5").Trim(toTrim).Replace(" ", ""));
-                        }
-                    }
-
-                    player.transform.position = Vector3.up * p_height;
-                    player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                    drunkplayer.transform.position = Vector3.up * p_height;
-                    drunkplayer.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-
-                    score.Add(isReward && proximity ? 1 : 0);
-                    timedout.Add(isTimeout ? 1 : 0);
-                    cPos.Add(string.Join(",", cPosTemp));
-                    cRot.Add(string.Join(",", cRotTemp));
-                    dist.Add(string.Join(",", distances));
-                    ffPos.Add(ffPosStr);
-
-                    float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
-
-                    currPhase = Phases.ITI;
-
-                    interWait.Add(wait);
-
-                    isEnd = true;
-
-                    ffPosStr = "";
-                    cPosTemp.Clear();
-                    cRotTemp.Clear();
-                    distances.Clear();
-                    isTimeout = false;
-
-                    await new WaitForSeconds(wait);
-
-                    phase = Phases.begin;
-                    // Debug.Log("Check Phase End.");
-                }
-            }
-            else
-            {
-                loopCount = 0;
-
-                score.Add(isReward && proximity ? 1 : 0);
-                timedout.Add(isTimeout ? 1 : 0);
-                cPos.Add(string.Join(",", cPosTemp));
-                cRot.Add(string.Join(",", cRotTemp));
-                dist.Add(string.Join(",", distances));
-                ffPos.Add(ffPosStr);
-
-                float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
-
-                currPhase = Phases.ITI;
-                
-                interWait.Add(wait);
-
-                isEnd = true;
-
-                distances.Clear();
-                cPosTemp.Clear();
-                cRotTemp.Clear();
-                ffPosStr = "";
-                isTimeout = false;
-
-                await new WaitForSeconds(wait);
-
-                phase = Phases.begin;
-            }
-        }
-        else if (nFF > 1 && multiMode == 2)
+        if (multiple_FF_mode == 1)
         {
             score.Add(isReward && proximity ? 1 : 0);
             timedout.Add(isTimeout ? 1 : 0);
-            cPos.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            cRot.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            player_final_position.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            player_final_rotation.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
             dist.Add(string.Join(",", distances));
-            ffPos.Add(ffPosStr);
+            FF_final_positions.Add(ffPosStr);
 
             float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
 
@@ -2185,7 +1834,7 @@ public class Monkey2D : MonoBehaviour
 
             if (PlayerPrefs.GetInt("isColored") == 1)
             {
-                ffCol.Add(string.Format("{0},{1}", colorchosen[0], colorchosen[1]));
+                FF_color.Add(string.Format("{0},{1}", colorchosen[0], colorchosen[1]));
                 colorchosen.Clear();
             }
 
@@ -2197,10 +1846,10 @@ public class Monkey2D : MonoBehaviour
         {
             timedout.Add(isTimeout ? 1 : 0);
             score.Add(isReward && proximity ? 1 : 0);
-            ffPos.Add(ffPosStr);
+            FF_final_positions.Add(ffPosStr);
             dist.Add(distances[0].ToString("F5"));
-            cPos.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            cRot.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            player_final_position.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            player_final_rotation.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
 
 
             timeCntPTBStart.Add(SharedJoystick.timeCntPTBStart - programT0);
@@ -2251,7 +1900,7 @@ public class Monkey2D : MonoBehaviour
                 }
             }
 
-            ffPositions.Clear();
+            FF_positions.Clear();
             distances.Clear();
             ffPosStr = "";
 
@@ -2298,8 +1947,6 @@ public class Monkey2D : MonoBehaviour
             phase = Phases.begin;
             Debug.Log("Check Phase End.");
         }
-
-        timeCounter = 0;
     }
 
     /// <summary>
@@ -2316,16 +1963,16 @@ public class Monkey2D : MonoBehaviour
     {
         while (on)
         {
-            if (toggle && !obj.activeInHierarchy)
+            if (is_always_on_trial && !obj.activeInHierarchy)
             {
                 obj.GetComponent<SpriteRenderer>().enabled = false;
             }
             else
             {
                 obj.GetComponent<SpriteRenderer>().enabled = true;
-                await new WaitForSeconds(PW);
+                await new WaitForSeconds(Pulse_Width);
                 obj.GetComponent<SpriteRenderer>().enabled = false;
-                await new WaitForSeconds((1f / freq) - PW);
+                await new WaitForSeconds((1f / flashing_frequency) - Pulse_Width);
             }
         }
     }
@@ -2431,13 +2078,13 @@ public class Monkey2D : MonoBehaviour
 
             temp = new List<int>()
             {
-                origin.Count,
-                heading.Count,
-                ffPos.Count,
+                player_starting_position.Count,
+                player_starting_rotation.Count,
+                FF_final_positions.Count,
                 dist.Count,
-                n.Count,
-                cPos.Count,
-                cRot.Count,
+                trial_number.Count,
+                player_final_position.Count,
+                player_final_rotation.Count,
                 beginTime.Count,
                 rewardTime.Count,
                 endTime.Count,
@@ -2445,27 +2092,20 @@ public class Monkey2D : MonoBehaviour
                 interWait.Count,
                 score.Count,
                 timedout.Count,
-                max_v.Count,
-                max_w.Count,
+                player_max_vel.Count,
+                player_max_rot.Count,
                 fv.Count,
-                onDur.Count,
+                FF_on_duration.Count,
                 densities.Count,
                 juiceDuration.Count,
                 densities_obsRatio.Count
             };
 
-            if (nFF > 1 && multiMode == 1)
-            {
-                temp.Add(checkTimeStrList.Count);
-            }
-            else
-            {
-                temp.Add(checkTime.Count);
-            }
+            temp.Add(checkTime.Count);
 
             if (PlayerPrefs.GetInt("isColored") == 1)
             {
-                temp.Add(ffCol.Count);
+                temp.Add(FF_color.Count);
             }
             if (PlayerPrefs.GetInt("isFFstimu") == 1)
             {
@@ -2499,17 +2139,17 @@ public class Monkey2D : MonoBehaviour
             for (int i = j; i < temp[0]; i++)
             {
                 var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
-                    n[i],
-                    max_v[i],
-                    max_w[i],
+                    trial_number[i],
+                    player_max_vel[i],
+                    player_max_rot[i],
                     fv[i],
-                    onDur[i],
+                    FF_on_duration[i],
                     densities[i],
-                    origin[i],
-                    heading[i],
-                    ffPos[i],
-                    cPos[i],
-                    cRot[i],
+                    player_starting_position[i],
+                    player_starting_rotation[i],
+                    FF_final_positions[i],
+                    player_final_position[i],
+                    player_final_rotation[i],
                     dist[i],
                     score[i],
                     timedout[i],
@@ -2554,7 +2194,7 @@ public class Monkey2D : MonoBehaviour
 
                 if (PlayerPrefs.GetInt("isColored") == 1)
                 {
-                    line += string.Format(",{0}", ffCol[i]);
+                    line += string.Format(",{0}", FF_color[i]);
                 }
                 else
                 {
@@ -2586,7 +2226,7 @@ public class Monkey2D : MonoBehaviour
 
             PlayerPrefs.SetInt("Good Trials", totalScore);
             print(temp[0]);
-            PlayerPrefs.SetInt("Total Trials", n[n.Count - 1]);
+            PlayerPrefs.SetInt("Total Trials", trial_number[trial_number.Count - 1]);
 
             SaveConfigs();
         }

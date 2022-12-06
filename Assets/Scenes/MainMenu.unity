@@ -18011,9 +18011,9 @@ MonoBehaviour:
     m_Options:
     - m_Text: Single
       m_Image: {fileID: 0}
-    - m_Text: Sequential
+    - m_Text: Normal
       m_Image: {fileID: 0}
-    - m_Text: Multiple
+    - m_Text: COM
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -29494,7 +29494,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478170137}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 1170793089}
@@ -87385,7 +87385,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565355738}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 1170793089}
