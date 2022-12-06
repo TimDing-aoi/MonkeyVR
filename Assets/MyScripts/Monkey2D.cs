@@ -439,6 +439,8 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     void OnEnable()
     {
+        Application.targetFrameRate = 90;
+
         PlayerPrefs.SetFloat("FixedYSpeed", 0);
         PlayerPrefs.SetFloat("MovingFFmode", 0);
         Application.runInBackground = true;
