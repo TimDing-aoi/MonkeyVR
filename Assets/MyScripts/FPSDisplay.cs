@@ -65,19 +65,19 @@ public class FPSDisplay : MonoBehaviour
             {
 				trialtypestring = "COM2FF";
 			}
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\nTrialType:{4}",msec, fps, reward.points, reward.trialNum,trialtypestring);
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\nTrialType:{4}",msec, fps, reward.good_trial_count, reward.trialNum,trialtypestring);
 		}
 		else if (!SharedJoystick.BrakeFlag && !SharedJoystick.StopFlag)
         {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Trial", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Trial", msec, fps, reward.good_trial_count, reward.trialNum, SharedJoystick.savedTau);
 		}
 		else if (SharedJoystick.StopFlag)
         {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Stop", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Stop", msec, fps, reward.good_trial_count, reward.trialNum, SharedJoystick.savedTau);
 		}
         else
         {
-			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Brake", msec, fps, reward.points, reward.trialNum, SharedJoystick.savedTau);
+			text = string.Format("{0:0.0} ms ({1:0.} fps)\nGood Trials / Total Trials: {2}/{3}\n Tau: {4}\n Brake", msec, fps, reward.good_trial_count, reward.trialNum, SharedJoystick.savedTau);
 		}
 		GUI.Label(rect, text, style);
 		if (keyboard.spaceKey.isPressed)
