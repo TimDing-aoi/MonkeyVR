@@ -41,7 +41,7 @@ public class Particles2 : MonoBehaviour
 
         particleSystem.Stop();
 
-        particleSystem.randomSeed = seed;
+        if (particleSystem.isStopped) particleSystem.randomSeed = seed;
 
         particleSystem.Play();
 
