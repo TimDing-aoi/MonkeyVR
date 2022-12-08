@@ -597,8 +597,8 @@ public class JoystickMonke : MonoBehaviour
                 DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
                 //print(DistFlowSpeed);
                 //print(DistFlowRot);
-                transform.position = transform.position + transform.forward * (currentSpeed + DistFlowSpeed) * Time.fixedDeltaTime;
-                transform.Rotate(0f, (currentRot + DistFlowRot) * Time.fixedDeltaTime, 0f);
+                transform.position = transform.position + transform.forward * (currentSpeed + 0) * Time.fixedDeltaTime;
+                transform.Rotate(0f, (currentRot + 0) * Time.fixedDeltaTime, 0f);
             }
             else
             {
