@@ -322,7 +322,7 @@ namespace PupilLabs
                 gazeOrigin = Camera.main.transform;
                 firefly = SharedMonkey.firefly;
                 player = SharedMonkey.player;
-                flagMultiFF = SharedMonkey.nFF > 1;
+                flagMultiFF = SharedMonkey.NumberOfFF > 1;
                 if(PlayerPrefs.GetInt("is2FFCOM") == 1){
                     flagMultiFF = true;
                 }
@@ -330,7 +330,7 @@ namespace PupilLabs
                 if (flagMultiFF)
                 {
                     var str = "";
-                    int FFNum = (int)SharedMonkey.nFF;
+                    int FFNum = (int)SharedMonkey.NumberOfFF;
                     if (PlayerPrefs.GetInt("is2FFCOM") == 1)
                     {
                         FFNum = 2;

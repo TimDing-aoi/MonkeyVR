@@ -90,7 +90,7 @@ public class FPSDisplay : MonoBehaviour
 		}
 		GUI.Box(new Rect(0f, 120f, 50f, 50f), texture);
 
-		if (reward.stimulating /*|| Keyboard.current.rightAltKey.isPressed*/)
+		if (reward.isStimulating /*|| Keyboard.current.rightAltKey.isPressed*/)
 		{
 			GUI.contentColor = Color.green;
 		}

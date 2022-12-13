@@ -455,7 +455,7 @@ public class JoystickMonke : MonoBehaviour
             if (CtrlDynamicsFlag)
             {
                 updateControlDynamics();
-                if (SharedMonkey.isIntertrail)
+                if (SharedMonkey.isIntertrial)
                 {
                     //print("stoping");
                     moveX = 0;
@@ -515,7 +515,7 @@ public class JoystickMonke : MonoBehaviour
                 velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
                 rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                 ProcessNoise();
-                if (SharedMonkey.isIntertrail && SharedMonkey.isCOM)
+                if (SharedMonkey.isIntertrial && SharedMonkey.isCOM)
                 {
                     currentSpeed = 0;
                     currentRot = 0;
@@ -533,7 +533,7 @@ public class JoystickMonke : MonoBehaviour
                     {
 
                         //Monkey2D.Phase;                
-                        if (SharedMonkey.phase == Phases.check)
+                        if (SharedMonkey.phase_task_selecter == Phases.check)
                         {
                             moveX = 0;
                             moveY = 0;
