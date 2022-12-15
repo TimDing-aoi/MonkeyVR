@@ -66,7 +66,7 @@ public class Monkey2D : MonoBehaviour
     readonly public List<float> v_ratios = new List<float>();
     readonly public List<float> v_noises = new List<float>();
     //FF moves left-right or forward-backward? true for lr, false for fb
-    private bool LRFB;
+    private bool isLeftRightnotForBack;
     //FF move direction
     private Vector3 FFMoveDirection = new Vector3();
     private bool noised_moving_FF;
@@ -105,7 +105,7 @@ public class Monkey2D : MonoBehaviour
     public GameObject player;
     public GameObject drunkplayer;
     //player height
-    public float p_height;
+    public float Player_Height;
 
     //sounds
     public AudioSource audioSource;
@@ -141,12 +141,6 @@ public class Monkey2D : MonoBehaviour
     private float i_min;
     private float i_max;
 
-    //Speed max and min
-    private float velMin;
-    private float velMax;
-    private float rotMin;
-    private float rotMax;
-
     //Player position
     private Vector3 player_position;
 
@@ -179,9 +173,8 @@ public class Monkey2D : MonoBehaviour
     readonly List<float> CurrentTau = new List<float>();
     // Firefly velocity
     readonly List<float> FF_velocity = new List<float>();
-    // Distances from player to firefly
+    // Distances from player to firefly (closest one in case of multiple FF)
     readonly List<string> distance_to_FF = new List<string>();
-    readonly List<float> distances_to_FF = new List<float>();
     // Times
     readonly List<float> beginTime = new List<float>();
     readonly List<float> checkTime = new List<float>();
@@ -270,7 +263,7 @@ public class Monkey2D : MonoBehaviour
     private bool isTrial = false;
     private bool isCheck = false;
     private bool isEnd = false;
-    public bool isIntertrial = false;
+    public bool Joystick_Disabled = false;
     public enum Phases
     {
         begin = 0,
@@ -398,8 +391,8 @@ public class Monkey2D : MonoBehaviour
 
         //Juice connection
         juiceBox = serial.sp;
-        minJuiceTime = PlayerPrefs.GetFloat("Min Juice Time");
-        maxJuiceTime = PlayerPrefs.GetFloat("Max Juice Time");
+        minJuiceTime = PlayerPrefs.GetFloat("minJuiceTime");
+        maxJuiceTime = PlayerPrefs.GetFloat("maxJuiceTime");
 
         //Send block start marker
         SendMarker("f", 1000.0f);
@@ -458,35 +451,29 @@ public class Monkey2D : MonoBehaviour
         if (ntrials == 0) ntrials = 9999;
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
-        p_height = PlayerPrefs.GetFloat("Player Height");
+        Player_Height = PlayerPrefs.GetFloat("Player_Height");
         
         //ITI time settings
-        c_lambda = 1.0f / PlayerPrefs.GetFloat("Mean 1");
-        i_lambda = 1.0f / PlayerPrefs.GetFloat("Mean 2");
-        checkMin = PlayerPrefs.GetFloat("Minimum Wait to Check");
-        checkMax = PlayerPrefs.GetFloat("Maximum Wait to Check");
-        interMin = PlayerPrefs.GetFloat("Minimum Intertrial Wait");
-        interMax = PlayerPrefs.GetFloat("Maximum Intertrial Wait");
+        c_lambda = 1.0f / PlayerPrefs.GetFloat("CheckMean");
+        i_lambda = 1.0f / PlayerPrefs.GetFloat("IntertialMean");
+        checkMin = PlayerPrefs.GetFloat("checkMin");
+        checkMax = PlayerPrefs.GetFloat("checkMax");
+        interMin = PlayerPrefs.GetFloat("interMin");
+        interMax = PlayerPrefs.GetFloat("interMax");
         c_min = Tcalc(checkMin, c_lambda);
         c_max = Tcalc(checkMax, c_lambda);
         i_min = Tcalc(interMin, i_lambda);
         i_max = Tcalc(interMax, i_lambda);
 
-        //Control settings
-        velMin = PlayerPrefs.GetFloat("Min Linear Speed");
-        velMax = PlayerPrefs.GetFloat("Max Linear Speed");
-        rotMin = PlayerPrefs.GetFloat("Min Angular Speed");
-        rotMax = PlayerPrefs.GetFloat("Max Angular Speed");
-
         //FF settings and spawn settings
-        minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
-        maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
-        maxPhi = PlayerPrefs.GetFloat("Max Angle");
-        minPhi = PlayerPrefs.GetFloat("Min Angle");
-        reward_zone_radius = PlayerPrefs.GetFloat("Reward Zone Radius");
+        minDrawDistance = PlayerPrefs.GetFloat("minDrawDistance");
+        maxDrawDistance = PlayerPrefs.GetFloat("maxDrawDistance");
+        maxPhi = PlayerPrefs.GetFloat("maxPhi");
+        minPhi = PlayerPrefs.GetFloat("minPhi");
+        reward_zone_radius = PlayerPrefs.GetFloat("reward_zone_radius");
         fireflySize = PlayerPrefs.GetFloat("RadiusFF") * 2;
         firefly.transform.localScale = new Vector3(fireflySize, fireflySize, 1);
-        ratio_always_on = PlayerPrefs.GetFloat("Ratio");
+        ratio_always_on = PlayerPrefs.GetFloat("ratio_always_on");
 
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
 
@@ -524,8 +511,8 @@ public class Monkey2D : MonoBehaviour
         }
 
         //Multiple FF? Is it change of mind?
-        NumberOfFF = PlayerPrefs.GetFloat("Number of Fireflies");
-        multiple_FF_mode = PlayerPrefs.GetInt("Multiple Firefly Mode");
+        NumberOfFF = PlayerPrefs.GetFloat("NumberOfFF");
+        multiple_FF_mode = PlayerPrefs.GetInt("multiple_FF_mode");
         flagMultiFF = multiple_FF_mode > 0;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
         isCOMtest = PlayerPrefs.GetInt("is2FFCOMtest") == 1;
@@ -535,7 +522,7 @@ public class Monkey2D : MonoBehaviour
             FFcoordsList.Clear();
             ReadCoordCSV();
         }
-        FFseparation = PlayerPrefs.GetFloat("Separation");
+        FFseparation = PlayerPrefs.GetFloat("FFseparation");
         if (multiple_FF_mode == 2)
         {
             FF_positions.Add(Vector3.zero);
@@ -584,8 +571,8 @@ public class Monkey2D : MonoBehaviour
         flagFFstimulation = PlayerPrefs.GetInt("isFFstimu") == 1;
 
         //Moving FF
-        isMoving = PlayerPrefs.GetInt("Moving ON") == 1;
-        LRFB = PlayerPrefs.GetInt("VertHor") == 0;
+        isMoving = PlayerPrefs.GetInt("isMoving") == 1;
+        isLeftRightnotForBack = PlayerPrefs.GetInt("VertHor") == 0;
         noised_moving_FF = PlayerPrefs.GetFloat("MovingFFmode") == 1;
         for (int i = 1; i <= 12; i++)
         {
@@ -604,9 +591,9 @@ public class Monkey2D : MonoBehaviour
         //FF observation
         for (int i = 1; i <= 5; i++)
         {
-            string PPFetchName = "D" + i.ToString();
+            string PPFetchName = "LifespanDuration" + i.ToString();
             lifespan_durations.Add(PlayerPrefs.GetFloat(PPFetchName));
-            PPFetchName = "R" + i.ToString();
+            PPFetchName = "LifespanRatio" + i.ToString();
             lifespan_ratios.Add(PlayerPrefs.GetFloat(PPFetchName));
         }
         for (int i = 1; i < 5; i++)
@@ -616,7 +603,7 @@ public class Monkey2D : MonoBehaviour
 
         //Line for moving FF obsv?
         lineOnOff = false;
-        line.transform.localScale = new Vector3(10000f, 0.125f * p_height * 10, 1);
+        line.transform.localScale = new Vector3(10000f, 0.125f * Player_Height * 10, 1);
         if (lineOnOff)
         {
             line.SetActive(true);
@@ -651,8 +638,8 @@ public class Monkey2D : MonoBehaviour
         isFlashing = PlayerPrefs.GetInt("isFlashing") == 1;
         if (isFlashing)
         {
-            flashing_frequency = PlayerPrefs.GetFloat("Frequency");
-            duty_cycle = PlayerPrefs.GetFloat("Duty Cycle") / 100f;
+            flashing_frequency = PlayerPrefs.GetFloat("flashing_frequency");
+            duty_cycle = PlayerPrefs.GetFloat("duty_cycle");
             Pulse_Width = duty_cycle / flashing_frequency;
         }
 
@@ -682,8 +669,8 @@ public class Monkey2D : MonoBehaviour
         trialNum = 0;
         currPhase = Phases.begin;
         phase_task_selecter = Phases.begin;
-        player.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
-        drunkplayer.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+        player.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+        drunkplayer.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
     }
 
     private void OnDisable()
@@ -701,10 +688,10 @@ public class Monkey2D : MonoBehaviour
     void Update()
     {
         //Update the optic flow, if have observation noise update that too
-        particle_System.transform.position = player.transform.position - (Vector3.up * (p_height - 0.0002f));
+        particle_System.transform.position = player.transform.position - (Vector3.up * (Player_Height - 0.0002f));
         if (isObsNoise)
         {
-            particle_System2.transform.position = drunkplayer.transform.position - (Vector3.up * (p_height - 0.0002f));
+            particle_System2.transform.position = drunkplayer.transform.position - (Vector3.up * (Player_Height - 0.0002f));
         }
         //print(particle_System.transform.position);
 
@@ -915,12 +902,9 @@ public class Monkey2D : MonoBehaviour
         //Wait for end of frame and start the begin phase
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
-        currPhase = Phases.begin;
         isBegin = true;
 
-        //Randomize player max speeds based on given, and Get Trial Control Dynamics if needed
-        SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
-        SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);
+        //Randomize player max speeds based on given trial control dynamics flag
         if (control_dynamics != 0)
         {
             switch (control_dynamics)
@@ -938,14 +922,14 @@ public class Monkey2D : MonoBehaviour
             }
             //tautau.Add(SharedJoystick.currentTau);
             //filterTau.Add(SharedJoystick.filterTau);
-            player_max_vel.Add(SharedJoystick.MaxSpeed);
-            player_max_rot.Add(SharedJoystick.RotSpeed);
+            player_max_vel.Add(SharedJoystick.Max_Linear_Speed);
+            player_max_rot.Add(SharedJoystick.Max_Angular_Speed);
             CurrentTau.Add(SharedJoystick.savedTau);
         }
         else
         {
-            player_max_vel.Add(SharedJoystick.MaxSpeed);
-            player_max_rot.Add(SharedJoystick.RotSpeed);
+            player_max_vel.Add(SharedJoystick.Max_Linear_Speed);
+            player_max_rot.Add(SharedJoystick.Max_Angular_Speed);
             CurrentTau.Add(0);
         }
 
@@ -981,7 +965,7 @@ public class Monkey2D : MonoBehaviour
                     Vector3 position;
                     float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
                     float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-                    position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+                    position = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
                     position.y = 0.0001f;
                     if (i > 0)
                     {
@@ -1015,7 +999,7 @@ public class Monkey2D : MonoBehaviour
                     angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
                 }
             }
-            position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
+            position = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             position.y = 0.0001f;
             firefly.transform.position = position;
             FF_positions.Add(position);
@@ -1083,7 +1067,7 @@ public class Monkey2D : MonoBehaviour
                 }
             }
 
-            if (LRFB)
+            if (isLeftRightnotForBack)
             {
                 FFMoveDirection = Vector3.right;
             }
@@ -1254,7 +1238,7 @@ public class Monkey2D : MonoBehaviour
             {
                 float r1 = coord.Item1;
                 float angle1 = coord.Item2;
-                Vector3 position2 = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle1, Vector3.up) * player.transform.forward * r1;
+                Vector3 position2 = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle1, Vector3.up) * player.transform.forward * r1;
                 position2.y = 0.0001f;
                 Multiple_FF_List[0].transform.position = position2;
                 Multiple_FF_List[0].SetActive(true);
@@ -1263,10 +1247,13 @@ public class Monkey2D : MonoBehaviour
             }
         }
 
+        //Action start
+        Joystick_Disabled = false;
+
+        //using control dynamics
         if (control_dynamics != 0)
         {
             print("PTB trial started");
-            isIntertrial = false;
             //Wait when the player to start moving
             var started_moving = Task.Run(async () => {
                 //TODO: Using the brake threshold is probably wrong
@@ -1297,22 +1284,19 @@ public class Monkey2D : MonoBehaviour
                 {
                     print("Stopped moving");
                 }
-                isIntertrial = true;
             }
             //If timed out without moving
             else
             {
-                isIntertrial = true;
                 print("Timed out without moving");
                 isTimeout = true;
             }
         }
+        //not using control dynamics
         else
         {
-            float JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
-            float JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
-
-            isIntertrial = false;
+            float JstLinStopThresh = PlayerPrefs.GetFloat("JstLinStopThresh");
+            float JstAngStopThresh = PlayerPrefs.GetFloat("JstAngStopThresh");
 
             //Wait until start moving
             var started_moving = Task.Run(async () => {
@@ -1328,7 +1312,7 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(started_moving, time_out) == started_moving || player == null)
             {
                 //Only wait for stopped moving here, or time out
-                await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinearThreshold && Mathf.Abs(SharedJoystick.currentRot) <= JstAngularThreshold && 
+                await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinStopThresh && Mathf.Abs(SharedJoystick.currentRot) <= JstAngStopThresh && 
                 !SharedJoystick.CtrlDynamicsFlag)) || time_out.IsCompleted);
                 //Timed out
                 if (time_out.IsCompleted)
@@ -1340,16 +1324,16 @@ public class Monkey2D : MonoBehaviour
                 {
                     print("Stopped moving");
                 }
-                isIntertrial = true;
             }
             else
             {
-                isIntertrial = true;
                 print("Timed out without moving");
                 isTimeout = true;
             }
         }
 
+        //Action ends
+        Joystick_Disabled = true;
         source.Cancel();
 
         //Stop flashing in case of it
@@ -1403,7 +1387,7 @@ public class Monkey2D : MonoBehaviour
         Quaternion playe_check_rot;
 
         //Player plane position
-        player_position = player.transform.position - new Vector3(0.0f, p_height, 0.0f);
+        player_position = player.transform.position - new Vector3(0.0f, Player_Height, 0.0f);
 
         //Player save positions
         player_check_pos = player.transform.position;
@@ -1444,7 +1428,6 @@ public class Monkey2D : MonoBehaviour
                     }
                 }
             }
-            distances_to_FF.Add(distance);
         }
         else if (multiple_FF_mode == 1)
         {
@@ -1459,7 +1442,6 @@ public class Monkey2D : MonoBehaviour
                     rewarded_FF_trial = true;
                     colorhit = i;
                 }
-                distances_to_FF.Add(distance);
             }
         }
         else
@@ -1467,7 +1449,6 @@ public class Monkey2D : MonoBehaviour
             if (Vector3.Distance(player_position, firefly.transform.position) <= reward_zone_radius) rewarded_FF_trial = true;
             distance = Vector3.Distance(player_position, firefly.transform.position);
             ffPosStr = firefly.transform.position.ToString("F5").Trim(toTrim).Replace(" ", "");
-            distances_to_FF.Add(distance);
         }
 
         //Calculate and give rewards
@@ -1503,53 +1484,20 @@ public class Monkey2D : MonoBehaviour
             await new WaitForSeconds(0.25f);
         }
 
+        //Save general final position values
+        player_final_position.Add(player_check_pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        player_final_rotation.Add(playe_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        score.Add(rewarded_FF_trial ? 1 : 0);
+        timedout.Add(isTimeout ? 1 : 0);
+        FF_final_positions.Add(ffPosStr);
 
-        if (multiple_FF_mode == 1)
+        //PTB values (0 will be added if not using) TODO: check
+        if (true)
         {
-            score.Add(rewarded_FF_trial ? 1 : 0);
-            timedout.Add(isTimeout ? 1 : 0);
-            player_final_position.Add(player_check_pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            player_final_rotation.Add(playe_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            distance_to_FF.Add(string.Join(",", distances_to_FF));
-            FF_final_positions.Add(ffPosStr);
-
-            float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
-
-            currPhase = Phases.ITI;
-
-            interWait.Add(wait);
-
-            isEnd = true;
-
-            distances_to_FF.Clear();
-            ffPosStr = "";
-            isTimeout = false;
-
-            if (isColored)
-            {
-                FF_color.Add(string.Format("{0},{1}", colorchosen[0], colorchosen[1]));
-                colorchosen.Clear();
-            }
-
-            await new WaitForSeconds(wait);
-
-            phase_task_selecter = Phases.begin;
-        }
-        else
-        {
-            timedout.Add(isTimeout ? 1 : 0);
-            score.Add(rewarded_FF_trial ? 1 : 0);
-            FF_final_positions.Add(ffPosStr);
-            distance_to_FF.Add(distances_to_FF[0].ToString("F5"));
-            player_final_position.Add(player_check_pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            player_final_rotation.Add(playe_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
-
-
             timeCntPTBStart.Add(SharedJoystick.timeCntPTBStart - programT0);
             SharedJoystick.timeCntPTBStart = programT0;
-
-            ptbJoyVelMin.Add(SharedJoystick.ptbJoyVelMin);
-            ptbJoyVelMax.Add(SharedJoystick.ptbJoyVelMax);
+            ptbJoyVelMin.Add(SharedJoystick.GaussianPTBVMin);
+            ptbJoyVelMax.Add(SharedJoystick.GaussianPTBVMax);
             ptbJoyVelStartRange.Add(SharedJoystick.ptbJoyVelStartRange);
             ptbJoyVelStart.Add(SharedJoystick.ptbJoyVelStart);
             ptbJoyVelMu.Add(SharedJoystick.ptbJoyVelMu);
@@ -1558,9 +1506,8 @@ public class Monkey2D : MonoBehaviour
             ptbJoyVelEnd.Add(SharedJoystick.ptbJoyVelEnd);
             ptbJoyVelLen.Add(SharedJoystick.ptbJoyVelLen);
             ptbJoyVelValue.Add(SharedJoystick.ptbJoyVelValue);
-
-            ptbJoyRotMin.Add(SharedJoystick.ptbJoyRotMin);
-            ptbJoyRotMax.Add(SharedJoystick.ptbJoyRotMax);
+            ptbJoyRotMin.Add(SharedJoystick.GaussianPTBRMin);
+            ptbJoyRotMax.Add(SharedJoystick.GaussianPTBRMax);
             ptbJoyRotStartRange.Add(SharedJoystick.ptbJoyRotStartRange);
             ptbJoyRotStart.Add(SharedJoystick.ptbJoyRotStart);
             ptbJoyRotMu.Add(SharedJoystick.ptbJoyRotMu);
@@ -1569,81 +1516,87 @@ public class Monkey2D : MonoBehaviour
             ptbJoyRotEnd.Add(SharedJoystick.ptbJoyRotEnd);
             ptbJoyRotLen.Add(SharedJoystick.ptbJoyRotLen);
             ptbJoyRotValue.Add(SharedJoystick.ptbJoyRotValue);
-
             ptbJoyFlag.Add(SharedJoystick.ptbJoyFlag);
             ptbJoyFlagTrial.Add(SharedJoystick.ptbJoyFlagTrial);
-            SharedJoystick.ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= SharedJoystick.ptbJoyRatio); ;
-
-            ptbJoyRatio.Add(SharedJoystick.ptbJoyRatio);
-            ptbJoyOn.Add(SharedJoystick.ptbJoyOn);
+            SharedJoystick.ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= SharedJoystick.GaussianPTBRatio); ;
+            ptbJoyRatio.Add(SharedJoystick.GaussianPTBRatio);
+            ptbJoyOn.Add(SharedJoystick.GaussianPTB ? 1 : 0);
             ptbJoyEnableTime.Add(SharedJoystick.ptbJoyEnableTime);
+        }
 
-            if(flagFFstimulation)
+        //nff
+        if (multiple_FF_mode != 0)
+        {
+            distance_to_FF.Add(string.Format(",{0}",current_smallest_distance));
+            if (isColored)
             {
-                if (stimulatedTrial)
-                {
-                    trialStimuDur.Add(microStimuDur);
-                    stimulated.Add(1);
-                }
-                else
-                {
-                    timeStimuStart.Add(0);
-                    trialStimuDur.Add(0);
-                    stimulated.Add(0);
-                }
-            }
-
-            FF_positions.Clear();
-            distances_to_FF.Clear();
-            ffPosStr = "";
-
-            isTimeout = false;
-
-            //Deciding ITI wait time
-            float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
-            if (flagFFstimulation && stimulatedTrial)
-            {
-                stimulatedTrial = false;
-                wait += microStimuDur; //wait more if it was a stimulated trail
-            }
-            interWait.Add(wait);
-            currPhase = Phases.ITI;
-
-            isEnd = true;
-            isIntertrial = true;
-            float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
-            float startthreshold = PlayerPrefs.GetFloat("JoystickStartThreshold");
-            if (!isCOM)
-            {
-                player.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
-                drunkplayer.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
-                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && 
-                (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
-                await new WaitForSeconds(wait);
+                FF_color.Add(string.Format(",{0},{1}", colorchosen[0], colorchosen[1]));
+                colorchosen.Clear();
             }
             else
             {
-                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold);
-                await new WaitForSeconds(wait);
-                player.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
-                drunkplayer.transform.SetPositionAndRotation(Vector3.up * p_height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+                FF_color.Add(",0,0");
             }
-
-            phase_task_selecter = Phases.begin;
-            Debug.Log("Check Phase End.");
         }
+        else
+        {
+            distance_to_FF.Add(string.Format(",{0}", distance));
+        }
+
+        //Stimulation
+        if (flagFFstimulation && stimulatedTrial)
+        {
+            trialStimuDur.Add(microStimuDur);
+            stimulated.Add(1);
+        }
+        else
+        {
+            timeStimuStart.Add(0);
+            trialStimuDur.Add(0);
+            stimulated.Add(0);
+        }
+
+        float wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
+        if (flagFFstimulation && stimulatedTrial)
+        {
+            stimulatedTrial = false;
+            wait += microStimuDur; //wait more if it was a stimulated trail
+        }
+        interWait.Add(wait);
+        isEnd = true;
+        ffPosStr = "";
+        currPhase = Phases.ITI;
+        float joystickT = PlayerPrefs.GetFloat("JoystickThreshold");
+        float startthreshold = PlayerPrefs.GetFloat("JoystickStartThreshold");
+
+        //TODO: check COM stop conditions
+        if (!isCOM)
+        {
+            player.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+            drunkplayer.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold &&
+            (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
+            await new WaitForSeconds(wait);
+        }
+        else
+        {
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold);
+            await new WaitForSeconds(wait);
+            player.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+            drunkplayer.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+        }
+
+
+        //Debug.Log("Check Phase End.");
+        phase_task_selecter = Phases.begin;
+        currPhase = Phases.begin;
     }
 
     /// <summary>
-    /// Used when user specifies that the FF flashes.
-    /// 
-    /// Pulse Width (s) is the length of the pulse, i.e. how long the firefly stays on. This
-    /// is calculated with Duty Cycle (%), which is a percentage of the frequency of the
-    /// desired signal. Frequency (Hz) is how often you want the object to flash per second.
-    /// Here, we have 1 / frequency because the inverse of frequency is Period (s), denoted
-    /// as T, which is the same definition as Frequency except it is given in seconds.
+    /// Flash function for FF (obj), async, or flash it while flashing flag is on
+    /// Pulse_Width: FF on time for cycle, in seconds
+    /// flashing_frequency: FF flashing cycles per second, or Hz
     /// </summary>
-    /// <param name="obj">Object to flash</param>
     public async Task Flash(GameObject obj)
     {
         while (flashing_FF_on)
@@ -1662,6 +1615,7 @@ public class Monkey2D : MonoBehaviour
         }
     }
 
+    //Blink the single FF
     public async void OnOff()
     {
         firefly.SetActive(true);
@@ -1669,6 +1623,7 @@ public class Monkey2D : MonoBehaviour
         firefly.SetActive(false);
     }
 
+    //Blink a specific FF in multiple FF
     public async void OnOff(GameObject obj)
     {
         obj.SetActive(true);
@@ -1676,6 +1631,7 @@ public class Monkey2D : MonoBehaviour
         obj.SetActive(false);
     }
 
+    //Sending markers
     public async void SendMarker(string mark, float time)
     {
         string toSend = "i" + mark + time.ToString();
@@ -1708,27 +1664,17 @@ public class Monkey2D : MonoBehaviour
         return -1.0f / lambda * Mathf.Log(t / lambda);
     }
 
-    public float RandomizeSpeeds(float min, float max)
-    {
-        return (float)(rand.NextDouble() * (max - min) + min);
-    }
-
     /// <summary>
-    /// If you provide filepaths beforehand, the program will save all of your data as .csv files.
+    /// Save data to file path.
     /// 
-    /// I did something weird where I saved the rotation/position data as strings; I did this
-    /// because the number of columns that the .csv file will have will vary depending on the
-    /// number of FF. Each FF has it's own position and distance from the player, and that data
-    /// has to be saved along with everything else, and I didn't want to allocate memory for all
-    /// the maximum number of FF if not every experiment will have 5 FF, so concatenating all of
-    /// the available FF positions and distances into one string and then adding each string as
-    /// one entry in a list was my best idea.
+    /// TODO: discuss multiple FF data saving.
+    /// Check if the format matches.
     /// </summary>
     public void Save()
     {
         try
         {
-            string firstLine;
+            string disc_header;
 
             List<int> temp;
 
@@ -1747,19 +1693,19 @@ public class Monkey2D : MonoBehaviour
                     checkStr = string.Concat(checkStr, string.Format("checkTime{0},", i));
                 }
 
-                firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
+                disc_header = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
                     "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
-                firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
+                disc_header = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
                     "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
-            csvDisc.AppendLine(firstLine);
+            csvDisc.AppendLine(disc_header);
 
             temp = new List<int>()
             {
@@ -1802,26 +1748,20 @@ public class Monkey2D : MonoBehaviour
             {
                 temp.Add(COMtrialtype.Count);
             }
+            if(control_dynamics != 0)
+            {
+                temp.Add(CurrentTau.Count);
+            }
             //foreach (int count in temp)
             //{
             //    print(count);
             //}
             temp.Sort();
 
+            //Score count
             var totalScore = 0;
-            int j;
 
-            if (control_dynamics != 0)
-            {
-                j = 0;
-                temp.Add(CurrentTau.Count);
-            }
-            else
-            {
-                j = 0;
-            }
-
-            for (int i = j; i < temp[0]; i++)
+            for (int i = 0; i < temp[0]; i++)
             {
                 var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}",
                     trial_number[i],
@@ -1910,7 +1850,6 @@ public class Monkey2D : MonoBehaviour
             }
 
             PlayerPrefs.SetInt("Good Trials", totalScore);
-            print(temp[0]);
             PlayerPrefs.SetInt("Total Trials", trial_number[trial_number.Count - 1]);
 
             SaveConfigs();
@@ -1934,6 +1873,8 @@ public class Monkey2D : MonoBehaviour
         return u1 * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
     }
 
+    //Config Saving
+    //TODO: check all is saved after GUI update
     public void SaveConfigs()
     {
         print("Saving Configs");
@@ -1955,32 +1896,32 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteStartElement("Setting");
         xmlWriter.WriteAttributeString("Type", "Optic Flow Settings");
 
-        xmlWriter.WriteStartElement("LifeSpan");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Life Span").ToString());
+        xmlWriter.WriteStartElement("Life_Span");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Life_Span").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("DrawDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Draw Distance").ToString());
+        xmlWriter.WriteStartElement("Draw_Distance");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Draw_Distance").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("DensityLow");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low").ToString());
+        xmlWriter.WriteStartElement("Density_Low");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density_Low").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("DensityHigh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density High").ToString());
+        xmlWriter.WriteStartElement("Density_High");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density_High").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("DensityLowRatio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density Low Ratio").ToString());
+        xmlWriter.WriteStartElement("Density_Low_Ratio");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Density_Low_Ratio").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("TriangleHeight");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Triangle Height").ToString());
+        xmlWriter.WriteStartElement("Floor_Height");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Floor_Height").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("PlayerHeight");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Player Height").ToString());
+        xmlWriter.WriteStartElement("Player_Height");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Player_Height").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndElement();
@@ -1988,52 +1929,36 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteStartElement("Setting");
         xmlWriter.WriteAttributeString("Type", "Joystick Settings");
 
-        xmlWriter.WriteStartElement("MinLinearSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Linear Speed").ToString());
+        xmlWriter.WriteStartElement("Max_Linear_Speed");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max_Linear_Speed").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaxLinearSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Linear Speed").ToString());
+        xmlWriter.WriteStartElement("Max_Angular_Speed");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max_Angular_Speed").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinAngularSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angular Speed").ToString());
+        xmlWriter.WriteStartElement("GaussianPTB");
+        xmlWriter.WriteString(PlayerPrefs.GetInt("GaussianPTB").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaxAngularSpeed");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angular Speed").ToString());
+        xmlWriter.WriteStartElement("GaussianPTBVMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("GaussianPTBVMax").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("PerturbationOn");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Perturbation On").ToString());
+        xmlWriter.WriteStartElement("GaussianPTBRMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("GaussianPTBRMax").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("PerturbVelocityMin");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Min").ToString());
+        xmlWriter.WriteStartElement("GaussianPTBRatio");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("GaussianPTBRatio").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("PerturbVelocityMax");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Velocity Max").ToString());
+        xmlWriter.WriteStartElement("JstLinStopThresh");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("JstLinStopThresh").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("PerturbRotationMin");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Min").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbRotationMax");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Perturb Rotation Max").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("PerturbRatio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("PerturbRatio").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("LinearThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("LinearThreshold").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("AngularThreshold");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("AngularThreshold").ToString());
+        xmlWriter.WriteStartElement("JstAngStopThresh");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("JstAngStopThresh").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndElement();
@@ -2045,92 +1970,88 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("RadiusFF").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("RewardZoneRadius");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward Zone Radius").ToString());
+        xmlWriter.WriteStartElement("reward_zone_radius");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("reward_zone_radius").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinimumFireflyDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Firefly Distance").ToString());
+        xmlWriter.WriteStartElement("minDrawDistance");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("minDrawDistance").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaximumFireflyDistance");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Firefly Distance").ToString());
+        xmlWriter.WriteStartElement("maxDrawDistance");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("maxDrawDistance").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinAngle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Angle").ToString());
+        xmlWriter.WriteStartElement("minPhi");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("minPhi").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaxAngle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angle").ToString());
+        xmlWriter.WriteStartElement("maxPhi");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("maxPhi").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Juice Time").ToString());
+        xmlWriter.WriteStartElement("minJuiceTime");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("minJuiceTime").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaxJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Juice Time").ToString());
+        xmlWriter.WriteStartElement("maxJuiceTime");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("maxJuiceTime").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("Ratio");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio").ToString());
+        xmlWriter.WriteStartElement("ratio_always_on");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("ratio_always_on").ToString());
         xmlWriter.WriteEndElement();
 
-        //xmlWriter.WriteStartElement("Reward");
-        //xmlWriter.WriteString(PlayerPrefs.GetFloat("Reward").ToString());
-        //xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("NumberofFireflies");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Number of Fireflies").ToString());
+        xmlWriter.WriteStartElement("NumberOfFF");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("NumberOfFF").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("MultipleFireflyMode");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Multiple Firefly Mode").ToString());
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("multiple_FF_mode").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("Separation");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Seaparation").ToString());
+        xmlWriter.WriteStartElement("FFseparation");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("FFseparation").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("D1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D1").ToString());
+        xmlWriter.WriteStartElement("LifespanDuration1");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanDuration1").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("D2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D2").ToString());
+        xmlWriter.WriteStartElement("LifespanDuration2");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanDuration2").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("D3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D3").ToString());
+        xmlWriter.WriteStartElement("LifespanDuration3");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanDuration3").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("D4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D4").ToString());
+        xmlWriter.WriteStartElement("LifespanDuration4");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanDuration4").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("D5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("D5").ToString());
+        xmlWriter.WriteStartElement("LifespanDuration5");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanDuration5").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("R1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R1").ToString());
+        xmlWriter.WriteStartElement("LifespanRatio1");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanRatio1").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("R2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R2").ToString());
+        xmlWriter.WriteStartElement("LifespanRatio2");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanRatio2").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("R3");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R3").ToString());
+        xmlWriter.WriteStartElement("LifespanRatio3");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanRatio3").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("R4");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R4").ToString());
+        xmlWriter.WriteStartElement("LifespanRatio4");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanRatio4").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("R5");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("R5").ToString());
+        xmlWriter.WriteStartElement("LifespanRatio5");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LifespanRatio5").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("Timeout");
@@ -2141,40 +2062,32 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("Frequency").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("DutyCycle");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Duty Cycle").ToString());
+        xmlWriter.WriteStartElement("duty_cycle");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("duty_cycle").ToString());
         xmlWriter.WriteEndElement();
 
-        //xmlWriter.WriteStartElement("FireflyLifeSpan");
-        //xmlWriter.WriteString(PlayerPrefs.GetFloat("Firefly Life Span").ToString());
-        //xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("MinimumWaittoCheck");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Wait to Check").ToString());
+        xmlWriter.WriteStartElement("checkMin");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("checkMin").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaximumWaittoCheck");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Wait to Check").ToString());
+        xmlWriter.WriteStartElement("checkMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("checkMax").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("Mean1");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 1").ToString());
+        xmlWriter.WriteStartElement("CheckMean");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("CheckMean").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinimumIntertrialWait");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Minimum Intertrial Wait").ToString());
+        xmlWriter.WriteStartElement("interMin");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("interMin").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaximumIntertrialWait");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Maximum Intertrial Wait").ToString());
+        xmlWriter.WriteStartElement("interMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("interMax").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("Mean2");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Mean 2").ToString());
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("OpticFlowSeed");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Optic Flow Seed").ToString());
+        xmlWriter.WriteStartElement("IntertialMean");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("IntertialMean").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("FireflySeed");
@@ -2187,7 +2100,7 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteAttributeString("Type", "Moving Firefly Settings");
 
         xmlWriter.WriteStartElement("MovingON");
-        xmlWriter.WriteString(PlayerPrefs.GetInt("Moving ON").ToString());
+        xmlWriter.WriteString(PlayerPrefs.GetInt("isMoving").ToString());
         xmlWriter.WriteEndElement();
 
         //xmlWriter.WriteStartElement("RatioMoving");
@@ -2324,8 +2237,8 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetInt("isAuto").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("GracePeriod");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Grace Period").ToString());
+        xmlWriter.WriteStartElement("ignoreInitialSeconds");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("ignoreInitialSeconds").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("FixationTime");
@@ -2625,6 +2538,7 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.Close();
     }
 
+    //Read csv file for COM task
     public void ReadCoordCSV()
     {
         StreamReader strReader = new StreamReader(path + "\\Config_2FF.csv");

@@ -27,8 +27,8 @@ public class JoystickMonke : MonoBehaviour
     [Tooltip("QueueLength")]
     public int QueueLength = 1;
 
-    public float ptbJoyVelMin;
-    public float ptbJoyVelMax;
+    public float GaussianPTBVMin;
+    public float GaussianPTBVMax;
     public float ptbJoyVelStartRange;
     public float ptbJoyVelStart;
     public float ptbJoyVelMu;
@@ -39,8 +39,8 @@ public class JoystickMonke : MonoBehaviour
     public float ptbJoyVelValue;
 
 
-    public float ptbJoyRotMin;
-    public float ptbJoyRotMax;
+    public float GaussianPTBRMin;
+    public float GaussianPTBRMax;
     public float ptbJoyRotStartRange;
     public float ptbJoyRotStart;
     public float ptbJoyRotMu;
@@ -53,8 +53,8 @@ public class JoystickMonke : MonoBehaviour
     public int ptbJoyFlag;
     public int ptbJoyFlagTrial = 0;
 
-    public float ptbJoyRatio;
-    public int ptbJoyOn;
+    public float GaussianPTBRatio;
+    public bool GaussianPTB;
     public float ptbJoyEnableTime;
 
     public static JoystickMonke SharedJoystick;
@@ -67,8 +67,8 @@ public class JoystickMonke : MonoBehaviour
     [ShowOnly] public float currentRot = 0.0f;
     public float speedPrePtb = 0.0f;
     public float rotPrePtb = 0.0f;
-    public float RotSpeed = 0.0f;
-    public float MaxSpeed = 0.0f;
+    public float Max_Angular_Speed = 0.0f;
+    public float Max_Linear_Speed = 0.0f;
 
     //Observation Noise
     float prevVelObsEps = 0;
@@ -211,9 +211,6 @@ public class JoystickMonke : MonoBehaviour
     public float velbrakeThresh;
     public float rotbrakeThresh;
 
-    public float JstLinearThreshold;
-    public float JstAngularThreshold;
-
     // Start is called before the first frame update
     void Awake()
     {
@@ -222,27 +219,24 @@ public class JoystickMonke : MonoBehaviour
 
     void Start()
     {
-        PlayerPrefs.SetFloat("FixedYSpeed", 0);
-        PlayerPrefs.SetFloat("MovingFFmode", 0);
+        Max_Linear_Speed = PlayerPrefs.GetFloat("Max_Linear_Speed");
+        Max_Angular_Speed = PlayerPrefs.GetFloat("Max_Angular_Speed");
+
         portName = PlayerPrefs.GetString("Port");
+
         ProcessNoiseFlag = PlayerPrefs.GetInt("isProcessNoise") == 1;
-        //MaxSpeed = 0.0f;
-        //RotSpeed = 0.0f;
+        GaussianPTB = PlayerPrefs.GetInt("GaussianPTB") == 1;
 
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
 
-        ptbJoyOn = PlayerPrefs.GetInt("Perturbation On");
-        
-        //ptbJoyVelMin = PlayerPrefs.GetFloat("Perturb Velocity Min");
-        ptbJoyVelMax = PlayerPrefs.GetFloat("Perturb Velocity Max");
-        ptbJoyVelMin = -ptbJoyVelMax;
+        GaussianPTBVMax = PlayerPrefs.GetFloat("GaussianPTBVMax");
+        GaussianPTBVMin = -GaussianPTBVMax;
 
-        //ptbJoyRotMin = PlayerPrefs.GetFloat("Perturb Rotation Min");
-        ptbJoyRotMax = PlayerPrefs.GetFloat("Perturb Rotation Max");
-        ptbJoyRotMin = -ptbJoyRotMax;
+        GaussianPTBRMax = PlayerPrefs.GetFloat("GaussianPTBRMax");
+        GaussianPTBRMin = -GaussianPTBRMax;
 
-        ptbJoyRatio = PlayerPrefs.GetFloat("PerturbRatio"); //0.5f;
+        GaussianPTBRatio = PlayerPrefs.GetFloat("GaussianPTBRatio");
 
         ptbJoyVelStartRange = 1.0f;
         ptbJoyVelSigma = 0.2f;
@@ -252,18 +246,7 @@ public class JoystickMonke : MonoBehaviour
         ptbJoyRotSigma = 0.2f;
         ptbJoyRotLen = 1.0f;
 
-        //ptbJoyFlagTrial = Convert.ToInt32(rand.NextDouble() <= ptbJoyRatio);
-
-        //ptbJoyVelStart;
-        //ptbJoyVelMu;        
-        //ptbJoyVelGain;
-        //ptbJoyVelEnd;        
-        //ptbJoyVelValue;
-        //ptbJoyFlag;
-
         calcPtbJoyTrial();
-
-
 
         if (usingArduino)
         {
@@ -294,8 +277,6 @@ public class JoystickMonke : MonoBehaviour
 
         velbrakeThresh = PlayerPrefs.GetFloat("velBrakeThresh");
         rotbrakeThresh = PlayerPrefs.GetFloat("rotBrakeThresh");
-        JstLinearThreshold = PlayerPrefs.GetFloat("LinearThreshold");
-        JstAngularThreshold = PlayerPrefs.GetFloat("AngularThreshold");
         float velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
         float rotStopThreshold = PlayerPrefs.GetFloat("rotStopThreshold");
 
@@ -455,7 +436,7 @@ public class JoystickMonke : MonoBehaviour
             if (CtrlDynamicsFlag)
             {
                 updateControlDynamics();
-                if (SharedMonkey.isIntertrial)
+                if (SharedMonkey.Joystick_Disabled)
                 {
                     //print("stoping");
                     moveX = 0;
@@ -469,9 +450,6 @@ public class JoystickMonke : MonoBehaviour
                 }
                 else if (Mathf.Abs(SharedJoystick.currentSpeed) < velbrakeThresh && Mathf.Abs(SharedJoystick.currentRot) < rotbrakeThresh)
                 {
-                    //print("stoping");
-                    //moveX = 0;
-                    //moveY = 0;
                     StopFlag = false;
                     BrakeFlag = true;
                     currentTau = savedTau / 4;
@@ -491,31 +469,14 @@ public class JoystickMonke : MonoBehaviour
             }
             else
             {
-                /*if (Mathf.Abs(moveX) > JstLinearThreshold)
-                {
-                    currentSpeed = -moveX * MaxSpeed;
-                }
-                else
-                {
-                    currentSpeed = 0.0f;
-                }
-                
-                if (Mathf.Abs(moveY) > JstAngularThreshold)
-                {
-                    currentRot = moveY * RotSpeed;
-                }
-                else
-                {
-                    currentRot = 0.0f;
-                }*/
-                currentSpeed = -moveX * MaxSpeed;
-                currentRot = moveY * RotSpeed;
+                currentSpeed = -moveX * Max_Linear_Speed;
+                currentRot = moveY * Max_Angular_Speed;
                 cleanVel = currentSpeed;
                 cleanRot = currentRot;
                 velProcessNoiseGain = PlayerPrefs.GetFloat("VelocityNoiseGain");
                 rotProcessNoiseGain = PlayerPrefs.GetFloat("RotationNoiseGain");
                 ProcessNoise();
-                if (SharedMonkey.isIntertrial && SharedMonkey.isCOM)
+                if (SharedMonkey.Joystick_Disabled && SharedMonkey.isCOM)
                 {
                     currentSpeed = 0;
                     currentRot = 0;
@@ -523,68 +484,56 @@ public class JoystickMonke : MonoBehaviour
                 speedPrePtb = currentSpeed;
                 rotPrePtb = currentRot;
 
-                if (ptbJoyOn <= 0)
+                if (GaussianPTB && ptbJoyFlagTrial > 0)
                 {
-                    //print("NoptbJoy");                    
-                }
-                else
-                {
-                    if (ptbJoyFlagTrial > 0) 
+                    //Monkey2D.Phase;                
+                    if (SharedMonkey.phase_task_selecter == Phases.check)
                     {
+                        moveX = 0;
+                        moveY = 0;
+                        timeCounter = 0;
+                        timeCounterMovement = 0;
+                        timeCntSecStart = Time.realtimeSinceStartup;
+                        ptbJoyEnableTime = 0;
 
-                        //Monkey2D.Phase;                
-                        if (SharedMonkey.phase_task_selecter == Phases.check)
-                        {
-                            moveX = 0;
-                            moveY = 0;
-                            timeCounter = 0;
-                            timeCounterMovement = 0;
-                            timeCntSecStart = Time.realtimeSinceStartup;
-                            ptbJoyEnableTime = 0;
-
-                            calcPtbJoyTrial();
-                        }
-                        else
-                        {
-                            timeCounter += 0.005f;
-                            timeCntSecCurr = Time.realtimeSinceStartup - timeCntSecStart;
-
-                            if (currentSpeed == 0)
-                            {
-                                timeCounterMovement = 0;
-                                //timeOnsetJoy = timeCounter;
-                                ptbJoyEnableTime = timeCounter;
-                            }
-                            else 
-                            {
-                                timeCounterMovement += 0.005f;                                
-                            }
-                        }
-
-                        if (timeCounterMovement >= ptbJoyVelStart & timeCounterMovement <= ptbJoyVelEnd)
-                        {
-                            if (ptbJoyFlag == 0)
-                            {
-                                timeCntPTBStart = Time.realtimeSinceStartup;
-                            }
-                            
-                            ptbJoyVelValue = GaussianShapedPtb(timeCounterMovement, ptbJoyVelMu, ptbJoyVelSigma, ptbJoyVelGain);
-                            ptbJoyRotValue = GaussianShapedPtb(timeCounterMovement, ptbJoyRotMu, ptbJoyRotSigma, ptbJoyRotGain);
-                            ptbJoyFlag = 1;
-                        }
-                        else
-                        {
-                            //timeCntPTBStart = 0.0f;
-                            ptbJoyVelValue = 0.0f;
-                            ptbJoyRotValue = 0.0f;
-                            ptbJoyFlag = 0;
-                            //ptbJoyVelGain = 0.0f;
-                            //ptbJoyRotGain = 0.0f;
-                        }
-
-                        currentSpeed = currentSpeed + ptbJoyVelValue;
-                        currentRot = currentRot + ptbJoyRotValue;
+                        calcPtbJoyTrial();
                     }
+                    else
+                    {
+                        timeCounter += 0.005f;
+                        timeCntSecCurr = Time.realtimeSinceStartup - timeCntSecStart;
+
+                        if (currentSpeed == 0)
+                        {
+                            timeCounterMovement = 0;
+                            ptbJoyEnableTime = timeCounter;
+                        }
+                        else
+                        {
+                            timeCounterMovement += 0.005f;
+                        }
+                    }
+
+                    if (timeCounterMovement >= ptbJoyVelStart & timeCounterMovement <= ptbJoyVelEnd)
+                    {
+                        if (ptbJoyFlag == 0)
+                        {
+                            timeCntPTBStart = Time.realtimeSinceStartup;
+                        }
+
+                        ptbJoyVelValue = GaussianShapedPtb(timeCounterMovement, ptbJoyVelMu, ptbJoyVelSigma, ptbJoyVelGain);
+                        ptbJoyRotValue = GaussianShapedPtb(timeCounterMovement, ptbJoyRotMu, ptbJoyRotSigma, ptbJoyRotGain);
+                        ptbJoyFlag = 1;
+                    }
+                    else
+                    {
+                        ptbJoyVelValue = 0.0f;
+                        ptbJoyRotValue = 0.0f;
+                        ptbJoyFlag = 0;
+                    }
+
+                    currentSpeed += ptbJoyVelValue;
+                    currentRot += ptbJoyRotValue;
                 }
                 
             }
@@ -644,13 +593,13 @@ public class JoystickMonke : MonoBehaviour
         ptbJoyVelStart = (float) rand.NextDouble() * ptbJoyVelStartRange;
         ptbJoyVelMu = ptbJoyVelStart + (ptbJoyVelLen / 2);
         ptbJoyVelEnd = ptbJoyVelStart + ptbJoyVelLen;
-        ptbJoyVelGain = (float) rand.NextDouble() * (ptbJoyVelMax - ptbJoyVelMin) + ptbJoyVelMin;
+        ptbJoyVelGain = (float) rand.NextDouble() * (GaussianPTBVMax - GaussianPTBVMin) + GaussianPTBVMin;
 
         //Angular
         ptbJoyRotStart = ptbJoyVelStart;// (float)rand.NextDouble() * ptbJoyRotStartRange;
         ptbJoyRotMu = ptbJoyVelMu;// ptbJoyRotStart + (ptbJoyRotLen / 2);
         ptbJoyRotEnd = ptbJoyVelEnd;// ptbJoyRotStart + ptbJoyRotLen;
-        ptbJoyRotGain = (float)rand.NextDouble() * (ptbJoyRotMax - ptbJoyRotMin) + ptbJoyRotMin;
+        ptbJoyRotGain = (float)rand.NextDouble() * (GaussianPTBRMax - GaussianPTBRMin) + GaussianPTBRMin;
 
         //timeCntPTBStart = 0.0f;
     }
@@ -716,8 +665,8 @@ public class JoystickMonke : MonoBehaviour
 
     private void CalculateMaxValues()
     {
-        MaxSpeed = (meanDist / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
-        RotSpeed = (meanAngle / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
+        Max_Linear_Speed = (meanDist / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
+        Max_Angular_Speed = (meanAngle / meanTime) * (1.0f / (-1.0f + (2 * (savedTau / meanTime)) * Mathf.Log((1 + Mathf.Exp(meanTime / savedTau)) / 2.0f)));
     }
 
     public void ResetValues()
@@ -777,31 +726,31 @@ public class JoystickMonke : MonoBehaviour
             prevRotEta = rotEta;
 
             float ProcessNoiseMagnitude;
-            if (RotSpeed == 0)
+            if (Max_Angular_Speed == 0)
             {
-                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed));
+                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / Max_Linear_Speed) * (cleanVel / Max_Linear_Speed));
             }
             else
             {
-                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / MaxSpeed) * (cleanVel / MaxSpeed) + (cleanRot / RotSpeed) * (cleanRot / RotSpeed));
+                ProcessNoiseMagnitude = Mathf.Sqrt((cleanVel / Max_Linear_Speed) * (cleanVel / Max_Linear_Speed) + (cleanRot / Max_Angular_Speed) * (cleanRot / Max_Angular_Speed));
             }
 
-            if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > MaxSpeed)
+            if (Mathf.Abs(velEta * ProcessNoiseMagnitude) > Max_Linear_Speed)
             {
                 currentSpeed = cleanVel + Mathf.Sign(velEta) * cleanVel;
             }
             else
             {
-                currentSpeed = cleanVel + velEta * ProcessNoiseMagnitude * MaxSpeed;
+                currentSpeed = cleanVel + velEta * ProcessNoiseMagnitude * Max_Linear_Speed;
             }
 
-            if (Mathf.Abs(rotEta * ProcessNoiseMagnitude) > RotSpeed)
+            if (Mathf.Abs(rotEta * ProcessNoiseMagnitude) > Max_Angular_Speed)
             {
                 currentRot = cleanRot + Mathf.Sign(rotEta) * cleanRot;
             }
             else
             {
-                currentRot = cleanRot + rotEta * ProcessNoiseMagnitude * RotSpeed;
+                currentRot = cleanRot + rotEta * ProcessNoiseMagnitude * Max_Angular_Speed;
             }
         }
     }
@@ -882,8 +831,8 @@ public class JoystickMonke : MonoBehaviour
     {
         float alpha = Mathf.Exp(-Time.fixedDeltaTime / currentTau);
         float beta = (1.0f - alpha);
-        cleanVel = alpha * prevCleanVel + MaxSpeed * beta * -moveX;
-        cleanRot = alpha * prevCleanRot + RotSpeed * beta * moveY;
+        cleanVel = alpha * prevCleanVel + Max_Linear_Speed * beta * -moveX;
+        cleanRot = alpha * prevCleanRot + Max_Angular_Speed * beta * moveY;
         //print(RotSpeed);
         //print(cleanRot);
     }
@@ -900,9 +849,9 @@ public class JoystickMonke : MonoBehaviour
         lamda = 1 - kappa;
         epsilon = kappa * prevVelObsEps + lamda * Gain * BoxMullerGaussianSample();
         zeta = kappa * prevVelObsZet + lamda * epsilon;
-        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
-            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
-        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.MaxSpeed;
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.Max_Linear_Speed) * (SharedJoystick.currentSpeed / SharedJoystick.Max_Linear_Speed)
+            + (SharedJoystick.currentRot / SharedJoystick.Max_Angular_Speed) * (SharedJoystick.currentRot / SharedJoystick.Max_Angular_Speed));
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.Max_Linear_Speed;
         prevVelObsEps = epsilon;
         prevVelObsZet = zeta;
 
@@ -921,10 +870,10 @@ public class JoystickMonke : MonoBehaviour
         lamda = 1 - kappa;
         epsilon = kappa * prevRotObsEps + lamda * Gain * BoxMullerGaussianSample();
         zeta = kappa * prevRotObsZet + lamda * epsilon;
-        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed) * (SharedJoystick.currentSpeed / SharedJoystick.MaxSpeed)
-            + (SharedJoystick.currentRot / SharedJoystick.RotSpeed) * (SharedJoystick.currentRot / SharedJoystick.RotSpeed));
+        float ObsNoiseMagnitude = Mathf.Sqrt((SharedJoystick.currentSpeed / SharedJoystick.Max_Linear_Speed) * (SharedJoystick.currentSpeed / SharedJoystick.Max_Linear_Speed)
+            + (SharedJoystick.currentRot / SharedJoystick.Max_Angular_Speed) * (SharedJoystick.currentRot / SharedJoystick.Max_Angular_Speed));
 
-        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.RotSpeed;
+        result_speed = zeta * ObsNoiseMagnitude * SharedJoystick.Max_Angular_Speed;
         prevRotObsEps = epsilon;
         prevRotObsZet = zeta;
 

@@ -3,11 +3,11 @@ using static JoystickMonke;
 
 public class Particles : MonoBehaviour
 {
-    [HideInInspector] public float lifeSpan;
-    [HideInInspector] public float dist;
-    [HideInInspector] public float densityLow;
-    [HideInInspector] public float densityHigh;
-    [HideInInspector] public float densityLowRatio;
+    [HideInInspector] public float Life_Span;
+    [HideInInspector] public float Draw_Distance;
+    [HideInInspector] public float Density_Low;
+    [HideInInspector] public float Density_High;
+    [HideInInspector] public float Density_Low_Ratio;
     [HideInInspector] public float ObsDensityRatio;
     private bool isObsNoise;
     public float TauValueR = 0.0F;
@@ -16,7 +16,7 @@ public class Particles : MonoBehaviour
     public float TauValueA = 1.0F;
     float density;
     float prevDensity;
-    [HideInInspector] public float t_height;
+    [HideInInspector] public float Floor_Height;
     readonly float baseH = 0.0185f;
     uint seed;
     [HideInInspector]
@@ -32,12 +32,12 @@ public class Particles : MonoBehaviour
 
         seed = (uint)UnityEngine.Random.Range(1, 10000);
         PlayerPrefs.SetInt("Optic Flow Seed", (int)seed);
-        lifeSpan = PlayerPrefs.GetFloat("Life Span");
-        dist = PlayerPrefs.GetFloat("Draw Distance");
-        densityLow = PlayerPrefs.GetFloat("Density Low");
-        densityHigh = PlayerPrefs.GetFloat("Density High");
-        densityLowRatio = PlayerPrefs.GetFloat("Density Low Ratio");
-        t_height = PlayerPrefs.GetFloat("Triangle Height");
+        Life_Span = PlayerPrefs.GetFloat("Life_Span");
+        Draw_Distance = PlayerPrefs.GetFloat("Draw_Distance");
+        Density_Low = PlayerPrefs.GetFloat("Density_Low");
+        Density_High = PlayerPrefs.GetFloat("Density_High");
+        Density_Low_Ratio = PlayerPrefs.GetFloat("Density_Low_Ratio");
+        Floor_Height = PlayerPrefs.GetFloat("Floor_Height");
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
         isObsNoise = PlayerPrefs.GetInt("isObsNoise") == 1;
         particleSystem = GetComponent<ParticleSystem>();
@@ -52,18 +52,18 @@ public class Particles : MonoBehaviour
         var emission = particleSystem.emission;
         var shape = particleSystem.shape;
 
-        main.startLifetime = lifeSpan;
-        main.startSize = t_height * baseH;
+        main.startLifetime = Life_Span;
+        main.startSize = Floor_Height * baseH;
 
         var n = Random.Range(0f, 1f);
 
-        if (n < densityLowRatio)
+        if (n < Density_Low_Ratio)
         {
-            density = densityLow;
+            density = Density_Low;
         }
         else
         {
-            density = densityHigh;
+            density = Density_High;
         }
 
         if (isObsNoise)
@@ -71,31 +71,31 @@ public class Particles : MonoBehaviour
             if(name == "Dots")
             {
                 density *= 1 - ObsDensityRatio;
-                densityHigh *= 1 - ObsDensityRatio;
-                densityLow *= 1 - ObsDensityRatio;
+                Density_High *= 1 - ObsDensityRatio;
+                Density_Low *= 1 - ObsDensityRatio;
             }
             else
             {
                 density *= ObsDensityRatio;
-                densityHigh *= ObsDensityRatio;
-                densityLow *= ObsDensityRatio;
+                Density_High *= ObsDensityRatio;
+                Density_Low *= ObsDensityRatio;
             }
         }
 
         prevDensity = density;
 
-        main.maxParticles = Mathf.RoundToInt(Mathf.Pow(dist, 2.0f) * Mathf.PI * density / t_height);
+        main.maxParticles = Mathf.RoundToInt(Mathf.Pow(Draw_Distance, 2.0f) * Mathf.PI * density / Floor_Height);
 
         var densityInCM = Mathf.FloorToInt(main.maxParticles / 10000.0f) < 1f ? main.maxParticles / 10000.0f : Mathf.FloorToInt(main.maxParticles / 10000.0f);
-        emission.rateOverTime = Mathf.Floor(densityInCM / lifeSpan * 10000.0f / (t_height));
+        emission.rateOverTime = Mathf.Floor(densityInCM / Life_Span * 10000.0f / (Floor_Height));
 
-        shape.randomPositionAmount = dist;
+        shape.randomPositionAmount = Draw_Distance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if((int)PlayerPrefs.GetFloat("PTBType") != 2 && (int) PlayerPrefs.GetFloat("TauColoredFloor") == 1)
+        if((int)PlayerPrefs.GetFloat("PTBType") != 0 && (int) PlayerPrefs.GetFloat("TauColoredFloor") == 1)
         {
             counter++;
             var main = particleSystem.main;
@@ -108,11 +108,6 @@ public class Particles : MonoBehaviour
             TauValueG = TauValue;
             TauValueB = 0;
             main.startColor = new Color(TauValueR, TauValueG, TauValueB, TauValueA);
-            //print(TauValue);
-            //print(TauValueR);
-            //print(TauValueG);
-            //print(TauValueB);
-            //print(TauValueA);
         }
     }
 
@@ -123,24 +118,24 @@ public class Particles : MonoBehaviour
         var main = particleSystem.main;
         var emission = particleSystem.emission;
 
-        if (n < densityLowRatio)
+        if (n < Density_Low_Ratio)
         {
             //print("low");
-            density = densityLow;
+            density = Density_Low;
         }
         else
         {
             //print("high");
-            density = densityHigh;
+            density = Density_High;
         }
 
         if (density != prevDensity)
         {
             print(density);
             changedensityflag = true;
-            main.maxParticles = Mathf.RoundToInt(Mathf.Pow(dist, 2.0f) * Mathf.PI * density / t_height);
+            main.maxParticles = Mathf.RoundToInt(Mathf.Pow(Draw_Distance, 2.0f) * Mathf.PI * density / Floor_Height);
             var densityInCM = Mathf.FloorToInt(main.maxParticles / 10000.0f) < 1f ? main.maxParticles / 10000.0f : Mathf.FloorToInt(main.maxParticles / 10000.0f);
-            emission.rateOverTime = Mathf.Floor(densityInCM / lifeSpan * 10000.0f / (t_height));
+            emission.rateOverTime = Mathf.Floor(densityInCM / Life_Span * 10000.0f / (Floor_Height));
             particleSystem.Clear();
         }
         else
@@ -157,9 +152,9 @@ public class Particles : MonoBehaviour
     {
         var main = particleSystem.main;
         var emission = particleSystem.emission;
-        main.maxParticles = Mathf.RoundToInt(Mathf.Pow(dist, 2.0f) * Mathf.PI * density / t_height);
+        main.maxParticles = Mathf.RoundToInt(Mathf.Pow(Draw_Distance, 2.0f) * Mathf.PI * density / Floor_Height);
         var densityInCM = Mathf.FloorToInt(main.maxParticles / 10000.0f) < 1f ? main.maxParticles / 10000.0f : Mathf.FloorToInt(main.maxParticles / 10000.0f);
-        emission.rateOverTime = Mathf.Floor(densityInCM / lifeSpan * 10000.0f / (t_height));
+        emission.rateOverTime = Mathf.Floor(densityInCM / Life_Span * 10000.0f / (Floor_Height));
         particleSystem.Clear();
     }
 }
