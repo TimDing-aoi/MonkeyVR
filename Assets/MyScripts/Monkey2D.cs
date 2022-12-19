@@ -462,7 +462,7 @@ public class Monkey2D : MonoBehaviour
         LObscam.ResetProjectionMatrix();
         RObscam.ResetProjectionMatrix();
 
-        lm = Lcam.projectionMatrix;
+        /*lm = Lcam.projectionMatrix;
         lm02 = lm.m02;
         rm = Rcam.projectionMatrix;
         rm02 = rm.m02;
@@ -482,7 +482,7 @@ public class Monkey2D : MonoBehaviour
         LObscam.projectionMatrix = lm;
         rm.m02 = rm02 - offset;
         RObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
-        RObscam.projectionMatrix = rm;
+        RObscam.projectionMatrix = rm;*/
 
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
