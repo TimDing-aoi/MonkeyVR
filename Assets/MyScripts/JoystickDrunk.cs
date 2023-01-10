@@ -6,6 +6,8 @@ using static Monkey2D;
 
 public class JoystickDrunk : MonoBehaviour
 {
+    public static JoystickDrunk SharedDrunkstick;
+
     public float moveX;
     public float moveY;
     [ShowOnly] public float currentSpeed = 0.0f;
@@ -24,6 +26,11 @@ public class JoystickDrunk : MonoBehaviour
 
     private System.Random rand;
     [ShowOnly] public int seed;
+
+    void Awake()
+    {
+        SharedDrunkstick = this;
+    }
 
     // Start is called before the first frame update
     void Start()

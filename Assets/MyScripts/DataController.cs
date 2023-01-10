@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Monkey2D;
 using static JoystickMonke;
+using static JoystickDrunk;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
@@ -178,8 +179,8 @@ namespace PupilLabs
                     var RawY = SharedJoystick.rawY;
                     var CleanLV = SharedJoystick.cleanVel;
                     var CleanRV = SharedJoystick.cleanRot;
-                    var ObsLinNoise = SharedJoystick.DistFlowSpeed;
-                    var ObsAngNoise = SharedJoystick.DistFlowRot;
+                    var ObsLinNoise = SharedDrunkstick.DistFlowSpeed;
+                    var ObsAngNoise = SharedDrunkstick.DistFlowRot;
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)

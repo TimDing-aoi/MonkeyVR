@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static JoystickMonke;
+using static JoystickDrunk;
 using static Serial;
 using static Particles;
 using static Particles2;
@@ -825,13 +826,15 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
-                if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
+                if ((int)PlayerPrefs.GetFloat("PTBType") == 99)
                 {
                     sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
                 else
                 {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY," +
+                        "GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta," +
+                        "PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
             }
         }
@@ -1173,8 +1176,8 @@ public class Monkey2D : MonoBehaviour
             var currentRotTmp = SharedJoystick.currentRot;
             var speedPrePtbTmp = SharedJoystick.speedPrePtb;
             var rotPrePtbTmp = SharedJoystick.rotPrePtb;
-            var ObsLinNoise = DistFlowSpeed;
-            var ObsAngNoise = DistFlowRot;
+            var ObsLinNoise = SharedDrunkstick.DistFlowSpeed;
+            var ObsAngNoise = SharedDrunkstick.DistFlowRot;
 
             if (flagMultiFF)
             {
@@ -1187,7 +1190,7 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.CtrlDynamicsFlag)
+            if (SharedJoystick.ProcessNoiseFlag)
             {
                 sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
                     trial,
