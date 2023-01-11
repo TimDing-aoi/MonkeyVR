@@ -1324,7 +1324,7 @@ public class Monkey2D : MonoBehaviour
         else
         {
             Vector3 position;
-            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * (float)rand.NextDouble();
+            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
             float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
             if (LR != 0.5f)
             {
