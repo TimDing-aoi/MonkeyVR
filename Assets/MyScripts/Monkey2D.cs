@@ -246,7 +246,7 @@ public class Monkey2D : MonoBehaviour
     private float maxJuiceTime;
 
     //number of trials desired, 0 for infinity
-    public int ntrials;
+    public int Num_Trials;
 
     //Randomization
     private int seed;
@@ -447,8 +447,8 @@ public class Monkey2D : MonoBehaviour
         //Get basic variables from settings
         timeout = PlayerPrefs.GetFloat("Timeout");
         path = PlayerPrefs.GetString("Path");
-        ntrials = (int)PlayerPrefs.GetFloat("Num Trials");
-        if (ntrials == 0) ntrials = 9999;
+        Num_Trials = (int)PlayerPrefs.GetFloat("Num_Trials");
+        if (Num_Trials == 0) Num_Trials = 9999;
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
         Player_Height = PlayerPrefs.GetFloat("Player_Height");
@@ -661,7 +661,7 @@ public class Monkey2D : MonoBehaviour
             string first_row = string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,{0}FFV,MappingContext,Confidence," +
                     "GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta," +
                     "RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY,ObsLinNoise,ObsAngNoise,",multiple_FF_string)
-                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n";
+                    + PlayerPrefs.GetString("Name") + "," + DateTime.Today.ToString("MMddyyyy") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n";
             sb_cont_data.Append(first_row);
         }
 
@@ -757,7 +757,7 @@ public class Monkey2D : MonoBehaviour
     {
         //Check if quitting the game; Send block end marker
         var keyboard = Keyboard.current;
-        if ((keyboard.enterKey.isPressed || trialNum > ntrials) && isPlaying)
+        if ((keyboard.enterKey.isPressed || trialNum > Num_Trials) && isPlaying)
         {
             isPlaying = false;
             Save();
@@ -771,7 +771,7 @@ public class Monkey2D : MonoBehaviour
         {
             isBegin = false;
             trialNum++;
-            if (trialNum <= ntrials)
+            if (trialNum <= Num_Trials)
             {
                 trial_number.Add(trialNum);
             }
@@ -1696,14 +1696,14 @@ public class Monkey2D : MonoBehaviour
                 disc_header = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
                     "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
-                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                    + PlayerPrefs.GetString("Name") + "," + DateTime.Today.ToString("MMddyyyy") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
             {
                 disc_header = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
                     "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
-                    + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
+                    + PlayerPrefs.GetString("Name") + "," + DateTime.Today.ToString("MMddyyyy") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(disc_header);
 
@@ -2218,10 +2218,6 @@ public class Monkey2D : MonoBehaviour
 
         xmlWriter.WriteStartElement("Name");
         xmlWriter.WriteString(PlayerPrefs.GetString("Name"));
-        xmlWriter.WriteEndElement();
-
-        xmlWriter.WriteStartElement("Date");
-        xmlWriter.WriteString(PlayerPrefs.GetString("Date"));
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("RunNumber");
