@@ -7,9 +7,7 @@ public class GoToScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //UnityEngine.Debug.Log("Device Name: " + SystemInfo.deviceName + "\nDevice Model: " + SystemInfo.deviceModel + "\nCPU Name: " + SystemInfo.processorType + "\nCPU Frequency: " + SystemInfo.processorFrequency + "\nGPU Name: " + SystemInfo.graphicsDeviceName);
 
-        PlayerPrefs.SetString("Switch Mode", "experiment");
     }
 
     // Update is called once per frame

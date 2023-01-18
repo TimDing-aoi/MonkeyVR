@@ -34,7 +34,6 @@ public class GoToSettings : MonoBehaviour
         {
             GUI_input = obj.GetComponent<TMP_InputField>();
         }
-        PlayerPrefs.SetInt("Save", 0);
     }
 
     public void ToSettings()
@@ -45,7 +44,7 @@ public class GoToSettings : MonoBehaviour
         if (obj.GetComponentInChildren<TMP_Text>().text == "monkey2d") PlayerPrefs.SetInt("Scene", 9);
 
         GeneralMenu.SetActive(true);
-        foreach (Transform child in NoisesMenu.transform)
+        foreach (Transform child in GeneralMenu.transform)
         {
             foreach (Transform children in child)
             {
@@ -514,5 +513,198 @@ public class GoToSettings : MonoBehaviour
         stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
             + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
         File.WriteAllText(stimPath, stimConf.ToString());
+    }
+
+    public void LoadDefault()
+    {
+        PlayerPrefs.DeleteAll();
+        try
+        {
+            var extensions = new[] {
+                new ExtensionFilter("Extensible Markup Language ", "xml")
+            };
+            string path = Environment.CurrentDirectory + "\\" +"config_Default.xml";
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            GeneralMenu.SetActive(true);
+            foreach (Transform child in GeneralMenu.transform)
+            {
+                foreach (Transform children in child)
+                {
+                    if (children.gameObject.CompareTag("Setting"))
+                    {
+                        if (children.name == "multiple_FF_mode")
+                        {
+                            TMP_Dropdown drop = children.GetComponent<TMP_Dropdown>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        drop.value = int.Parse(setting.InnerText);
+                                        PlayerPrefs.SetInt(children.name, drop.value);
+                                    }
+                                }
+                            }
+                        }
+                        else if (children.name == "GaussianPTB" || children.name == "isFlashing")
+                        {
+                            UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        toggle.isOn = int.Parse(setting.InnerText) == 1;
+                                        PlayerPrefs.SetInt(children.name, toggle.isOn ? 1 : 0);
+                                    }
+                                }
+                            }
+                        }
+                        else if (children.name == "Path" || children.name == "Name")
+                        {
+                            TMP_InputField field = children.GetComponent<TMP_InputField>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        field.text = setting.InnerText;
+                                        PlayerPrefs.SetString(children.name, field.text);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TMP_InputField field = children.GetComponent<TMP_InputField>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        field.text = setting.InnerText;
+                                        PlayerPrefs.SetFloat(children.name, float.Parse(field.text));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            int currunnum = PlayerPrefs.GetInt("Run Number");
+            PlayerPrefs.SetInt("Run Number", currunnum++);
+
+            OthersMenu.SetActive(true);
+            foreach (Transform child in OthersMenu.transform)
+            {
+                foreach (Transform children in child)
+                {
+                    if (children.gameObject.CompareTag("Setting"))
+                    {
+                        if (children.name == "is2FFCOM" || children.name == "isColored" || children.name == "isSM" || children.name == "isFFstimu" || children.name == "isMoving" || children.name == "isLeftRightnotForBack")
+                        {
+                            UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        toggle.isOn = int.Parse(setting.InnerText) == 1;
+                                        PlayerPrefs.SetInt(children.name, toggle.isOn ? 1 : 0);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TMP_InputField field = children.GetComponent<TMP_InputField>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        field.text = setting.InnerText;
+                                        PlayerPrefs.SetFloat(children.name, float.Parse(field.text));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            NoisesMenu.SetActive(true);
+            foreach (Transform child in NoisesMenu.transform)
+            {
+                foreach (Transform children in child)
+                {
+                    if (children.gameObject.CompareTag("Setting"))
+                    {
+                        if (children.name == "Acceleration_Control_Type")
+                        {
+                            TMP_Dropdown drop = children.GetComponent<TMP_Dropdown>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        drop.value = int.Parse(setting.InnerText);
+                                        PlayerPrefs.SetInt(children.name, drop.value);
+                                    }
+                                }
+                            }
+                        }
+                        else if (children.name == "isProcessNoise" || children.name == "isObsNoise" || children.name == "isAuto" || children.name == "TauColoredFloor")
+                        {
+                            UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        toggle.isOn = int.Parse(setting.InnerText) == 1;
+                                        PlayerPrefs.SetInt(children.name, toggle.isOn ? 1 : 0);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TMP_InputField field = children.GetComponent<TMP_InputField>();
+                            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                            {
+                                foreach (XmlNode setting in node.ChildNodes)
+                                {
+                                    if (setting.Name == children.name.Replace(" ", ""))
+                                    {
+                                        field.text = setting.InnerText;
+                                        PlayerPrefs.SetFloat(children.name, float.Parse(field.text));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            GeneralMenu.SetActive(false);
+            OthersMenu.SetActive(false);
+            NoisesMenu.SetActive(false);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e, this);
+        }
     }
 }
