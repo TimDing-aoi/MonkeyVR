@@ -615,6 +615,7 @@ public class GoToSettings : MonoBehaviour
                             {
                                 foreach (XmlNode setting in node.ChildNodes)
                                 {
+                                    print(setting.Name);
                                     if (setting.Name == children.name.Replace(" ", ""))
                                     {
                                         toggle.isOn = int.Parse(setting.InnerText) == 1;
@@ -658,6 +659,7 @@ public class GoToSettings : MonoBehaviour
                                 {
                                     if (setting.Name == children.name.Replace(" ", ""))
                                     {
+                                        print(setting.Name);
                                         drop.value = int.Parse(setting.InnerText);
                                         PlayerPrefs.SetInt(children.name, drop.value);
                                     }

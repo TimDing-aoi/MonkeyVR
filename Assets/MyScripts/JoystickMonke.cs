@@ -117,7 +117,7 @@ public class JoystickMonke : MonoBehaviour
 
     public Phases currPhase;
 
-    public bool CtrlDynamicsFlag = false;
+    public bool isCtrlDynamics = false;
 
     //Akis PTB vars
     [HideInInspector]
@@ -132,7 +132,7 @@ public class JoystickMonke : MonoBehaviour
     [HideInInspector]
     public float meanAngle;
     [HideInInspector]
-    public int flagPTBType;
+    public int flagCtrlDynamics;
     [HideInInspector]
     public float minTau;
     [HideInInspector]
@@ -259,13 +259,13 @@ public class JoystickMonke : MonoBehaviour
         }
 
         //load Akis PTB vars
-        CtrlDynamicsFlag = (int)PlayerPrefs.GetFloat("PTBType") != 2;
+        isCtrlDynamics = (int)PlayerPrefs.GetFloat("Acceleration_Control_Type") != 0;
+        flagCtrlDynamics = (int)PlayerPrefs.GetFloat("Acceleration_Control_Type");
         meanDist = PlayerPrefs.GetFloat("MeanDistance");
         meanTime = PlayerPrefs.GetFloat("MeanTime");
         //Used to be
         //meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
         meanAngle = PlayerPrefs.GetFloat("MeanAngle");
-        flagPTBType = (int)PlayerPrefs.GetFloat("PTBType");
         minTau = PlayerPrefs.GetFloat("MinTau");
         maxTau = PlayerPrefs.GetFloat("MaxTau");
         numTau = (int)PlayerPrefs.GetFloat("NumTau");
@@ -320,7 +320,7 @@ public class JoystickMonke : MonoBehaviour
         //Akis PTB set up
         kappa = Mathf.Exp(-1f / TauTau);
 
-        switch (flagPTBType)
+        switch (flagCtrlDynamics)
         {
             case 0:
                 var linspace = (maxTau - minTau) / (numTau - 1);
@@ -433,7 +433,7 @@ public class JoystickMonke : MonoBehaviour
             //Akis PTB noise
             //print(SharedMonkey.isAccelControlTrial);
             //print(savedTau);
-            if (CtrlDynamicsFlag)
+            if (isCtrlDynamics)
             {
                 updateControlDynamics();
                 if (SharedMonkey.Joystick_Disabled)

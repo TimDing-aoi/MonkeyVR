@@ -22,7 +22,7 @@
   </Setting>
   <Setting
     Type="Firefly Settings">
-    <RadiusFF>5</RadiusFF>
+    <RadiusFF>2.5</RadiusFF>
     <reward_zone_radius>10</reward_zone_radius>
     <minDrawDistance>10</minDrawDistance>
     <maxDrawDistance>40</maxDrawDistance>

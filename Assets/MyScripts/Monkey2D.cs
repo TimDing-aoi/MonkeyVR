@@ -498,7 +498,7 @@ public class Monkey2D : MonoBehaviour
         }
 
         //Control Dynamics?
-        control_dynamics = (int)PlayerPrefs.GetFloat("PTBType");
+        control_dynamics = (int)PlayerPrefs.GetFloat("Acceleration_Control_Type");
         if (control_dynamics != 0)
         {
             velStopThreshold = PlayerPrefs.GetFloat("velStopThreshold");
@@ -841,7 +841,7 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.CtrlDynamicsFlag)
+            if (SharedJoystick.isCtrlDynamics)
             {
                 sb_cont_data.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
                     trial,
@@ -1313,7 +1313,7 @@ public class Monkey2D : MonoBehaviour
             {
                 //Only wait for stopped moving here, or time out
                 await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinStopThresh && Mathf.Abs(SharedJoystick.currentRot) <= JstAngStopThresh && 
-                !SharedJoystick.CtrlDynamicsFlag)) || time_out.IsCompleted);
+                !SharedJoystick.isCtrlDynamics)) || time_out.IsCompleted);
                 //Timed out
                 if (time_out.IsCompleted)
                 {
@@ -1378,6 +1378,17 @@ public class Monkey2D : MonoBehaviour
         //Entering check phase
         isCheck = true;
         rewarded_FF_trial = false;
+        if (flagMultiFF)
+        {
+            foreach (GameObject FF in Multiple_FF_List)
+            {
+                FF.SetActive(false);
+            }
+        }
+        else
+        {
+            firefly.SetActive(false);
+        }
 
         //Distances to FF
         float distance = 0.0f;
@@ -1618,8 +1629,9 @@ public class Monkey2D : MonoBehaviour
     //Blink the single FF
     public async void OnOff()
     {
+        //print(string.Format("blinking for {0}",lifeSpan));
         firefly.SetActive(true);
-        await new WaitForSeconds(lifeSpan);
+        await new WaitForSeconds(lifeSpan/1000);
         firefly.SetActive(false);
     }
 
@@ -1627,7 +1639,7 @@ public class Monkey2D : MonoBehaviour
     public async void OnOff(GameObject obj)
     {
         obj.SetActive(true);
-        await new WaitForSeconds(lifeSpan);
+        await new WaitForSeconds(lifeSpan/1000);
         obj.SetActive(false);
     }
 
@@ -1789,7 +1801,7 @@ public class Monkey2D : MonoBehaviour
                 if (control_dynamics != 0)
                 {
                     line = line + "," + CurrentTau[i];
-                    line = line + ',' + SharedJoystick.flagPTBType + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
+                    line = line + ',' + SharedJoystick.flagCtrlDynamics + ',' + SharedJoystick.TauTau + ',' + SharedJoystick.NoiseTau + ',' + PlayerPrefs.GetFloat("VelocityNoiseGain") + ',' +
             PlayerPrefs.GetFloat("RotationNoiseGain") + ',' + (int)PlayerPrefs.GetFloat("NumTau") + ',' + PlayerPrefs.GetFloat("MinTau") + ',' + PlayerPrefs.GetFloat("MaxTau")
             + ',' + PlayerPrefs.GetFloat("MeanDistance") + ',' + PlayerPrefs.GetFloat("MeanTime") + ',' + velStopThreshold + ',' + rotStopThreshold + ',' + PlayerPrefs.GetFloat("velBrakeThresh")
             + ',' + PlayerPrefs.GetFloat("rotBrakeThresh");
