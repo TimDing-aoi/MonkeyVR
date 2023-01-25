@@ -413,7 +413,7 @@ public class Monkey2D : MonoBehaviour
         RObscam.ResetProjectionMatrix();
 
         //VR cameras set up, only if using them (VR and eye-trackers will always be together)
-        if (PlayerPrefs.GetFloat("calib") == 0)
+        if (PlayerPrefs.GetFloat("calib") == 1)
         {
             lm = Lcam.projectionMatrix;
             lm02 = lm.m02;
