@@ -412,28 +412,31 @@ public class Monkey2D : MonoBehaviour
         LObscam.ResetProjectionMatrix();
         RObscam.ResetProjectionMatrix();
 
-        //VR cameras set up
-        lm = Lcam.projectionMatrix;
-        lm02 = lm.m02;
-        rm = Rcam.projectionMatrix;
-        rm02 = rm.m02;
-        lm.m02 = lm02 + offset;
-        Lcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
-        Lcam.projectionMatrix = lm;
-        rm.m02 = rm02 - offset;
-        Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
-        Rcam.projectionMatrix = rm;
+        //VR cameras set up, only if using them (VR and eye-trackers will always be together)
+        if (PlayerPrefs.GetFloat("calib") == 0)
+        {
+            lm = Lcam.projectionMatrix;
+            lm02 = lm.m02;
+            rm = Rcam.projectionMatrix;
+            rm02 = rm.m02;
+            lm.m02 = lm02 + offset;
+            Lcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
+            Lcam.projectionMatrix = lm;
+            rm.m02 = rm02 - offset;
+            Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
+            Rcam.projectionMatrix = rm;
 
-        lm = LObscam.projectionMatrix;
-        lm02 = lm.m02;
-        rm = RObscam.projectionMatrix;
-        rm02 = rm.m02;
-        lm.m02 = lm02 + offset;
-        LObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
-        LObscam.projectionMatrix = lm;
-        rm.m02 = rm02 - offset;
-        RObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
-        RObscam.projectionMatrix = rm;
+            lm = LObscam.projectionMatrix;
+            lm02 = lm.m02;
+            rm = RObscam.projectionMatrix;
+            rm02 = rm.m02;
+            lm.m02 = lm02 + offset;
+            LObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
+            LObscam.projectionMatrix = lm;
+            rm.m02 = rm02 - offset;
+            RObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
+            RObscam.projectionMatrix = rm;
+        }
 
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances(displaySubsystems);
@@ -1003,19 +1006,23 @@ public class Monkey2D : MonoBehaviour
             Vector3 position;
             float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
             float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-            bool on_the_left_side = rand.NextDouble() < FFLeftRightRatio;
-            if (on_the_left_side)
+            //Left right bias training
+            if(FFLeftRightRatio != 0.5)
             {
-                while (angle > 0)
+                bool on_the_left_side = rand.NextDouble() < FFLeftRightRatio;
+                if (on_the_left_side)
                 {
-                    angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+                    while (angle > 0)
+                    {
+                        angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+                    }
                 }
-            }
-            else
-            {
-                while (angle < 0)
+                else
                 {
-                    angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+                    while (angle < 0)
+                    {
+                        angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+                    }
                 }
             }
             position = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
