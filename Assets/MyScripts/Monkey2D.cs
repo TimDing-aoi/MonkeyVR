@@ -263,6 +263,7 @@ public class Monkey2D : MonoBehaviour
     private bool isTrial = false;
     private bool isCheck = false;
     private bool isEnd = false;
+    public bool trialStimulated = false;
     public bool Joystick_Disabled = false;
     public enum Phases
     {
@@ -784,11 +785,29 @@ public class Monkey2D : MonoBehaviour
         {
             //TODO: add newest Change of mind way of update here.
 
-            //TODO: add newest FF stimulation way of update here.
+            //print(string.Format("trial elapsed: {0}", tNow - trial_start_time));
+            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !is_always_on_trial && !trialStimulated)
+            {
+                trialStimulated = true;
+                float stimr = (float)rand.NextDouble();
+                if (stimr < stimuratio)
+                {
+                    SendMarker("m", microStimuDur * 1000.0f);
+                    stimulatedTrial = true;
+                    timeStimuStart.Add(tNow - programT0);
+                }
+            }
         }
 
         //Status check for stimulation
-        //TODO: newest stimulation updata check
+        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur) && stimulatedTrial)
+        {
+            isStimulating = true;
+        }
+        else
+        {
+            isStimulating = false;
+        }
 
         //Check phase starts
         if (isCheck)
@@ -1201,7 +1220,7 @@ public class Monkey2D : MonoBehaviour
 
         if (flagFFstimulation)
         {
-            trialStimuGap = microStimuGap * (float)rand.NextDouble();
+            trialStimuGap = microStimuGap * (float)rand.NextDouble() + lifeSpan;
         }
 
         phase_task_selecter = Phases.trial;
