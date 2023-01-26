@@ -615,7 +615,6 @@ public class GoToSettings : MonoBehaviour
                             {
                                 foreach (XmlNode setting in node.ChildNodes)
                                 {
-                                    print(setting.Name);
                                     if (setting.Name == children.name.Replace(" ", ""))
                                     {
                                         toggle.isOn = int.Parse(setting.InnerText) == 1;

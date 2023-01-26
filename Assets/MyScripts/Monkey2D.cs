@@ -399,22 +399,16 @@ public class Monkey2D : MonoBehaviour
         SendMarker("f", 1000.0f);
         programT0 = Time.realtimeSinceStartup;
 
-        //VR set up
-        InputTracking.disablePositionalTracking = true;
-        XRDevice.DisableAutoXRCameraTracking(LObscam, true);
-        XRDevice.DisableAutoXRCameraTracking(RObscam, true);
-        XRDevice.DisableAutoXRCameraTracking(Lcam, true);
-        XRDevice.DisableAutoXRCameraTracking(Rcam, true);
-        XRSettings.occlusionMaskScale = 10f;
-        XRSettings.useOcclusionMesh = false;
-        Lcam.ResetProjectionMatrix();
-        Rcam.ResetProjectionMatrix();
-        LObscam.ResetProjectionMatrix();
-        RObscam.ResetProjectionMatrix();
-
         //VR cameras set up, only if using them (VR and eye-trackers will always be together)
         if (PlayerPrefs.GetFloat("calib") == 1)
         {
+            UnityEngine.XR.InputTracking.disablePositionalTracking = true;
+            UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
+            UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
+            XRSettings.occlusionMaskScale = 10f;
+            XRSettings.useOcclusionMesh = false;
+            Lcam.ResetProjectionMatrix();
+            Rcam.ResetProjectionMatrix();
             lm = Lcam.projectionMatrix;
             lm02 = lm.m02;
             rm = Rcam.projectionMatrix;
@@ -425,23 +419,8 @@ public class Monkey2D : MonoBehaviour
             rm.m02 = rm02 - offset;
             Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
             Rcam.projectionMatrix = rm;
-
-            lm = LObscam.projectionMatrix;
-            lm02 = lm.m02;
-            rm = RObscam.projectionMatrix;
-            rm02 = rm.m02;
-            lm.m02 = lm02 + offset;
-            LObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
-            LObscam.projectionMatrix = lm;
-            rm.m02 = rm02 - offset;
-            RObscam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
-            RObscam.projectionMatrix = rm;
-        }
-
-        List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
-        SubsystemManager.GetInstances(displaySubsystems);
-        if (!XRSettings.enabled)
-        {
+            List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
             XRSettings.enabled = true;
         }
 
