@@ -19,6 +19,7 @@ public class GoToSettings : MonoBehaviour
     public GameObject OthersMenu;
     public GameObject NoisesMenu;
     public GameObject errormsg;
+    public GameObject isHumanToggle;
     private TMP_InputField GUI_input;
 
     // Start is called before the first frame update
@@ -42,6 +43,10 @@ public class GoToSettings : MonoBehaviour
         SettingsCanvas.enabled = true;
         PlayerPrefs.SetInt("Scene", 0);
         if (obj.GetComponentInChildren<TMP_Text>().text == "monkey2d") PlayerPrefs.SetInt("Scene", 9);
+
+        UnityEngine.UI.Toggle humantoggle = isHumanToggle.GetComponent<UnityEngine.UI.Toggle>();
+        bool isHumanSaved = PlayerPrefs.GetInt("isHuman") == 1;
+        humantoggle.isOn = isHumanSaved;
 
         GeneralMenu.SetActive(true);
         foreach (Transform child in GeneralMenu.transform)
@@ -191,7 +196,7 @@ public class GoToSettings : MonoBehaviour
         {
             if (obj.name == "GaussianPTB" || obj.name == "isFlashing"
                 || obj.name == "is2FFCOM" || obj.name == "isColored" || obj.name == "isSM" || obj.name == "isFFstimu" || obj.name == "isMoving" || obj.name == "isLeftRightnotForBack"
-                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor")
+                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor" || obj.name == "isHuman")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }

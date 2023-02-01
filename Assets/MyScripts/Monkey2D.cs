@@ -398,17 +398,17 @@ public class Monkey2D : MonoBehaviour
         SendMarker("f", 1000.0f);
         programT0 = Time.realtimeSinceStartup;
 
-        //VR cameras set up, only if using them (VR and eye-trackers will always be together)
-        bool using_headset = true;
-        if (using_headset)
+        //VR cameras set up, and tilt cameras if monkey
+        bool isHuman = PlayerPrefs.GetInt("isHuman") == 1;
+        UnityEngine.XR.InputTracking.disablePositionalTracking = true;
+        UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
+        UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
+        XRSettings.occlusionMaskScale = 10f;
+        XRSettings.useOcclusionMesh = false;
+        Lcam.ResetProjectionMatrix();
+        Rcam.ResetProjectionMatrix();
+        if (!isHuman)
         {
-            UnityEngine.XR.InputTracking.disablePositionalTracking = true;
-            UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
-            UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
-            XRSettings.occlusionMaskScale = 10f;
-            XRSettings.useOcclusionMesh = false;
-            Lcam.ResetProjectionMatrix();
-            Rcam.ResetProjectionMatrix();
             lm = Lcam.projectionMatrix;
             lm02 = lm.m02;
             rm = Rcam.projectionMatrix;
@@ -419,10 +419,10 @@ public class Monkey2D : MonoBehaviour
             rm.m02 = rm02 - offset;
             Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
             Rcam.projectionMatrix = rm;
-            List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
-            SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
-            XRSettings.enabled = true;
         }
+        List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
+        SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
+        XRSettings.enabled = true;
 
         //Shared instance
         SharedMonkey = this;
