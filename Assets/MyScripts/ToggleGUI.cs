@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 
 public class ToggleGUI : MonoBehaviour
 {
-    bool toggle = false;
-    string toggleText = "Open";
-    public GameObject gui;
+    bool Calibration_Settings_Open = false;
+    bool Task_Selection_Open = false;
+    string toggleSettingsText = "Open";
+    string toggleTaskText = "Open";
+    public GameObject SettingGUI;
+    public GameObject TaskGUI;
     public Texture texture;
     public CalibrationController calibrationController;
 
@@ -37,19 +40,34 @@ public class ToggleGUI : MonoBehaviour
             GUI.Label(rect, "", style);
         }
 
-        if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleText))
+        if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleSettingsText))
         {
-            toggle = !toggle;
-            gui.SetActive(toggle);
+            Calibration_Settings_Open = !Calibration_Settings_Open;
+            SettingGUI.SetActive(Calibration_Settings_Open);
         }
 
-        if (toggle)
+        if (Calibration_Settings_Open)
         {
-            toggleText = "Close";
+            toggleSettingsText = "Clibration\n Settings Close";
         }
         else
         {
-            toggleText = "Open";
+            toggleSettingsText = "Clibration\n Settings Open";
+        }
+
+        if (GUI.Button(new Rect(Screen.width - 1000, Screen.height - 70, 150, 60), toggleTaskText))
+        {
+            Task_Selection_Open = !Task_Selection_Open;
+            TaskGUI.SetActive(Task_Selection_Open);
+        }
+
+        if (Task_Selection_Open)
+        {
+            toggleTaskText = "Task Selection\n Close";
+        }
+        else
+        {
+            toggleTaskText = "Task Selection\n Open";
         }
 
         if (calibrationController.flagReward || Keyboard.current.spaceKey.isPressed)
