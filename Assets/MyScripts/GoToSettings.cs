@@ -145,12 +145,18 @@ public class GoToSettings : MonoBehaviour
 
     public void BeginCalibration()
     {
+        int currunnum = PlayerPrefs.GetInt("Run Number");
+        PlayerPrefs.SetInt("Run Number", currunnum++);
+
         PlayerPrefs.SetFloat("calib", 1);
         SceneManager.LoadScene(1);
     }
 
     public void BeginGame()
     {
+        int currunnum = PlayerPrefs.GetInt("Run Number");
+        PlayerPrefs.SetInt("Run Number", currunnum++);
+
         PlayerPrefs.SetFloat("calib", 0);
         SceneManager.LoadScene(2);
     }
@@ -399,8 +405,6 @@ public class GoToSettings : MonoBehaviour
                     }
                 }
             }
-            int currunnum = PlayerPrefs.GetInt("Run Number");
-            PlayerPrefs.SetInt("Run Number", currunnum++);
 
             OthersMenu.SetActive(true);
             foreach (Transform child in OthersMenu.transform)

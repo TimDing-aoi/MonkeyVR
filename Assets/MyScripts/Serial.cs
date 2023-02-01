@@ -8,6 +8,7 @@ public class Serial : MonoBehaviour
     public static Serial serial { get; private set; }
     public SerialPort sp;
     bool juice = true;
+    bool isMonkey = true;
 
     float juiceTime;
 
@@ -17,15 +18,19 @@ public class Serial : MonoBehaviour
         serial = this;
         juiceTime = PlayerPrefs.GetFloat("maxJuiceTime");
         sp = new SerialPort("COM5", 1000000);
-        sp.Open();
-        sp.ReadTimeout = 1;
+        isMonkey = PlayerPrefs.GetInt("isHuman") == 0;
+        if (isMonkey)
+        {
+            sp.Open();
+            sp.ReadTimeout = 1;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         var keyboard = Keyboard.current;
-        if (keyboard.spaceKey.isPressed && juice) GiveJuice();
+        if (keyboard.spaceKey.isPressed && juice && isMonkey) GiveJuice();
     }
 
     async void GiveJuice()

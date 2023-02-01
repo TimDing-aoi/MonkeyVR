@@ -371,6 +371,9 @@ public class Monkey2D : MonoBehaviour
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
 
+    //Human subject?
+    bool isHuman = false;
+
     //On Start up, get gaze visualizer
     private void Awake()
     {
@@ -399,7 +402,7 @@ public class Monkey2D : MonoBehaviour
         programT0 = Time.realtimeSinceStartup;
 
         //VR cameras set up, and tilt cameras if monkey
-        bool isHuman = PlayerPrefs.GetInt("isHuman") == 1;
+        isHuman = PlayerPrefs.GetInt("isHuman") == 1;
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
@@ -1512,8 +1515,11 @@ public class Monkey2D : MonoBehaviour
             juiceDuration.Add(juiceTime);
             audioSource.Play();
             good_trial_count++;
-            SendMarker("j", juiceTime);
-            await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
+            if (!isHuman)
+            {
+                SendMarker("j", juiceTime);
+                await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
+            }
         }
         else
         {
@@ -2263,7 +2269,7 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("RunNumber");
-        xmlWriter.WriteString((PlayerPrefs.GetInt("Run Number") + 1).ToString());
+        xmlWriter.WriteString((PlayerPrefs.GetInt("Run Number")).ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndElement();
