@@ -301,6 +301,8 @@ public class Monkey2D : MonoBehaviour
     private float ObsVelocityNoiseGain;
     private float ObsRotationNoiseGain;
     private float ObsDensityRatio;
+    public float DistFlowSpeed = 0;
+    public float DistFlowRot = 0;
 
     //Async Tasking
     CancellationTokenSource source;
@@ -318,10 +320,6 @@ public class Monkey2D : MonoBehaviour
 
     //Juice
     SerialPort juiceBox;
-
-    //observation noise
-    public float DistFlowSpeed = 0;
-    public float DistFlowRot = 0;
 
     //Multiple FF separation
     float FFseparation;
@@ -361,16 +359,19 @@ public class Monkey2D : MonoBehaviour
 
     //2FF change of mind task
     readonly List<float> COMtrialtype = new List<float>();
+    public bool isCOM = false;
     public bool isNormal = false;
     public bool isStatic2FF = false;
     public bool isCOM2FF = false;
-    public bool isCOM = false;
     public bool isCOMtest = false;
+    bool FF2shown = false;
     float FF2delay;
     float normalRatio;
     float normal2FFRatio;
     int FF1index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
 
     //On Start up, get gaze visualizer
     private void Awake()
@@ -498,16 +499,18 @@ public class Monkey2D : MonoBehaviour
         multiple_FF_mode = PlayerPrefs.GetInt("multiple_FF_mode");
         flagMultiFF = multiple_FF_mode > 0;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
-        isCOMtest = PlayerPrefs.GetInt("is2FFCOMtest") == 1;
+        isCOMtest = PlayerPrefs.GetFloat("COMNormal") == 999;
         if (isCOM)
         {
             NumberOfFF = 2;
             FFcoordsList.Clear();
             ReadCoordCSV();
+            ReadCoord2CSV();
         }
         FFseparation = PlayerPrefs.GetFloat("FFseparation");
         if (multiple_FF_mode == 2)
         {
+            //2FF, 2 fireflies
             FF_positions.Add(Vector3.zero);
             FF_positions.Add(Vector3.zero);
         }
@@ -766,6 +769,28 @@ public class Monkey2D : MonoBehaviour
         if (isTrial)
         {
             //TODO: add newest Change of mind way of update here.
+            if (isCOM)
+            {
+                FF2shown = true;
+                Vector3 position;
+                int FFindex = rand.Next(FF2coordsList.Count);
+                //FF2s.Add(FFindex);
+                float VectorX = FF2coordsList[FFindex].Item1;
+                float VectorY = FF2coordsList[FFindex].Item2;
+                float r = FFcoordsList[FF1index].Item1;
+                float angle = FFcoordsList[FF1index].Item2;
+                position = Vector3.zero - new Vector3(0.0f, Player_Height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                position.y = 0.0001f;
+                Vector3 rotation;
+                rotation = Vector3.zero;
+                rotation.x += VectorX;
+                rotation.z += VectorY;
+                rotation = Quaternion.Euler(0, angle, 0) * rotation;
+                //pooledFF[1].transform.position = position + rotation;
+                print("Trial FF2 x:" + position.x);
+                print("Trial FF2 y:" + position.z);
+                //OnOff(pooledFF[1]);
+            }
 
             //print(string.Format("trial elapsed: {0}", tNow - trial_start_time));
             if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !is_always_on_trial && !trialStimulated)
@@ -1383,6 +1408,7 @@ public class Monkey2D : MonoBehaviour
         //Entering check phase
         isCheck = true;
         rewarded_FF_trial = false;
+        FF2shown = false;
         if (flagMultiFF)
         {
             foreach (GameObject FF in Multiple_FF_List)
@@ -2569,6 +2595,26 @@ public class Monkey2D : MonoBehaviour
             float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
             New_Coord_Tuple = new Tuple<float, float>(x/10, y);
             FFcoordsList.Add(New_Coord_Tuple);
+        }
+    }
+
+    public void ReadCoord2CSV()
+    {
+        StreamReader strReader = new StreamReader(path + "\\Config_2FF_2.csv");
+        bool endoffile = false;
+        while (!endoffile)
+        {
+            string data_string = strReader.ReadLine();
+            if (data_string == null)
+            {
+                break;
+            }
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[0], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            FF2coordsList.Add(New_Coord_Tuple);
         }
     }
 }
