@@ -322,7 +322,11 @@ public class JoystickMonke : MonoBehaviour
 
         switch (flagCtrlDynamics)
         {
+
             case 0:
+                break;
+
+            case 1:
                 var linspace = (maxTau - minTau) / (numTau - 1);
 
                 for (int i = 0; i < numTau; i++)
@@ -340,15 +344,12 @@ public class JoystickMonke : MonoBehaviour
 
                 break;
 
-            case 1:
+            case 2:
                 meanTau = 0.5f * (Mathf.Log(minTau) + Mathf.Log(maxTau));
                 stdDevTau = 0.5f * (meanTau - Mathf.Log(minTau));
                 meanLogSpace = meanTau * (1.0f - kappa);
                 stdDevLogSpace = stdDevTau * Mathf.Sqrt(1.0f - (kappa * kappa));
                 //print(string.Format("muPhi = {0}, sigPhi = {1}, muEta = {2}, sigEta = {3}", meanNoise, stdDevNoise, meanLogSpace, stdDevLogSpace));
-                break;
-
-            case 2:
                 break;
         }
     }

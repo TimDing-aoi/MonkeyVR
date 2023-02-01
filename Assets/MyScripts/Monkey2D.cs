@@ -76,6 +76,11 @@ public class Monkey2D : MonoBehaviour
     //Cameras
     public Camera Lcam;
     public Camera Rcam;
+    public float offset = 0.01f;
+    private float lm02;
+    private float rm02;
+    private Matrix4x4 lm;
+    private Matrix4x4 rm;
     public Camera LObscam;
     public Camera RObscam;
     public Camera DrunkCam;
@@ -311,13 +316,6 @@ public class Monkey2D : MonoBehaviour
     private bool isPlaying = true;
     public bool isStimulating = false;
 
-    //VR cameras
-    public float offset = 0.01f;
-    private float lm02;
-    private float rm02;
-    private Matrix4x4 lm;
-    private Matrix4x4 rm;
-
     //Juice
     SerialPort juiceBox;
 
@@ -401,7 +399,8 @@ public class Monkey2D : MonoBehaviour
         programT0 = Time.realtimeSinceStartup;
 
         //VR cameras set up, only if using them (VR and eye-trackers will always be together)
-        if (PlayerPrefs.GetFloat("calib") == 1)
+        bool using_headset = true;
+        if (using_headset)
         {
             UnityEngine.XR.InputTracking.disablePositionalTracking = true;
             UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);

@@ -491,17 +491,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554ef328f6445254eb6654276419d4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeSpan: 0
-  dist: 0
-  densityLow: 0
-  densityHigh: 0
-  densityLowRatio: 0
+  Life_Span: 0
+  Draw_Distance: 0
+  Density_Low: 0
+  Density_High: 0
+  Density_Low_Ratio: 0
   ObsDensityRatio: 0
   TauValueR: 0
   TauValueG: 0
   TauValueB: 0
   TauValueA: 1
-  t_height: 0
+  Floor_Height: 0
   counter: 0
 --- !u!43 &284494593
 Mesh:
@@ -1632,7 +1632,7 @@ PrefabInstance:
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -1657,7 +1657,7 @@ PrefabInstance:
     - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -1677,7 +1677,7 @@ PrefabInstance:
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -2078,76 +2078,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firefly: {fileID: 306717868}
+  fireflySize: 0
+  reward_zone_radius: 0
+  minDrawDistance: 0
+  maxDrawDistance: 0
+  minPhi: 0
+  maxPhi: 0
+  FFLeftRightRatio: 0
+  lifeSpan: 0
+  NumberOfFF: 0
+  line: {fileID: 817208713}
   Lcam: {fileID: 3311308389968972415}
   Rcam: {fileID: 3311308389968972414}
+  offset: -0.3
   LObscam: {fileID: 1048309395}
   RObscam: {fileID: 1048309394}
   DrunkCam: {fileID: 1048309393}
-  FP: {fileID: 1588712467}
   gazeVisualizer: {fileID: 0}
   baudRate: 1000000
   ReadTimeout: 5000
-  QueueLength: 1
-  fireflySize: 0
-  fireflyZoneRadius: 0
-  toggle: 0
-  motion_toggle: 0
-  ratio: 0
-  freq: 0
-  duty: 0
+  isFlashing: 0
+  flashing_frequency: 0
+  duty_cycle: 0
+  is_always_on_trial: 0
+  ratio_always_on: 0
   player: {fileID: 334403085}
   drunkplayer: {fileID: 1048309391}
+  Player_Height: 0
   audioSource: {fileID: 1242841534}
   winSound: {fileID: 8300000, guid: d01ce912f50755444a9f23f0abad0d69, type: 3}
   neutralSound: {fileID: 8300000, guid: b942764ea8e94bf48b529d8da7892bc0, type: 3}
   loseSound: {fileID: 8300000, guid: 512452df06c684d4fa94a918e25c968a, type: 3}
-  minDrawDistance: 0
-  maxDrawDistance: 0
-  ranges: []
-  minPhi: 0
-  maxPhi: 0
-  LR: 0
-  lifeSpan: 0
-  nFF: 0
-  line: {fileID: 817208713}
-  lineOnOff: 1
   timeout: 0
   checkMin: 0
   checkMax: 0
   interMax: 0
   interMin: 0
-  p_height: 0
-  phase: 0
-  isQuestion: 0
-  FrameTimeElement: 0
-  delayTime: 0.2
-  Detector: 0
-  LengthOfRay: 75
-  sceneTypeVerbose: 
-  systemStartTimeVerbose: 
   trialNum: 0
   programT0: 0
-  points: 0
+  good_trial_count: 0
   juiceTime: 0
-  ntrials: 0
-  isIntertrail: 0
+  Num_Trials: 0
+  trialStimulated: 0
+  Joystick_Disabled: 0
+  phase_task_selecter: 0
   currPhase: 0
-  initialD: 0
   velocity: 0
   noise_SD: 0
   velocity_Noised: 0
-  player_origin: {x: 0, y: 0, z: 0}
+  player_trial_origin: {x: 0, y: 0, z: 0}
   particle_System: {fileID: 903295597}
   particle_System2: {fileID: 1402599323}
-  stimulating: 0
-  offset: -0.3
   DistFlowSpeed: 0
   DistFlowRot: 0
+  isStimulating: 0
   sbPacket: 
+  isCOM: 0
   isNormal: 0
   isStatic2FF: 0
   isCOM2FF: 0
-  isCOM: 0
+  isCOMtest: 0
 --- !u!114 &1242841537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2465,7 +2455,7 @@ PrefabInstance:
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -2480,12 +2470,12 @@ PrefabInstance:
     - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_ClearFlags
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -2495,12 +2485,12 @@ PrefabInstance:
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Depth
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_ClearFlags
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
