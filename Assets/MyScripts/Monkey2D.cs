@@ -425,7 +425,10 @@ public class Monkey2D : MonoBehaviour
         }
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
-        XRSettings.enabled = true;
+        foreach(XRDisplaySubsystem system in displaySubsystems)
+        {
+            system.Start();
+        }
 
         //Shared instance
         SharedMonkey = this;
