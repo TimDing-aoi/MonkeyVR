@@ -419,6 +419,8 @@ public class Monkey2D : MonoBehaviour
     int FF1index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FFTagetMatchList = new List<Tuple<float, float>>();
+    int trial_count = 0;
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -538,6 +540,7 @@ public class Monkey2D : MonoBehaviour
             FFcoordsList.Clear();
             ReadCoordCSV();
         }
+        ReadFFCoordDisc();
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
         COM2FFRatio = PlayerPrefs.GetFloat("COM2FF");
@@ -1414,6 +1417,9 @@ public class Monkey2D : MonoBehaviour
                 position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             }
             position.y = 0.0001f;
+            position.x = FFTagetMatchList[trial_count].Item1;
+            position.z = FFTagetMatchList[trial_count].Item2;
+            trial_count++;
             firefly.transform.position = position;
             ffPositions.Add(position);
         }
@@ -3339,6 +3345,27 @@ public class Monkey2D : MonoBehaviour
             float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
             New_Coord_Tuple = new Tuple<float, float>(x/10, y);
             FFcoordsList.Add(New_Coord_Tuple);
+        }
+    }
+
+    public void ReadFFCoordDisc()
+    {
+        StreamReader strReader = new StreamReader("C:\\Users\\lab\\Desktop\\data\\noises-stable\\proc.txt");
+        bool endoffile = false;
+        string data_string = strReader.ReadLine();
+        while (!endoffile)
+        {
+            data_string = strReader.ReadLine();
+            if (data_string == null)
+            {
+                break;
+            }
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[13], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[15], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            FFTagetMatchList.Add(New_Coord_Tuple);
         }
     }
 }
