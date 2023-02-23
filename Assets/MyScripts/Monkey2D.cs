@@ -1022,7 +1022,7 @@ public class Monkey2D : MonoBehaviour
             }
 
             print(string.Format("trial elapsed: {0}", tNow - startTime));
-            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle && !trialStimulated)
+            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !trialStimulated)
             {
                 trialStimulated = true;
                 float stimr = (float)rand.NextDouble();
