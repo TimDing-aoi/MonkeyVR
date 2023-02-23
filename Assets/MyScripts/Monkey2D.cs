@@ -1193,9 +1193,8 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.ProcessNoiseFlag)
-            {
-                sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+
+            var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}",
                     trial,
                     (double)Time.realtimeSinceStartup - timeProgStart,
                     epoch,
@@ -1223,18 +1222,9 @@ public class Monkey2D : MonoBehaviour
                     RawX,
                     RawY,
                     ObsLinNoise,
-                    ObsAngNoise));
-            }
-            else
-            {
-                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29}",
-                        trial, (double)Time.realtimeSinceStartup - timeProgStart, epoch, onoff, position, rotation,
-                        linear, angular, FFposition, FFlinear, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, ObsLinNoise, ObsAngNoise);                
-                
-                sb.AppendLine(lllin);
-            }
+                    ObsAngNoise);
+
+            sb.AppendLine(lllin);
         }
     }
 
