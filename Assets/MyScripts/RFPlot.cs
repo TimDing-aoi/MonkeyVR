@@ -264,7 +264,7 @@ public class RFPlot : MonoBehaviour
                 //SendMarker("j", juiceTime);
                 if (tNow - tPrev > juiceTime / 1000.0f)
                 {
-                    wait = i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
+                    wait = 2;// i_lambda * Mathf.Exp(-i_lambda * ((float)rand.NextDouble() * (i_max - i_min) + i_min));
 
                     Debug.Log("ITI: " + wait + "s");
                     phase = Phases.ITI;
