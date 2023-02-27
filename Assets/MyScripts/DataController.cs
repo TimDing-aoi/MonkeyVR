@@ -182,10 +182,8 @@ namespace PupilLabs
                     var ObsAngNoise = SharedMonkey.DistFlowRot;
                     if (flagMultiFF)
                     {
-                        foreach (Vector3 pos in SharedMonkey.ffPositions)
-                        {
-                            FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
-                        }
+                        FFposition = SharedMonkey.ffPositions[0].ToString("F5").Trim('(', ')').Replace(" ", "");
+                        FFposition = string.Concat(FFposition, ",", SharedMonkey.ffPositions[1].ToString("F5").Trim('(', ')').Replace(" ", ""));
                     }
                     else
                     {
