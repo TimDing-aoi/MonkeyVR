@@ -1165,13 +1165,18 @@ public class Monkey2D : MonoBehaviour
             SendMarker("e", 1000.0f);
         }
 
-        if(currPhase == Phases.ITI){
-            rightMask.SetActive(true);
-            leftMask.SetActive(true);
-        }
-        else{
-            rightMask.SetActive(false);
-            leftMask.SetActive(false);
+        if (isCOM)
+        {
+            if (currPhase == Phases.ITI)
+            {
+                rightMask.SetActive(true);
+                leftMask.SetActive(true);
+            }
+            else
+            {
+                rightMask.SetActive(false);
+                leftMask.SetActive(false);
+            }
         }
 
         if (playing && tNow - tPrev > 0.001f)
