@@ -30,6 +30,7 @@ using System.Xml;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 using static JoystickMonke;
 using static Serial;
@@ -1323,9 +1324,28 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
+            bool isDiscrete = PlayerPrefs.GetInt("isDiscrete") == 1;
             Vector3 position;
-            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
-            float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+            float r;
+            float angle;
+            if (isDiscrete)
+            {
+                int num_lin = (int)PlayerPrefs.GetFloat("No_Linspace");
+                int num_rot = (int)PlayerPrefs.GetFloat("No_Rotspace");
+                float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
+                float[] rotspace = Enumerable.Range(0, num_rot).Select(i => minPhi + (maxPhi - minPhi) * i / (num_rot - 1)).ToArray();
+                int randomLin = rand.Next(1, num_lin + 1);
+                int randomRot = rand.Next(1, num_rot + 1);
+                r = linspace[randomLin - 1];
+                angle = rotspace[randomRot - 1];
+                print(r);
+                print(angle);
+            }
+            else
+            {
+                r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
+                angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+            }
             if (LR != 0.5f)
             {
                 float side = rand.NextDouble() < LR ? 1 : -1;

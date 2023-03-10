@@ -205,7 +205,7 @@ public class GoToSettings : MonoBehaviour
             {
                 if (children.gameObject.CompareTag("Setting"))
                 {
-                    if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
+                    if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM" || children.name == "isDiscrete")
                     {
                         UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                         bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
@@ -338,7 +338,7 @@ public class GoToSettings : MonoBehaviour
         try
         {
             if (obj.name == "Perturbation On" || obj.name == "Moving ON" || obj.name == "Feedback ON" || obj.name == "AboveBelow" || obj.name == "Full ON" || obj.name == "VertHor" || obj.name == "isAuto" || obj.name == "isProcessNoise"
-                || obj.name == "isColored" || obj.name == "isFFstimu" || obj.name == "isObsNoise" || obj.name == "isSM" || obj.name == "is2FFCOM")
+                || obj.name == "isColored" || obj.name == "isFFstimu" || obj.name == "isObsNoise" || obj.name == "isSM" || obj.name == "is2FFCOM" || obj.name == "isDiscrete")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }
@@ -773,7 +773,7 @@ public class GoToSettings : MonoBehaviour
                 {
                     if (children.gameObject.CompareTag("Setting"))
                     {
-                        if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM")
+                        if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM" || children.name == "isDiscrete")
                         {
                             UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
