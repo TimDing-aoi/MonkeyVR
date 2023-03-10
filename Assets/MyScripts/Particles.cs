@@ -136,7 +136,7 @@ public class Particles : MonoBehaviour
 
         if (density != prevDensity)
         {
-            print(density);
+            //print(density);
             changedensityflag = true;
             main.maxParticles = Mathf.RoundToInt(Mathf.Pow(dist, 2.0f) * Mathf.PI * density / t_height);
             var densityInCM = Mathf.FloorToInt(main.maxParticles / 10000.0f) < 1f ? main.maxParticles / 10000.0f : Mathf.FloorToInt(main.maxParticles / 10000.0f);

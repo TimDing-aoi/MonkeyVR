@@ -1022,7 +1022,7 @@ public class Monkey2D : MonoBehaviour
                 //ffPositions[1] = position;
             }
 
-            print(string.Format("trial elapsed: {0}", tNow - startTime));
+            //print(string.Format("trial elapsed: {0}", tNow - startTime));
             if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !trialStimulated)
             {
                 trialStimulated = true;
@@ -1331,15 +1331,15 @@ public class Monkey2D : MonoBehaviour
             if (isDiscrete)
             {
                 int num_lin = (int)PlayerPrefs.GetFloat("No_Linspace");
-                int num_rot = (int)PlayerPrefs.GetFloat("No_Rotspace");
+                int num_rot = (int)PlayerPrefs.GetFloat("No_Angspace");
                 float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
                 float[] rotspace = Enumerable.Range(0, num_rot).Select(i => minPhi + (maxPhi - minPhi) * i / (num_rot - 1)).ToArray();
                 int randomLin = rand.Next(1, num_lin + 1);
                 int randomRot = rand.Next(1, num_rot + 1);
                 r = linspace[randomLin - 1];
                 angle = rotspace[randomRot - 1];
-                print(r);
-                print(angle);
+                //print(r);
+                //print(angle);
             }
             else
             {
@@ -1389,7 +1389,7 @@ public class Monkey2D : MonoBehaviour
         }
         else if (isCOM)
         {
-            print(COMlambda);
+            //print(COMlambda);
             FF2delay = 1f;
         }
 
