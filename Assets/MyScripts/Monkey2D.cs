@@ -1026,7 +1026,7 @@ public class Monkey2D : MonoBehaviour
             {
                 if(COMmode == 1)
                 {
-                    FF2shown = true;
+                    /*FF2shown = true;
                     Vector3 position;
                     int FFindex = rand.Next(FFcoordsList.Count);
                     float r = FFcoordsList[FFindex].Item1;
@@ -1043,11 +1043,11 @@ public class Monkey2D : MonoBehaviour
                         position.y = 0.0001f;
                         pooledFF[1].transform.position = position;
                     }
-                    OnOff(pooledFF[1]);
+                    OnOff(pooledFF[1]);*/
                 }
                 else if(COMmode == 0)
                 {
-                    FF2shown = true;
+                    /*FF2shown = true;
                     float r;
                     float angle;
                     Vector3 position;
@@ -1087,7 +1087,7 @@ public class Monkey2D : MonoBehaviour
                         FFvisibleList.Clear();
                         OnOff(pooledFF[1]);
                         //ffPositions[1] = position;
-                    }
+                    }*/
                 }
                 else {
                     FF2shown = true;
@@ -2541,6 +2541,8 @@ public class Monkey2D : MonoBehaviour
             if (isCOM)
             {
                 temp.Add(COMtrialtype.Count);
+                temp.Add(FF1s.Count);
+                temp.Add(FF2s.Count);
             }
             foreach (int count in temp)
             {
