@@ -31,6 +31,7 @@ using UnityEngine.InputSystem;
 using System.IO.Ports;
 using System.Globalization;
 using PupilLabs;
+using System.Linq;
 
 public class Monkey2D : MonoBehaviour
 {
@@ -1300,6 +1301,7 @@ public class Monkey2D : MonoBehaviour
         currPhase = Phases.begin;
         isBegin = true;
 
+        bool isDiscrete = PlayerPrefs.GetInt("isDiscrete") == 1;
         if (isCOM)
         {
             Vector3 position;
@@ -1397,6 +1399,20 @@ public class Monkey2D : MonoBehaviour
             Vector3 position;
             float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
             float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+            if (isDiscrete)
+            {
+                int num_lin = (int)PlayerPrefs.GetFloat("No_Linspace");
+                int num_rot = (int)PlayerPrefs.GetFloat("No_Angspace");
+                float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
+                float[] rotspace = Enumerable.Range(0, num_rot).Select(i => minPhi + (maxPhi - minPhi) * i / (num_rot - 1)).ToArray();
+                int randomLin = rand.Next(1, num_lin + 1);
+                int randomRot = rand.Next(1, num_rot + 1);
+                r = linspace[randomLin - 1];
+                angle = rotspace[randomRot - 1];
+                print(r);
+                print(angle);
+            }
+
             if (LR != 0.5f)
             {
                 float side = rand.NextDouble() < LR ? 1 : -1;
@@ -1407,8 +1423,8 @@ public class Monkey2D : MonoBehaviour
                 position = (player.transform.position - new Vector3(0.0f, p_height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             }
             position.y = 0.0001f;
-            position.x = FFTagetMatchList[trial_count].Item1;
-            position.z = FFTagetMatchList[trial_count].Item2;
+            //position.x = FFTagetMatchList[trial_count].Item1;
+            //position.z = FFTagetMatchList[trial_count].Item2;
             trial_count++;
             firefly.transform.position = position;
             ffPositions.Add(position);
