@@ -258,13 +258,11 @@ public class JoystickMonke : MonoBehaviour
             USBJoystick = CTIJoystick.current;
         }
 
-        //load Akis PTB vars
+        //load PTB vars
         isCtrlDynamics = (int)PlayerPrefs.GetFloat("Acceleration_Control_Type") != 0;
         flagCtrlDynamics = (int)PlayerPrefs.GetFloat("Acceleration_Control_Type");
         meanDist = PlayerPrefs.GetFloat("MeanDistance");
         meanTime = PlayerPrefs.GetFloat("MeanTime");
-        //Used to be
-        //meanAngle = 3.0f * PlayerPrefs.GetFloat("Max Angle");
         meanAngle = PlayerPrefs.GetFloat("MeanAngle");
         minTau = PlayerPrefs.GetFloat("MinTau");
         maxTau = PlayerPrefs.GetFloat("MaxTau");
@@ -317,7 +315,7 @@ public class JoystickMonke : MonoBehaviour
 
         xcomp[count - 1] = 0;
 
-        //Akis PTB set up
+        //PTB set up
         kappa = Mathf.Exp(-1f / TauTau);
 
         switch (flagCtrlDynamics)
@@ -365,14 +363,10 @@ public class JoystickMonke : MonoBehaviour
                 moveY = (float.Parse(line[1]) - 511.5f) / 511.5f;
                 press = int.Parse(line[2]);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // It's gonna be the same exception everytime, but I'm purposely doing this.
-                // It's just that this code will read serial in faster than it's actually
-                // coming in so there'll be an error saying there's no object or something
-                // like that.
+                // read serial in faster with error
             }
-            //print(line);
         }
         else
         {
@@ -430,10 +424,7 @@ public class JoystickMonke : MonoBehaviour
             rawX = moveY;
             rawY = -moveX;
 
-            //print(CtrlDynamicsFlag);
-            //Akis PTB noise
-            //print(SharedMonkey.isAccelControlTrial);
-            //print(savedTau);
+            //PTB noise
             if (isCtrlDynamics)
             {
                 updateControlDynamics();
@@ -545,8 +536,6 @@ public class JoystickMonke : MonoBehaviour
             {
                 DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
                 DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
-                //print(DistFlowSpeed);
-                //print(DistFlowRot);
                 transform.position = transform.position + transform.forward * (currentSpeed + DistFlowSpeed) * Time.fixedDeltaTime;
                 transform.Rotate(0f, (currentRot + DistFlowRot) * Time.fixedDeltaTime, 0f);
             }
@@ -565,27 +554,7 @@ public class JoystickMonke : MonoBehaviour
 
     public void OnApplicationQuit()
     {
-        //string firstLine = "t,rawX,rawY,v,w,v_ptb,w_ptb";
 
-        //File.AppendAllText("C:/Users/jc10487/Documents/joydata.csv", firstLine + "\n");
-
-        //List<int> temp = new List<int>()
-        //{
-        //    t.Count,
-        //    rawX.Count,
-        //    rawY.Count,
-        //    v.Count,
-        //    w.Count,
-        //    vAddPtb.Count,
-        //    wAddPtb.Count
-        //};
-        //temp.Sort();
-
-        //for (int i = 0; i < temp[0]; i++)
-        //{
-        //    var line = string.Format("{0},{1},{2},{3},{4},{5},{6}", t[i], rawX[i], rawY[i], v[i], w[i], vAddPtb[i], wAddPtb[i]);
-        //    File.AppendAllText("C:/Users/jc10487/Documents/joydata.csv", line + "\n");
-        //}
     }
 
     private void calcPtbJoyTrial()
@@ -597,19 +566,14 @@ public class JoystickMonke : MonoBehaviour
         ptbJoyVelGain = (float) rand.NextDouble() * (GaussianPTBVMax - GaussianPTBVMin) + GaussianPTBVMin;
 
         //Angular
-        ptbJoyRotStart = ptbJoyVelStart;// (float)rand.NextDouble() * ptbJoyRotStartRange;
-        ptbJoyRotMu = ptbJoyVelMu;// ptbJoyRotStart + (ptbJoyRotLen / 2);
-        ptbJoyRotEnd = ptbJoyVelEnd;// ptbJoyRotStart + ptbJoyRotLen;
+        ptbJoyRotStart = ptbJoyVelStart;
+        ptbJoyRotMu = ptbJoyVelMu;
+        ptbJoyRotEnd = ptbJoyVelEnd;
         ptbJoyRotGain = (float)rand.NextDouble() * (GaussianPTBRMax - GaussianPTBRMin) + GaussianPTBRMin;
-
-        //timeCntPTBStart = 0.0f;
     }
 
     private float GaussianShapedPtb(float t, float mu, float sigma, float gain)
     {
-        //float sigma = 0.2f;
-        //float maxNum = (1.0f / Math.Sqrt(2.0f * sigma));// * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2));
-        //return (1.0f / Math.Sqrt(2.0f * sigma)) * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2));
         return (float) (gain * Math.Exp(-0.5f * Math.Pow((t - mu) / sigma, 2)));
     }
 
