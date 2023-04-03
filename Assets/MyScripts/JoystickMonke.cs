@@ -8,12 +8,18 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine.InputSystem.LowLevel;
 using static Monkey2D;
+using System.IO;
+using System.Globalization;
 
 public class JoystickMonke : MonoBehaviour
 {
     wrmhl joystick = new wrmhl();
 
     public bool usingArduino;
+
+    //Replay?
+    bool isReplay = false;
+    int framecount = 0;
 
     [Tooltip("SerialPort of your device.")]
     public string portName;
@@ -211,6 +217,7 @@ public class JoystickMonke : MonoBehaviour
     public float velbrakeThresh;
     public float rotbrakeThresh;
 
+    readonly List<Tuple<float, float>> XYInputList = new List<Tuple<float, float>>();
     // Start is called before the first frame update
     void Awake()
     {
@@ -237,6 +244,12 @@ public class JoystickMonke : MonoBehaviour
         GaussianPTBRMin = -GaussianPTBRMax;
 
         GaussianPTBRatio = PlayerPrefs.GetFloat("GaussianPTBRatio");
+
+        isReplay = PlayerPrefs.GetInt("isReplay") == 1;
+        if (isReplay)
+        {
+            ReadXYInputCont();
+        }
 
         ptbJoyVelStartRange = 1.0f;
         ptbJoyVelSigma = 0.2f;
@@ -370,9 +383,17 @@ public class JoystickMonke : MonoBehaviour
         }
         else
         {
-            moveX = -USBJoystick.x.ReadValue();
-            moveY = -USBJoystick.y.ReadValue();
-
+            if (isReplay)
+            {
+                moveX = 0;
+                moveY = 0;
+            }
+            else
+            {
+                moveX = -USBJoystick.x.ReadValue();
+                moveY = -USBJoystick.y.ReadValue();
+            }
+                
             //print(moveX);
 
             if (moveX < 0.0f)
@@ -420,6 +441,12 @@ public class JoystickMonke : MonoBehaviour
             float minR = PlayerPrefs.GetFloat("Minimum Firefly Distance");
             float maxR = PlayerPrefs.GetFloat("Maximum Firefly Distance");
 
+            if (isReplay)
+            {
+                moveX = -XYInputList[framecount].Item2;
+                moveY = XYInputList[framecount].Item1;
+                framecount++;
+            }
             //save filtered joystick X & Y
             rawX = moveY;
             rawY = -moveX;
@@ -843,5 +870,26 @@ public class JoystickMonke : MonoBehaviour
         prevRotObsZet = zeta;
 
         return result_speed;
+    }
+
+    public void ReadXYInputCont()
+    {
+        StreamReader strReader = new StreamReader(".\\replayXY.txt");
+        bool endoffile = false;
+        string data_string = strReader.ReadLine();
+        while (!endoffile)
+        {
+            data_string = strReader.ReadLine();
+            if (data_string == null)
+            {
+                break;
+            }
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[41], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[42], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            XYInputList.Add(New_Coord_Tuple);
+        }
     }
 }

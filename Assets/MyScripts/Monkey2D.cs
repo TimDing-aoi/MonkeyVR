@@ -370,9 +370,14 @@ public class Monkey2D : MonoBehaviour
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> FFTagetMatchList = new List<Tuple<float, float>>();
+    int trial_count = 0;
 
     //Human subject?
     bool isHuman = false;
+
+    //Replay?
+    bool isReplay = false;
 
     //On Start up, get gaze visualizer
     private void Awake()
@@ -438,6 +443,12 @@ public class Monkey2D : MonoBehaviour
         path = PlayerPrefs.GetString("Path");
         Num_Trials = (int)PlayerPrefs.GetFloat("Num_Trials");
         if (Num_Trials == 0) Num_Trials = 9999;
+        isReplay = PlayerPrefs.GetInt("isReplay") == 1;
+        if (isReplay)
+        {
+            ReadFFCoordDisc();
+            Num_Trials = FFTagetMatchList.Count + 1;
+        }
         seed = UnityEngine.Random.Range(1, 10000);
         rand = new System.Random(seed);
         Player_Height = PlayerPrefs.GetFloat("Player_Height");
@@ -872,9 +883,8 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.isCtrlDynamics)
-            {
-                sb_cont_data.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+            sb_cont_data.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
+                "{21},{22},{23},{24},{25},{26},{27}\n",
                     trial,
                     (double)Time.realtimeSinceStartup - programT0,
                     epoch,
@@ -903,17 +913,6 @@ public class Monkey2D : MonoBehaviour
                     RawY,
                     ObsLinNoise,
                     ObsAngNoise));
-            }
-            else
-            {
-                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29}",
-                        trial, (double)Time.realtimeSinceStartup - programT0, epoch, onoff, position, rotation,
-                        linear, angular, FFposition, FFlinear, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, ObsLinNoise, ObsAngNoise);                
-                
-                sb_cont_data.AppendLine(lllin);
-            }
         }
     }
 
@@ -1009,6 +1008,16 @@ public class Monkey2D : MonoBehaviour
                     FF_positions[i] = position;
                 } while (tooClose);
             }
+        }
+        else if (isReplay)
+        {
+            Vector3 position; 
+            position.y = 0.0001f;
+            position.x = FFTagetMatchList[trial_count].Item1;
+            position.z = FFTagetMatchList[trial_count].Item2;
+            firefly.transform.position = position;
+            trial_count++;
+            FF_positions.Add(position);
         }
         else
         {
@@ -2623,6 +2632,28 @@ public class Monkey2D : MonoBehaviour
             float y = float.Parse(data_values[1], CultureInfo.InvariantCulture.NumberFormat);
             New_Coord_Tuple = new Tuple<float, float>(x, y);
             FF2coordsList.Add(New_Coord_Tuple);
+        }
+    }
+
+    public void ReadFFCoordDisc()
+    {
+        StreamReader strReader = new StreamReader(".\\replayFF.txt");
+        bool endoffile = false;
+        string data_string = strReader.ReadLine();
+        while (!endoffile)
+        {
+            data_string = strReader.ReadLine();
+            if (data_string == null)
+            {
+                break;
+            }
+            var data_values = data_string.Split(',');
+            Tuple<float, float> New_Coord_Tuple;
+            float x = float.Parse(data_values[13], CultureInfo.InvariantCulture.NumberFormat);
+            float y = float.Parse(data_values[15], CultureInfo.InvariantCulture.NumberFormat);
+            New_Coord_Tuple = new Tuple<float, float>(x, y);
+            FFTagetMatchList.Add(New_Coord_Tuple);
+            print(New_Coord_Tuple);
         }
     }
 }

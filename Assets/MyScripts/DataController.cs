@@ -101,41 +101,6 @@ namespace PupilLabs
             {
                 if (!flagFFSceneLoaded)
                 {
-#if USING_NAN
-                    if (gazeDataNow != gazeNull)
-                    {
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n",
-                            calibrationController.status,
-                            (double)Time.realtimeSinceStartup,
-                            gazeDataNow.MappingContext,
-                            gazeDataNow.Confidence,
-                            calibrationController.targetIdx,
-                            calibrationController.mode,
-                            gazeDataNow.GazeDirection.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeDistance,
-                            gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", "")));
-                    }
-                    else
-                    {
-                        // "NaN"
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n",
-                            calibrationController.status,
-                            (double)Time.realtimeSinceStartup,
-                            "None",
-                            "Nan",
-                            calibrationController.targetIdx,
-                            calibrationController.mode,
-                            "NaN, NaN, NaN",
-                            "Nan",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN"));
-                    }
-#else
                     sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}\n",
                             calibrationController.trialNum,
                             calibrationController.status,
@@ -152,7 +117,6 @@ namespace PupilLabs
                             gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             calibrationController.LastMarker);
                     sb.Append(sbPacket);
-#endif
                 }
                 else
                 {
@@ -191,55 +155,9 @@ namespace PupilLabs
                     {
                         FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
                     }
-#if USING_NAN
-                    if (gazeDataNow != gazeNull)
-                    {
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
-                            trial,
-                            (double)Time.realtimeSinceStartup - timeProgStart,
-                            epoch,
-                            onoff,
-                            position,
-                            rotation,
-                            linear,
-                            angular,
-                            FFposition,
-                            FFlinear,
-                            gazeDataNow.MappingContext,
-                            gazeDataNow.Confidence,
-                            gazeDataNow.GazeDirection.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeDistance,
-                            gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", "")));
-                    }
-                    else
-                    {
-                        //"NaN"
-                        sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
-                            trial,
-                            (double)Time.realtimeSinceStartup - timeProgStart,
-                            epoch,
-                            onoff,
-                            position,
-                            rotation,
-                            linear,
-                            angular,
-                            FFposition,
-                            FFlinear,
-                            "None",
-                            "Nan",
-                            "NaN, NaN, NaN",
-                            "Nan",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN",
-                            "NaN, NaN, NaN"));
-                    }
-#else
                     flagRecording = true;
-                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22}," +
+                        "{23},{24},{25},{26},{27}\n",
                         trial,
                         (double)Time.realtimeSinceStartup - timeProgStart,
                         epoch,
@@ -269,11 +187,7 @@ namespace PupilLabs
                         ObsLinNoise,
                         ObsAngNoise);
                     sb.Append(sbPacket);
-#endif
                 }
-#if USING_NAN
-                gazeDataNow = gazeNull;
-#endif
             }
         }
         /// <summary>

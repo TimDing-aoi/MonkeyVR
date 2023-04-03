@@ -948,6 +948,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &26039373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2518,6 +2519,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &62727865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3011,6 +3013,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &69184250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3641,6 +3644,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &82897264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4454,6 +4458,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &96940042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4926,6 +4931,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &99839179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5132,6 +5138,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &104200198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5737,6 +5744,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &110360966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6701,6 +6709,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &124292100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7164,6 +7173,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &147733853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9373,6 +9383,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &182566355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9579,6 +9590,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &187132100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9615,6 +9627,80 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187132096}
+  m_CullTransparentMesh: 0
+--- !u!1 &190238127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 190238128}
+  - component: {fileID: 190238130}
+  - component: {fileID: 190238129}
+  m_Layer: 5
+  m_Name: Checkmark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &190238128
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190238127}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1716873436}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &190238129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190238127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &190238130
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190238127}
   m_CullTransparentMesh: 0
 --- !u!1 &192401115
 GameObject:
@@ -10234,6 +10320,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &203434176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10769,6 +10856,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &212739299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10995,6 +11083,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &215741420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11299,6 +11388,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &229189412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11626,6 +11716,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &238607874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11869,6 +11960,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &242391840
 GameObject:
   m_ObjectHideFlags: 0
@@ -12428,6 +12520,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &254156106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12924,6 +13017,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &261145714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13396,6 +13490,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &266255346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13602,6 +13697,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &267608497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13941,6 +14037,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &271315066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15091,6 +15188,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &289626089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15293,6 +15391,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &293772750
 GameObject:
   m_ObjectHideFlags: 0
@@ -15356,6 +15455,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &293772753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16442,6 +16542,84 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322151318}
   m_CullTransparentMesh: 0
+--- !u!1 &322935399
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322935400}
+  - component: {fileID: 322935402}
+  - component: {fileID: 322935401}
+  m_Layer: 5
+  m_Name: Label
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &322935400
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322935399}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 859480822}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 9, y: -0.5}
+  m_SizeDelta: {x: -28, y: -3}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &322935401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322935399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Toggle
+--- !u!222 &322935402
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322935399}
+  m_CullTransparentMesh: 0
 --- !u!1 &323897149
 GameObject:
   m_ObjectHideFlags: 0
@@ -16611,6 +16789,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &323897153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16946,6 +17125,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &332683405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17152,6 +17332,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &336773630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17541,6 +17722,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &348856502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17727,6 +17909,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &353001064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18136,6 +18319,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &360426090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18658,6 +18842,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &364326211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19841,6 +20026,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 403259280}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &386945676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20394,6 +20580,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 403259280}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &392314042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20951,6 +21138,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &397820980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21692,6 +21880,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &404616473
 GameObject:
   m_ObjectHideFlags: 0
@@ -21861,6 +22050,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &404616477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23050,6 +23240,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &429523259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23389,6 +23580,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &430822013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23595,6 +23787,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &435152473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24067,6 +24260,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &437544096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26077,6 +26271,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &486297509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26283,6 +26478,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &491470797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26753,7 +26949,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1446, y: 0.0000076293927}
+  m_AnchoredPosition: {x: 1288, y: 0.0000076293927}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &497980894
@@ -26851,6 +27047,139 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 497980892}
+  m_CullTransparentMesh: 0
+--- !u!1 &509176717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 509176718}
+  - component: {fileID: 509176720}
+  - component: {fileID: 509176719}
+  m_Layer: 5
+  m_Name: isReplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &509176718
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509176717}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -167}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_Children: []
+  m_Father: {fileID: 935944515}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1593, y: 0.0000076293927}
+  m_SizeDelta: {x: 400, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &509176719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509176717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Is Playing Replay?
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 1
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 82.9804, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &509176720
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509176717}
   m_CullTransparentMesh: 0
 --- !u!1 &509545409
 GameObject:
@@ -27374,6 +27703,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &519463220
 GameObject:
   m_ObjectHideFlags: 0
@@ -28506,6 +28836,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &550416383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28845,6 +29176,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &560894243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29731,6 +30063,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &574821922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30235,6 +30568,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &592524272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30871,6 +31205,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &606130654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31393,6 +31728,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &622798994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32044,6 +32380,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &642167636
 GameObject:
   m_ObjectHideFlags: 0
@@ -32945,6 +33282,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &676655156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33151,6 +33489,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &678092486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33606,6 +33945,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 403259280}
   isHumanToggle: {fileID: 1631850851}
+  isReplayToggle: {fileID: 859480821}
 --- !u!1 &684887760
 GameObject:
   m_ObjectHideFlags: 0
@@ -34385,6 +34725,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &704606133
 GameObject:
   m_ObjectHideFlags: 0
@@ -34876,6 +35217,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &709715481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35328,6 +35670,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &719362388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35820,6 +36163,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &729467168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36159,6 +36503,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &731777880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36439,6 +36784,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &735469025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36716,6 +37062,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &750891668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37218,6 +37565,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &752988949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37710,6 +38058,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &760312716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38415,6 +38764,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &795724324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38887,6 +39237,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &812127440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40356,6 +40707,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &859454919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40415,6 +40767,136 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 859454918}
         m_MethodName: SwitchVel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 1
+--- !u!1 &859480821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 859480822}
+  - component: {fileID: 859480824}
+  - component: {fileID: 859480823}
+  m_Layer: 5
+  m_Name: isReplay
+  m_TagString: Setting
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &859480822
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859480821}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -170}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 2}
+  m_Children:
+  - {fileID: 1716873436}
+  - {fileID: 322935400}
+  m_Father: {fileID: 935944515}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1775, y: 0}
+  m_SizeDelta: {x: 30, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &859480823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859480821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402af3613f23f3e43a939ca20b0ee80e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainMenuCanvas: {fileID: 0}
+  SettingsCanvas: {fileID: 0}
+  obj: {fileID: 859480821}
+  MenuButtons: {fileID: 0}
+  GeneralMenu: {fileID: 0}
+  OthersMenu: {fileID: 0}
+  NoisesMenu: {fileID: 0}
+  errormsg: {fileID: 0}
+  isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
+--- !u!114 &859480824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859480821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1716873437}
+  toggleTransition: 1
+  graphic: {fileID: 190238129}
+  m_Group: {fileID: 0}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 859480823}
+        m_MethodName: saveSetting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 859480823}
+        m_MethodName: SwitchPtb
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -40630,6 +41112,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &862705792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41301,6 +41784,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &875413352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43244,6 +43728,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &911662578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43923,6 +44408,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &931213497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44150,6 +44636,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &931951622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44298,6 +44785,8 @@ Transform:
   - {fileID: 443883116}
   - {fileID: 1631850852}
   - {fileID: 497980893}
+  - {fileID: 859480822}
+  - {fileID: 509176718}
   m_Father: {fileID: 478170141}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44416,6 +44905,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &939499174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44755,6 +45245,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &948180940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45011,6 +45502,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &954341744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45690,6 +46182,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &962781414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45917,6 +46410,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &965557534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46256,6 +46750,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &974858946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47389,6 +47884,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 403259280}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &995719561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48813,6 +49309,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1015965498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50006,6 +50503,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1049071024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50212,6 +50710,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1049309515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52490,6 +52989,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1114886680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53032,6 +53532,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1117620217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53421,6 +53922,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1128651515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53835,6 +54337,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1136640010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55155,6 +55658,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1158689551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55361,6 +55865,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1164478656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55646,6 +56151,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1168432070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55825,6 +56331,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1171173182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56072,6 +56579,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1171264933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56747,6 +57255,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1184539078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58526,6 +59035,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1233305942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58732,6 +59242,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1236248164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59121,6 +59632,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1238201979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59460,6 +59972,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1249305806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59666,6 +60179,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1250095855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61258,6 +61772,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1282886644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62286,6 +62801,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1294234713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62778,6 +63294,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1298646163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62878,6 +63395,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1306125644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63686,6 +64204,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1314910965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64895,6 +65414,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1352427556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65101,6 +65621,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1366009027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66246,6 +66767,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1382101755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66502,6 +67024,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1385396111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66841,6 +67364,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1408366353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67437,6 +67961,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1415592835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67643,6 +68168,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1416767027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67849,6 +68375,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1420468060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68348,6 +68875,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1435336121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68737,6 +69265,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1443661154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68943,6 +69472,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1447814847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69282,6 +69812,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1452684580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69986,6 +70517,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1461544877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70380,6 +70912,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1470956570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70586,6 +71119,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1472379973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71477,6 +72011,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1502195154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72260,6 +72795,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1523541478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72732,6 +73268,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1543489345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73416,6 +73953,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1553354987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73602,6 +74140,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1554486880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74608,6 +75147,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1574172044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74814,6 +75354,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1575638486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75384,6 +75925,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &1588261479
 GameObject:
   m_ObjectHideFlags: 0
@@ -76484,6 +77026,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1626675899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76557,7 +77100,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1628, y: 0}
+  m_AnchoredPosition: {x: 1470, y: 0}
   m_SizeDelta: {x: 30, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1631850853
@@ -76581,6 +77124,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1631850854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76819,6 +77363,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1639446604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77574,6 +78119,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1658812854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78477,6 +79023,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1683446808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78891,6 +79438,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1689172327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79895,6 +80443,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1712642674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79992,6 +80541,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1716821536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80050,6 +80600,81 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_IsOn: 1
+--- !u!1 &1716873435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1716873436}
+  - component: {fileID: 1716873438}
+  - component: {fileID: 1716873437}
+  m_Layer: 5
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1716873436
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716873435}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 190238128}
+  m_Father: {fileID: 859480822}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 10, y: -10}
+  m_SizeDelta: {x: 20, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1716873437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716873435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1716873438
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716873435}
+  m_CullTransparentMesh: 0
 --- !u!1 &1722717882
 GameObject:
   m_ObjectHideFlags: 0
@@ -80256,6 +80881,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &1723889726
 GameObject:
   m_ObjectHideFlags: 0
@@ -80556,6 +81182,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1726474369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82077,6 +82704,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1766906030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82599,6 +83227,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1771352978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83353,6 +83982,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1789290380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83610,6 +84240,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1799100338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83914,6 +84545,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1803780817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84386,6 +85018,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1807610314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84986,6 +85619,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1821667716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85687,6 +86321,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 403259280}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1840600540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85993,6 +86628,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1849744926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86323,6 +86959,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1862025182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86550,6 +87187,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1863122055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87122,6 +87760,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1868439871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88071,6 +88710,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1888952647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88277,6 +88917,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1890299401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89356,6 +89997,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1904968122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89562,6 +90204,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1905545832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89768,6 +90411,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1905692301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90087,6 +90731,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1908382283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90812,6 +91457,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1922058223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91683,6 +92329,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1934649671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92629,6 +93276,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1947338636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92889,6 +93537,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1950137247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93115,6 +93764,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1958123970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94240,6 +94890,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!1 &1975610450
 GameObject:
   m_ObjectHideFlags: 0
@@ -94991,6 +95642,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &1993904440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95675,6 +96327,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2003906237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96524,6 +97177,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2020584824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96792,6 +97446,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2038636074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97019,6 +97674,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2041815182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97964,6 +98620,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2067610688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98170,6 +98827,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2068890918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99008,6 +99666,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2080201511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99293,6 +99952,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 395900389}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2084639327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100105,6 +100765,7 @@ MonoBehaviour:
   NoisesMenu: {fileID: 0}
   errormsg: {fileID: 0}
   isHumanToggle: {fileID: 0}
+  isReplayToggle: {fileID: 0}
 --- !u!114 &2107256057
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,6 +20,7 @@ public class GoToSettings : MonoBehaviour
     public GameObject NoisesMenu;
     public GameObject errormsg;
     public GameObject isHumanToggle;
+    public GameObject isReplayToggle;
     private TMP_InputField GUI_input;
 
     // Start is called before the first frame update
@@ -47,6 +48,9 @@ public class GoToSettings : MonoBehaviour
         UnityEngine.UI.Toggle humantoggle = isHumanToggle.GetComponent<UnityEngine.UI.Toggle>();
         bool isHumanSaved = PlayerPrefs.GetInt("isHuman") == 1;
         humantoggle.isOn = isHumanSaved;
+        UnityEngine.UI.Toggle replaytoggle = isReplayToggle.GetComponent<UnityEngine.UI.Toggle>();
+        bool isReplaySaved = PlayerPrefs.GetInt("isReplay") == 1;
+        replaytoggle.isOn = isReplaySaved;
 
         GeneralMenu.SetActive(true);
         foreach (Transform child in GeneralMenu.transform)
@@ -202,7 +206,7 @@ public class GoToSettings : MonoBehaviour
         {
             if (obj.name == "GaussianPTB" || obj.name == "isFlashing"
                 || obj.name == "is2FFCOM" || obj.name == "isColored" || obj.name == "isSM" || obj.name == "isFFstimu" || obj.name == "isMoving" || obj.name == "isLeftRightnotForBack"
-                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor" || obj.name == "isHuman")
+                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor" || obj.name == "isHuman" || obj.name == "isReplay")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }
