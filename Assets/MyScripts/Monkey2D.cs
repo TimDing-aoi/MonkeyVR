@@ -347,9 +347,10 @@ public class Monkey2D : MonoBehaviour
     public ParticleSystem particle_System;
     public ParticleSystem particle_System2;
     private bool isObsNoise;
+    public bool isProcessNoise;
     private float ObsNoiseTau;
-    private float ObsVelocityNoiseGain;
-    private float ObsRotationNoiseGain;
+    public float ObsVelocityNoiseGain;
+    public float ObsRotationNoiseGain;
     private float ObsDensityRatio;
 
     private int loopCount = 0;
@@ -535,13 +536,14 @@ public class Monkey2D : MonoBehaviour
         ObsDensityRatio = PlayerPrefs.GetFloat("ObsDensityRatio");
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
         isCOM = PlayerPrefs.GetInt("is2FFCOM") == 1;
+        isProcessNoise = PlayerPrefs.GetInt("isProcessNoise") == 1;
         if (isCOM)
         {
             nFF = 2;
             FFcoordsList.Clear();
             ReadCoordCSV();
         }
-        ReadFFCoordDisc();
+        //ReadFFCoordDisc();
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
         COM2FFRatio = PlayerPrefs.GetFloat("COM2FF");
@@ -1248,6 +1250,39 @@ public class Monkey2D : MonoBehaviour
     {
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
+
+        int randomNumber = rand.Next(1, 5); // Generates a random integer between 1 and 4 (inclusive)
+
+        switch (randomNumber)
+        {
+            case 1:
+                Console.WriteLine("Case 1");
+                isProcessNoise = false;
+                ObsVelocityNoiseGain = 0;
+                ObsRotationNoiseGain = 0;
+                break;
+            case 2:
+                Console.WriteLine("Case 2");
+                isProcessNoise = false;
+                ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
+                ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
+                break;
+            case 3:
+                Console.WriteLine("Case 3");
+                isProcessNoise = true;
+                ObsVelocityNoiseGain = 0;
+                ObsRotationNoiseGain = 0;
+                break;
+            case 4:
+                Console.WriteLine("Case 4");
+                isProcessNoise = true;
+                ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
+                ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
+                break;
+            default:
+                Console.WriteLine("Invalid case");
+                break;
+        }
 
         SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
         SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);

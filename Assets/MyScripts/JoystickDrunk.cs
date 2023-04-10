@@ -61,7 +61,8 @@ public class JoystickDrunk : MonoBehaviour
 
     void Update()
     {
-
+        ObsRotationNoiseGain = SharedMonkey.ObsRotationNoiseGain;
+        ObsVelocityNoiseGain = SharedMonkey.ObsVelocityNoiseGain;
     }
 
 

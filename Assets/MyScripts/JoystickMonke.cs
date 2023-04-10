@@ -610,7 +610,7 @@ public class JoystickMonke : MonoBehaviour
 
     void Update()
     {
-
+        ProcessNoiseFlag = SharedMonkey.isProcessNoise;
     }
 
     public void OnApplicationQuit()
