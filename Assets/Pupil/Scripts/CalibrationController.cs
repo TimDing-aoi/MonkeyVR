@@ -129,8 +129,7 @@ namespace PupilLabs
         {
             none = 0,
             Trial = 1,
-            Stimulation = 2,
-            Reward = 3,
+            Gap = 2,
             ITI = 4
         }
         [HideInInspector] public MicroStimuF MicroStimuFlag = MicroStimuF.none;
@@ -730,6 +729,9 @@ namespace PupilLabs
             float gazeY = gazeVisualizer.projectionMarker.position.y;
 
             print(tTotalFix);
+            float stimu_total = StimuGap + StimuStimuDur;
+            float reward_total = RewardGap + StimuRewardDur * 0.001f;
+            float largerGap = Math.Max(stimu_total, reward_total);
 
             //fix time not enough AND not time out AND ITI ended
             if (tNow - tBlockStart <= 3f)
@@ -774,63 +776,65 @@ namespace PupilLabs
                     StimuGapTime.Add(StimuGap);
                 }
             }
-            else if(tNow - tLastTrial < StimuGap && tTotalFix >= RewardThresh)
+            else if (tNow - tLastTrial < largerGap && tTotalFix >= RewardThresh)
             {
-                print("stimu gap");
+                //Trial ended
+                print("gap");
+                MicroStimuFlag = MicroStimuF.Gap;
                 previewMarkers[4].SetActive(false);
+                previewMarkers[2].SetActive(false);
                 marker.gameObject.SetActive(false);
                 window.SetActive(false);
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                MicroStimuFlag = MicroStimuF.Trial;
-                //stimulation gap time
-            }
-            //Trial ended
-            else if(MicroStimuFlag == MicroStimuF.Trial && tTotalFix >= RewardThresh)
-            {
-                print("stimu");
-                StimuStartTime.Add(tNow);
-                MicroStimuFlag = MicroStimuF.Stimulation;
-                SendMarker("m", StimuStimuDur * 1000.0f);
-                LastMarker = 5;
-                tLastStimu = tNow;
-                AudioSource.clip = StimuTest;
-                AudioSource.Play();
-                //previewMarkers[2].SetActive(true);
-            }
-            else if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
-            {
-                flagStimu = true;
-                LastMarker = 5;
-            }
-            else if (tNow - tLastStimu < StimuStimuDur + RewardGap && tTotalFix >= RewardThresh)
-            {
-                previewMarkers[4].SetActive(false);
-                previewMarkers[2].SetActive(false);
-                flagStimu = false;
-                print("reward gap");
-                //reward gap time
-            }
-            //stimulation ended
-            else if(MicroStimuFlag == MicroStimuF.Stimulation)
-            {
-                print("reward");
-                MicroStimuFlag = MicroStimuF.Reward;
-                //if gazed enough time give reward
-                if (tTotalFix >= RewardThresh)
+
+                //Stimulation Happens
+                if (tNow - tLastTrial > StimuGap && tLastTrial - tLastStimu < 0 && tTotalFix >= RewardThresh)
                 {
-                    SendMarker("j", StimuRewardDur);
-                    LastMarker = 4;
-                    numCorrect++;
+                    StimuStartTime.Add(tNow);
+                    SendMarker("m", StimuStimuDur * 1000.0f);
+                    LastMarker = 5;
+                    tLastStimu = tNow;
+                    AudioSource.clip = StimuTest;
+                    AudioSource.Play();
                 }
 
-                rewardStartTime.Add(tNow);
-                rewarder = true;
+                //Stimulating
+                if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
+                {
+                    flagStimu = true;
+                }
+                else
+                {
+                    flagStimu = false;
+                }
 
-                print(string.Format("trial {0} complete", trialNum));
-                print(string.Format("Going to the next trial."));
-
+                //Reward Happens
+                if (tNow - tLastTrial > RewardGap && tLastTrial - tLastStimu < 0 && tTotalFix >= RewardThresh)
+                {
+                    print("reward");
+                    //if gazed enough time give reward
+                    if (tTotalFix >= RewardThresh)
+                    {
+                        SendMarker("j", StimuRewardDur);
+                        LastMarker = 4;
+                        numCorrect++;
+                    }
+                    rewardStartTime.Add(tNow);
+                    rewarder = true;
+                    tLastReward = tNow;
+                }
+                
+                //Rewarding
+                if (tNow - tLastReward < StimuRewardDur * 0.001)
+                {
+                    flagReward = true;
+                    LastMarker = 4;
+                }
+            }
+            else if (tNow - tLastITI > largerGap && MicroStimuFlag == MicroStimuF.Gap || 
+                tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
+            {
                 tTotalFix = 0.0f;
-
                 if (trialNum <= TotalTrials)
                 {
                     trialNumber.Add(trialNum);
@@ -839,15 +843,6 @@ namespace PupilLabs
 
                     UpdatePosition();
                 }
-            }
-            else if (tNow - tLastITI < StimuRewardDur * 0.001)
-            {
-                flagReward = true;
-                LastMarker = 4;
-            }
-            else if (tNow - tLastITI < StimuRewardDur * 0.001 + StimuITI && MicroStimuFlag == MicroStimuF.Reward || 
-                tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
-            {
                 flagReward = false;
                 if (endMarkerFlag == false && rewarder)
                 {
