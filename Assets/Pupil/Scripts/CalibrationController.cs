@@ -69,6 +69,7 @@ namespace PupilLabs
         float tLastTrial = 0;
         float tLastStimu = 0;
         float tLastReward = 0;
+        float tLastGap = 0;
         float tStartITI = 0;
         float tLastITI = 0;
         float tTotalFix = 0;
@@ -95,7 +96,6 @@ namespace PupilLabs
         readonly List<float> endTime = new List<float>();
 
         private float beginTimer = 0;
-        private bool rewarder = false;
 
         bool previewMarkersActive = false;
 
@@ -122,7 +122,8 @@ namespace PupilLabs
         [HideInInspector] public bool flagReward = false;
         [HideInInspector] public bool flagStimu = false;
         [HideInInspector] public bool flagStimulation = false;
-        bool flagFailed = false;
+        bool trial_stimulated = false;
+        bool trial_rewarded = false;
 
         [HideInInspector]
         public enum MicroStimuF
@@ -130,7 +131,8 @@ namespace PupilLabs
             none = 0,
             Trial = 1,
             Gap = 2,
-            ITI = 4
+            ITI = 4,
+            WarmUp = 5
         }
         [HideInInspector] public MicroStimuF MicroStimuFlag = MicroStimuF.none;
         [HideInInspector]
@@ -190,7 +192,6 @@ namespace PupilLabs
             calibration.OnCalibrationSucceeded += CalibrationSucceeded;
             calibration.OnCalibrationFailed += CalibrationFailed;
             status = Status.none;
-            MicroStimuFlag = MicroStimuF.ITI;
 
             isAuto = PlayerPrefs.GetInt("isAuto") == 1;
             juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
@@ -740,9 +741,9 @@ namespace PupilLabs
                 tTotalFix = 0;
                 tLastITI = tNow;
                 tLastTrial = tNow;
-                MicroStimuFlag = MicroStimuF.ITI;
+                MicroStimuFlag = MicroStimuF.WarmUp;
             }
-            else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.ITI)
+            else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.Trial || MicroStimuFlag == MicroStimuF.WarmUp)
             {
                 if (startMarkerFlag == false)
                 {
@@ -780,6 +781,7 @@ namespace PupilLabs
             {
                 //Trial ended
                 print("gap");
+                tLastGap = tNow;
                 MicroStimuFlag = MicroStimuF.Gap;
                 previewMarkers[4].SetActive(false);
                 previewMarkers[2].SetActive(false);
@@ -788,8 +790,10 @@ namespace PupilLabs
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
                 //Stimulation Happens
-                if (tNow - tLastTrial > StimuGap && tLastTrial - tLastStimu < 0 && tTotalFix >= RewardThresh)
+                if (tNow - tLastTrial > StimuGap && !trial_stimulated && tTotalFix >= RewardThresh)
                 {
+                    print("stimu");
+                    trial_stimulated = true;
                     StimuStartTime.Add(tNow);
                     SendMarker("m", StimuStimuDur * 1000.0f);
                     LastMarker = 5;
@@ -809,18 +813,15 @@ namespace PupilLabs
                 }
 
                 //Reward Happens
-                if (tNow - tLastTrial > RewardGap && tLastTrial - tLastStimu < 0 && tTotalFix >= RewardThresh)
+                //if gazed enough time give reward
+                if (tNow - tLastTrial > RewardGap && trial_rewarded && tTotalFix >= RewardThresh)
                 {
                     print("reward");
-                    //if gazed enough time give reward
-                    if (tTotalFix >= RewardThresh)
-                    {
-                        SendMarker("j", StimuRewardDur);
-                        LastMarker = 4;
-                        numCorrect++;
-                    }
+                    trial_rewarded = true;
+                    SendMarker("j", StimuRewardDur);
+                    LastMarker = 4;
+                    numCorrect++;
                     rewardStartTime.Add(tNow);
-                    rewarder = true;
                     tLastReward = tNow;
                 }
                 
@@ -831,9 +832,10 @@ namespace PupilLabs
                     LastMarker = 4;
                 }
             }
-            else if (tNow - tLastITI > largerGap && MicroStimuFlag == MicroStimuF.Gap || 
-                tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh && MicroStimuFlag == MicroStimuF.ITI)
+            //ITI
+            else if (tNow - tLastGap < StimuITI && trial_rewarded || tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh)
             {
+                MicroStimuFlag = MicroStimuF.ITI;
                 tTotalFix = 0.0f;
                 if (trialNum <= TotalTrials)
                 {
@@ -844,7 +846,7 @@ namespace PupilLabs
                     UpdatePosition();
                 }
                 flagReward = false;
-                if (endMarkerFlag == false && rewarder)
+                if (endMarkerFlag == false && trial_rewarded)
                 {
                     SendMarker("e", 1000.0f);
                     beginTime.Add(beginTimer);
@@ -862,6 +864,8 @@ namespace PupilLabs
             else
             {
                 endMarkerFlag = false;
+                trial_rewarded = false;
+                trial_stimulated = false;
                 print("Next trial.");
                 FixationTime.Add(RewardThresh);
                 RewardThresh = (float)(RewardThreshMin + random.NextDouble() * (RewardThreshMax - RewardThreshMin));
@@ -870,7 +874,7 @@ namespace PupilLabs
                 tLastTrial = tNow;
                 StimuGap = 0;
                 tTotalFix = 0;
-                MicroStimuFlag = MicroStimuF.ITI;
+                MicroStimuFlag = MicroStimuF.Trial;
                 SendMarker("s", 1000.0f);
                 LastMarker = 2;
                 beginTimer = Time.time;
@@ -977,7 +981,6 @@ namespace PupilLabs
             autoIdx = 0;
 
             flagReward = false;
-            flagFailed = false;
 
             UpdatePosition();
 
@@ -1150,7 +1153,6 @@ namespace PupilLabs
 
                         flagCalibrating = !flagCalibrating;
                         flagReward = false;
-                        flagFailed = false;
                     }
                 }
             }
