@@ -745,6 +745,7 @@ namespace PupilLabs
             }
             else if (tTotalFix <= RewardThresh && tNow - tLastITI <= StimuTrialDur && MicroStimuFlag == MicroStimuF.Trial || MicroStimuFlag == MicroStimuF.WarmUp)
             {
+                MicroStimuFlag = MicroStimuF.Trial;
                 if (startMarkerFlag == false)
                 {
                     trialNum++;
@@ -790,7 +791,7 @@ namespace PupilLabs
                 window.gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
                 //Stimulation Happens
-                if (tNow - tLastTrial > StimuGap && !trial_stimulated && tTotalFix >= RewardThresh)
+                if (tNow - tLastTrial > StimuGap && !trial_stimulated)
                 {
                     print("stimu");
                     trial_stimulated = true;
@@ -803,7 +804,7 @@ namespace PupilLabs
                 }
 
                 //Stimulating
-                if (tNow - tLastStimu < StimuStimuDur && tTotalFix >= RewardThresh)
+                if (tNow - tLastStimu < StimuStimuDur)
                 {
                     flagStimu = true;
                 }
@@ -814,7 +815,7 @@ namespace PupilLabs
 
                 //Reward Happens
                 //if gazed enough time give reward
-                if (tNow - tLastTrial > RewardGap && trial_rewarded && tTotalFix >= RewardThresh)
+                if (tNow - tLastTrial > RewardGap && !trial_rewarded)
                 {
                     print("reward");
                     trial_rewarded = true;
@@ -829,13 +830,18 @@ namespace PupilLabs
                 if (tNow - tLastReward < StimuRewardDur * 0.001)
                 {
                     flagReward = true;
-                    LastMarker = 4;
+                }
+                else
+                {
+                    flagReward = false;
                 }
             }
             //ITI
             else if (tNow - tLastGap < StimuITI && trial_rewarded || tNow - tLastTrial < StimuITI && tTotalFix < RewardThresh)
             {
                 MicroStimuFlag = MicroStimuF.ITI;
+                flagStimu = false;
+                flagReward = false;
                 tTotalFix = 0.0f;
                 if (trialNum <= TotalTrials)
                 {
