@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Monkey2D;
 using static JoystickMonke;
+using static ToggleGUI;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +36,7 @@ namespace PupilLabs
         GazeData gazeNull;
         Dictionary<string, object> nullGaze = new Dictionary<string, object>();
         StringBuilder sb = new StringBuilder();
+        StringBuilder extrasb = new StringBuilder();
         object[] zero2d = new object[2] { 0.0, 0.0 };
         object[] zero3d = new object[3] { 0.0, 0.0, 0.0 };
         bool flagFFSceneLoaded = false;
@@ -50,6 +52,7 @@ namespace PupilLabs
 
         [HideInInspector]
         public string sbPacket;
+        public bool extraRecording = false;
         void OnEnable()
         {
             dataController = this;
@@ -96,7 +99,22 @@ namespace PupilLabs
             {
                 await new WaitForSeconds(Time.fixedDeltaTime - Time.fixedTime);
             }
-
+            if (extraRecording)
+            {
+                int marker = guiref.marker;
+                sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9}\n",
+                            (double)Time.time,
+                            gazeDataNow.MappingContext,
+                            gazeDataNow.Confidence,
+                            gazeVisualizer.projectionMarker.position.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeDataNow.GazeDistance,
+                            gazeDataNow.EyeCenter0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
+                            marker);
+                extrasb.Append(sbPacket);
+            }
             if (flagPlaying && !calibrationController.IsCalibrating && calibrationController.subsCtrl.IsConnected)
             {
                 if (!flagFFSceneLoaded)
@@ -367,9 +385,22 @@ namespace PupilLabs
             }
         }
 
-        private void OnApplicationQuit()
+        public void startExtraRecording()
         {
-            // TODO: save data on quit
+            extrasb.Clear();
+            PlayerPrefs.SetInt("Extra Run Number", PlayerPrefs.GetInt("Extra Run Number")+1);
+            extrasb.Append("Timestamp,Mapping Context,Confidence,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY" +
+                ",CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " +
+                PlayerPrefs.GetInt("Extra Run Number").ToString("D3") + "\n");
+            extraRecording = true;
+        }
+
+        public void stopExtraRecording()
+        {
+            var path = PlayerPrefs.GetString("Path") + "\\extra_continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
+                PlayerPrefs.GetInt("Extra Run Number").ToString("D3") + ".txt";
+            File.AppendAllText(path, extrasb.ToString());
+            extraRecording = false;
         }
     }
 }
