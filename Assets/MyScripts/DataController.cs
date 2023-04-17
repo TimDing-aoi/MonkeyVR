@@ -388,17 +388,16 @@ namespace PupilLabs
         public void startExtraRecording()
         {
             extrasb.Clear();
-            PlayerPrefs.SetInt("Extra Run Number", PlayerPrefs.GetInt("Extra Run Number")+1);
             extrasb.Append("Timestamp,Mapping Context,Confidence,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY" +
                 ",CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " +
-                PlayerPrefs.GetInt("Extra Run Number").ToString("D3") + "\n");
+                PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + "\n");
             extraRecording = true;
         }
 
         public void stopExtraRecording()
         {
             var path = PlayerPrefs.GetString("Path") + "\\extra_continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
-                PlayerPrefs.GetInt("Extra Run Number").ToString("D3") + ".txt";
+                PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
             File.AppendAllText(path, extrasb.ToString());
             extraRecording = false;
         }

@@ -64,12 +64,14 @@ public class ToggleGUI : MonoBehaviour
                     dataController.startExtraRecording();
                     recordingText = "Recording";
                     print("Start Recording");
+                    stimgui.SetActive(false);
                 }
                 else
                 {
                     dataController.stopExtraRecording();
                     recordingText = "Start Recording";
                     print("Stop Recording");
+                    stimgui.SetActive(true);
                 }
             }
 

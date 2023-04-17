@@ -368,10 +368,10 @@ public class UICallback : MonoBehaviour
     {
         StringBuilder stimConf = new StringBuilder();
         string path = PlayerPrefs.GetString("Path");
-        int runnum = PlayerPrefs.GetInt("StimParam");
-        PlayerPrefs.SetInt("StimParam", runnum + 1);
+        int runnum = PlayerPrefs.GetInt("RecordingNumber");
+        PlayerPrefs.SetInt("RecordingNumber", runnum + 1);
         string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
-            PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("StimParam") + ".txt";
+            PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber") + ".txt";
         stimConf.AppendLine("MonkeyName,Date,RunNumber,StimAmplitude,StimDur");
         stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
             + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
