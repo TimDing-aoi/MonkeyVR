@@ -26,8 +26,11 @@
     <reward_zone_radius>10</reward_zone_radius>
     <minDrawDistance>10</minDrawDistance>
     <maxDrawDistance>40</maxDrawDistance>
-    <minPhi>-30</minPhi>
+    <minPhi>0</minPhi>
     <maxPhi>30</maxPhi>
+    <minPhi2>-30</minPhi2>
+    <maxPhi2>0</maxPhi2>
+    <ratiophi>0.5</ratiophi>
     <minJuiceTime>0</minJuiceTime>
     <maxJuiceTime>0</maxJuiceTime>
     <ratio_always_on>0.1</ratio_always_on>
