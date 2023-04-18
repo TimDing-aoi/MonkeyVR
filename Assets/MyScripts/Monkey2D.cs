@@ -48,8 +48,9 @@ public class Monkey2D : MonoBehaviour
     //Min/max angle from forward(y) axis FF can spawn
     public float minPhi;
     public float maxPhi;
-    //Left-Right ratio, spawn FF more on the left or right, [0:0.5:5] = [left:equal:right]
-    public float FFLeftRightRatio;
+    public float PhiRatio;
+    public float minPhi2;
+    public float maxPhi2;
     //Lifespan of the FF, if applicable
     public float lifeSpan;
     //possible Lifespans and ratios
@@ -343,9 +344,6 @@ public class Monkey2D : MonoBehaviour
     //Is task multiple FF
     bool flagMultiFF;
 
-    //Is task training/normal
-    bool flagTraining;
-
     //Micro Stimulation
     bool flagFFstimulation;
     private float microStimuDur;
@@ -470,6 +468,9 @@ public class Monkey2D : MonoBehaviour
         maxDrawDistance = PlayerPrefs.GetFloat("maxDrawDistance");
         maxPhi = PlayerPrefs.GetFloat("maxPhi");
         minPhi = PlayerPrefs.GetFloat("minPhi");
+        PhiRatio = PlayerPrefs.GetFloat("ratiophi");
+        maxPhi2 = PlayerPrefs.GetFloat("maxPhi2");
+        minPhi2 = PlayerPrefs.GetFloat("minPhi2");
         reward_zone_radius = PlayerPrefs.GetFloat("reward_zone_radius");
         fireflySize = PlayerPrefs.GetFloat("RadiusFF") * 2;
         firefly.transform.localScale = new Vector3(fireflySize, fireflySize, 1);
@@ -554,17 +555,6 @@ public class Monkey2D : MonoBehaviour
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
         normal2FFRatio += normalRatio;
-
-        //Is training bias?
-        flagTraining = PlayerPrefs.GetInt("isTraining") == 1;
-        if (flagTraining)
-        {
-            FFLeftRightRatio = PlayerPrefs.GetFloat("FFLeftRightRatio");
-        }
-        else
-        {
-            FFLeftRightRatio = 0.5f;
-        }
 
         //FF stimulation?
         microStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
@@ -1021,27 +1011,14 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
+            bool UsePhi1 = (float)rand.NextDouble() < PhiRatio;
             Vector3 position;
             float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
             float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-            //Left right bias training
-            if(FFLeftRightRatio != 0.5)
+            //Two Dist. training
+            if(PhiRatio != 0 && !UsePhi1)
             {
-                bool on_the_left_side = rand.NextDouble() < FFLeftRightRatio;
-                if (on_the_left_side)
-                {
-                    while (angle > 0)
-                    {
-                        angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-                    }
-                }
-                else
-                {
-                    while (angle < 0)
-                    {
-                        angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-                    }
-                }
+                angle = (float)rand.NextDouble() * (maxPhi2 - minPhi2) + minPhi2;
             }
             position = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             position.y = 0.0001f;
