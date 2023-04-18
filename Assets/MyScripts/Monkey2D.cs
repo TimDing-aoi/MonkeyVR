@@ -1016,7 +1016,7 @@ public class Monkey2D : MonoBehaviour
             float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
             float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
             //Two Dist. training
-            if(PhiRatio != 0 && !UsePhi1)
+            if(!UsePhi1)
             {
                 angle = (float)rand.NextDouble() * (maxPhi2 - minPhi2) + minPhi2;
             }
