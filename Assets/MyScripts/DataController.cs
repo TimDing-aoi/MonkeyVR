@@ -388,16 +388,23 @@ namespace PupilLabs
         public void startExtraRecording()
         {
             extrasb.Clear();
+            string filePath = PlayerPrefs.GetString("Path") + "\\extra_continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
+                PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
+            if (File.Exists(filePath))
+            {
+                int runnum = PlayerPrefs.GetInt("RecordingNumber");
+                PlayerPrefs.SetInt("RecordingNumber", runnum + 1);
+            }
             extrasb.Append("Timestamp,Mapping Context,Confidence,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY" +
                 ",CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " +
-                PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + "\n");
+                PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + "\n");
             extraRecording = true;
         }
 
         public void stopExtraRecording()
         {
             var path = PlayerPrefs.GetString("Path") + "\\extra_continuous_eye_data_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
-                PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
+                PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
             File.AppendAllText(path, extrasb.ToString());
             extraRecording = false;
         }

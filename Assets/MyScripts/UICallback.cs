@@ -32,6 +32,8 @@ public class UICallback : MonoBehaviour
         if (objectName == "StimuAmp" || objectName == "StimuStimuDur")
         {
             StimuParams = true;
+            text = this.GetComponent<TMP_InputField>();
+            text.text = PlayerPrefs.GetFloat(objectName).ToString();
         }
         else if (GetComponent<Slider>() != null)
         {
@@ -371,7 +373,7 @@ public class UICallback : MonoBehaviour
         int runnum = PlayerPrefs.GetInt("RecordingNumber");
         PlayerPrefs.SetInt("RecordingNumber", runnum + 1);
         string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
-            PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber") + ".txt";
+            PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
         stimConf.AppendLine("MonkeyName,Date,RunNumber,StimAmplitude,StimDur");
         stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
             + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());

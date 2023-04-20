@@ -1029,7 +1029,7 @@ public class Monkey2D : MonoBehaviour
                 float stimr = (float)rand.NextDouble();
                 if(stimr < stimuratio)
                 {
-                    SendMarker("m", microStimuDur * 1000.0f);
+                    SendMarker("m", microStimuDur);
                     stimulatedTrial = true;
                     timeStimuStart.Add(tNow - programT0);
                 }
