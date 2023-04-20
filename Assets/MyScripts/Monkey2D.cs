@@ -1036,7 +1036,7 @@ public class Monkey2D : MonoBehaviour
             }
         }
 
-        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
+        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial)
         {
             stimulating = true;
         }

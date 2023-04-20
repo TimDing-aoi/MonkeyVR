@@ -61,7 +61,8 @@ public class ToggleGUI : MonoBehaviour
                 isRecording = !isRecording;
                 if (isRecording)
                 {
-                    SendMarker("s", 1000.0f);
+                    SendMarker("f", 1000.0f);
+                    marker = 1;
                     dataController.startExtraRecording();
                     recordingText = "Recording";
                     print("Start Recording");
@@ -69,6 +70,8 @@ public class ToggleGUI : MonoBehaviour
                 }
                 else
                 {
+                    SendMarker("x", 1000.0f);
+                    marker = 17;
                     dataController.stopExtraRecording();
                     recordingText = "Start Recording";
                     print("Stop Recording");
@@ -89,13 +92,11 @@ public class ToggleGUI : MonoBehaviour
                 AudioSource.Play();
             }
 
-            if(Time.time - lastStimulate > stimulationDuration && isStimulating)
+            if(Time.time - lastStimulate > stimulationDuration/1000 && isStimulating)
             {
                 isStimulating = false;
                 stimulateText = "Stimulate";
                 print("Stop Stimulating");
-                SendMarker("X", stimulationDuration);
-                marker = 17;
             }
 
             GUI.Label(rect, "", style);
