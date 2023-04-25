@@ -3,17 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using PupilLabs;
 using UnityEngine.InputSystem;
+using static PupilLabs.DataController;
+using static Serial;
+using System.IO.Ports;
 
 public class ToggleGUI : MonoBehaviour
 {
-    bool Calibration_Settings_Open = false;
-    bool Task_Selection_Open = false;
-    string toggleSettingsText = "Open";
-    string toggleTaskText = "Open";
-    public GameObject SettingGUI;
-    public GameObject TaskGUI;
+    bool CalibMenuToggle = false;
+    public bool isRecording = false;
+    bool isStimulating = false;
+    float lastStimulate;
+    public int marker = 0;
+    string toggleText = "Open";
+    string recordingText = "Start Recording";
+    string stimulateText = "Stimulate";
+    public GameObject gui;
+    public GameObject stimgui;
+    public GameObject stimcanvas;
     public Texture texture;
     public CalibrationController calibrationController;
+    public AudioSource AudioSource;
+    public AudioClip StimuTest;
+    SerialPort sp = serial.sp;
+    public static ToggleGUI guiref;
+
+    private void OnEnable()
+    {
+        guiref = this;
+    }
 
     private void OnGUI()
     {
@@ -29,65 +46,128 @@ public class ToggleGUI : MonoBehaviour
         string stimutext = string.Format("Total Trials: {0}", calibrationController.trialNum + 1);
         if (calibrationController.flagMicroStimu)
         {
+            stimcanvas.SetActive(false);
             GUI.Label(rect, stimutext, style);
         }
         else if(calibrationController.flagFuseTest)
         {
+            stimgui.SetActive(false);
             GUI.Label(rect, text, style);
         }
         else
         {
+            if (GUI.Button(new Rect(Screen.width - 1300, Screen.height - 220, 150, 60), recordingText))
+            {
+                isRecording = !isRecording;
+                if (isRecording)
+                {
+                    SendMarker("f", 1000.0f);
+                    marker = 1;
+                    dataController.startExtraRecording();
+                    recordingText = "Recording";
+                    print("Start Recording");
+                    stimgui.SetActive(false);
+                }
+                else
+                {
+                    SendMarker("x", 1000.0f);
+                    marker = 17;
+                    dataController.stopExtraRecording();
+                    recordingText = "Start Recording";
+                    print("Stop Recording");
+                    stimgui.SetActive(true);
+                }
+            }
+
+            float stimulationDuration = PlayerPrefs.GetFloat("StimuStimuDur");
+            if (GUI.Button(new Rect(Screen.width - 1300, Screen.height - 570, 150, 60), stimulateText))
+            {
+                isStimulating = true;
+                stimulateText = "Stimulating";
+                print("Start Stimulating");
+                lastStimulate = Time.time;
+                SendMarker("m", stimulationDuration);
+                marker = 2;
+                AudioSource.clip = StimuTest;
+                AudioSource.Play();
+            }
+
+            if(Time.time - lastStimulate > stimulationDuration/1000 && isStimulating)
+            {
+                isStimulating = false;
+                stimulateText = "Stimulate";
+                print("Stop Stimulating");
+            }
+
             GUI.Label(rect, "", style);
         }
 
-        if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleSettingsText))
+        if (GUI.Button(new Rect(Screen.width - 275, Screen.height - 70, 150, 60), toggleText))
         {
-            Calibration_Settings_Open = !Calibration_Settings_Open;
-            SettingGUI.SetActive(Calibration_Settings_Open);
+            CalibMenuToggle = !CalibMenuToggle;
+            gui.SetActive(CalibMenuToggle);
         }
 
-        if (Calibration_Settings_Open)
+        if (CalibMenuToggle)
         {
-            toggleSettingsText = "Clibration\n Settings Close";
+            toggleText = "Close";
         }
         else
         {
-            toggleSettingsText = "Clibration\n Settings Open";
-        }
-
-        if (GUI.Button(new Rect(Screen.width - 1000, Screen.height - 70, 150, 60), toggleTaskText))
-        {
-            Task_Selection_Open = !Task_Selection_Open;
-            TaskGUI.SetActive(Task_Selection_Open);
-        }
-
-        if (Task_Selection_Open)
-        {
-            toggleTaskText = "Task Selection\n Close";
-        }
-        else
-        {
-            toggleTaskText = "Task Selection\n Open";
+            toggleText = "Open";
         }
 
         if (calibrationController.flagReward || Keyboard.current.spaceKey.isPressed)
         {
+            marker = 4;
             GUI.contentColor = Color.red;
+
+            SendMarker("j", 11.0f);
         }
         else
         {
+            marker = 0;
             GUI.contentColor = Color.black;
         }
         GUI.Box(new Rect(0f, 30f, 50f, 50f), texture);
 
-        if (calibrationController.flagStimu /*|| Keyboard.current.rightAltKey.isPressed*/)
+        if (calibrationController.flagStimu || isStimulating /*|| Keyboard.current.rightAltKey.isPressed*/)
         {
+            marker = 5;
             GUI.contentColor = Color.green;
         }
         else
         {
+            if(marker != 4)
+            {
+                marker = 0;
+            }
             GUI.contentColor = Color.black;
         }
         GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
+    }
+
+    public async void SendMarker(string mark, float time)
+    {
+        string toSend = "i" + mark + time.ToString();
+
+        /*switch (mark)
+        {
+            case "j":
+                rewardTime.Add(Time.time);
+                break;
+            case "s":
+                beginTime.Add(Time.time);
+                break;
+            case "e":
+                endTime.Add(Time.time);
+                break;
+            default:
+                break;
+        }*/
+
+        sp.Write(toSend);
+
+        await new WaitForSeconds(time / 1000.0f);
     }
 }

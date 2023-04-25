@@ -782,7 +782,7 @@ namespace PupilLabs
                 print("stimu");
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
-                SendMarker("m", StimuStimuDur * 1000.0f);
+                SendMarker("m", StimuStimuDur);
                 LastMarker = 5;
                 tLastStimu = tNow;
                 AudioSource.clip = StimuTest;

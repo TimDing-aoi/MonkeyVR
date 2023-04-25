@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using System.Linq;
 using PupilLabs;
 using System.IO;
+using System.Text;
+using System;
 
 public class UICallback : MonoBehaviour
 {
@@ -16,6 +18,7 @@ public class UICallback : MonoBehaviour
     private Dropdown dropdown;
     private Button button;
     private bool flagSliderOrText;
+    private bool StimuParams;
     private string objectName;
 
     // Start is called before the first frame update
@@ -26,7 +29,13 @@ public class UICallback : MonoBehaviour
         calibrationController = GameObject.Find("Calibration Controller").GetComponent<CalibrationController>();
         dataController = GameObject.Find("Data Controller").GetComponent<DataController>();
 
-        if (GetComponent<Slider>() != null)
+        if (objectName == "StimuAmp" || objectName == "StimuStimuDur")
+        {
+            StimuParams = true;
+            text = this.GetComponent<TMP_InputField>();
+            text.text = PlayerPrefs.GetFloat(objectName).ToString();
+        }
+        else if (GetComponent<Slider>() != null)
         {
             slider = this.GetComponent<Slider>();
             slider.value = PlayerPrefs.GetFloat((char.ToLowerInvariant(objectName[0]) + objectName.Substring(1)).Replace(" ", "") + "Value");
@@ -174,7 +183,13 @@ public class UICallback : MonoBehaviour
 
     public void OnValueChanged()
     {
-        if (flagSliderOrText)
+        if (StimuParams)
+        {
+            text = GameObject.Find(objectName).GetComponent<TMP_InputField>();
+            PlayerPrefs.SetFloat(this.name, float.Parse(text.text));
+            saveStimConfig();
+        }
+        else if (flagSliderOrText)
         {
             text.text = slider.value.ToString();
         }
@@ -349,5 +364,19 @@ public class UICallback : MonoBehaviour
         {
             Debug.Log(e);
         }
+    }
+
+    public void saveStimConfig()
+    {
+        StringBuilder stimConf = new StringBuilder();
+        string path = PlayerPrefs.GetString("Path");
+        int runnum = PlayerPrefs.GetInt("RecordingNumber");
+        PlayerPrefs.SetInt("RecordingNumber", runnum + 1);
+        string stimPath = path + "/stimulation_parameters_" + PlayerPrefs.GetString("Name") + "_" + DateTime.Today.ToString("MMddyyyy") + "_" +
+            PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + ".txt";
+        stimConf.AppendLine("MonkeyName,Date,RunNumber,StimAmplitude,StimDur");
+        stimConf.AppendLine(PlayerPrefs.GetString("Name").ToString() + "," + DateTime.Today.ToString("MMddyyyy").ToString() + "," + PlayerPrefs.GetInt("Run Number").ToString("D3")
+            + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
+        File.WriteAllText(stimPath, stimConf.ToString());
     }
 }
