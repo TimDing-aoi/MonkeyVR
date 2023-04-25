@@ -799,7 +799,7 @@ public class Monkey2D : MonoBehaviour
             }
 
             //print(string.Format("trial elapsed: {0}", tNow - trial_start_time));
-            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !is_always_on_trial && !trialStimulated)
+            if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !trialStimulated)
             {
                 trialStimulated = true;
                 float stimr = (float)rand.NextDouble();
@@ -813,7 +813,7 @@ public class Monkey2D : MonoBehaviour
         }
 
         //Status check for stimulation
-        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur) && stimulatedTrial)
+        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial)
         {
             isStimulating = true;
         }
@@ -1622,7 +1622,7 @@ public class Monkey2D : MonoBehaviour
             drunkplayer.transform.SetPositionAndRotation(Vector3.up * Player_Height, Quaternion.Euler(0.0f, 0.0f, 0.0f));
         }
 
-
+        isTimeout = false;
         //Debug.Log("Check Phase End.");
         phase_task_selecter = Phases.begin;
         currPhase = Phases.begin;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -178,6 +179,27 @@ namespace PupilLabs
 
         public AudioSource AudioSource;
         public AudioClip StimuTest;
+
+        //Moving marker task
+        public bool isMovingMarker = false;
+        private Task currentTask;
+        public enum Phases
+        {
+            begin = 0,
+            fixation = 1,
+            movement = 2,
+            juice = 3,
+            ITI = 4,
+            none = 9,
+        }
+        //Phase switch
+        [HideInInspector] public Phases phase_task_selecter;
+        //Current phase
+        [HideInInspector] public Phases currPhase;
+        float MMgazeX;
+        float MMgazeY;
+        float start_of_MMfixation;
+        int move_direction = 0;
 
         void OnEnable()
         {
@@ -360,6 +382,49 @@ namespace PupilLabs
             {
                 UpdateMicroStimu();
             }
+            else if(isMovingMarker)
+            {   
+                MMgazeX = gazeVisualizer.projectionMarker.position.x;
+                MMgazeY = gazeVisualizer.projectionMarker.position.y;
+                switch (phase_task_selecter)
+                {
+                    case Phases.begin:
+                        phase_task_selecter = Phases.none;
+                        currentTask = Begin();
+                        break;
+
+                    case Phases.fixation:
+                        phase_task_selecter = Phases.none;
+                        currentTask = Fixation();
+                        break;
+
+                    case Phases.movement:
+                        phase_task_selecter = Phases.none;
+                        currentTask = Movement();
+                        break;
+
+                    case Phases.none:
+                        break;
+                }
+
+                switch (move_direction)
+                {
+                    case 1:
+                        previewMarkers[4].transform.position += new Vector3(0.02f, 0, 0);
+                        break;
+                    case 2:
+                        previewMarkers[4].transform.position += new Vector3(0, 0.02f, 0);
+                        break;
+                    case 3:
+                        previewMarkers[4].transform.position += new Vector3(0.02f, 0, 0);
+                        break;
+                    case 4:
+                        previewMarkers[4].transform.position += new Vector3(0.02f, 0, 0);
+                        break;
+                    default:
+                        break;
+                }
+            }
             else
             {
                 tLastITI = Time.time;
@@ -389,6 +454,13 @@ namespace PupilLabs
             else if (Input.GetKeyDown(KeyCode.M))
             {
                 ToggleMicroStimu();
+            }
+            else if (Input.GetKeyDown(KeyCode.W))
+            {
+                print("moving");
+                isMovingMarker = true;
+                currPhase = Phases.movement;
+                phase_task_selecter = Phases.movement;
             }
             else if (!flagCalibrating)
             {
@@ -1362,24 +1434,75 @@ namespace PupilLabs
         {
             string toSend = "i" + mark + time.ToString();
 
-            /*switch (mark)
-            {
-                case "j":
-                    rewardTime.Add(Time.time);
-                    break;
-                case "s":
-                    beginTime.Add(Time.time);
-                    break;
-                case "e":
-                    endTime.Add(Time.time);
-                    break;
-                default:
-                    break;
-            }*/
-
             sp.Write(toSend);
 
             await new WaitForSeconds(time / 1000.0f);
+        }
+
+        async Task Begin()
+        {
+            tTotalFix = 0;
+            previewMarkers[4].SetActive(false);
+            await new WaitForSeconds(1f);
+            previewMarkers[4].SetActive(true);
+            await new WaitUntil(() => Mathf.Abs(MMgazeX - marker.position.x) <= xThreshold
+                    && Mathf.Abs(MMgazeY - marker.position.y) <= yThreshold);
+            start_of_MMfixation = Time.time;
+            phase_task_selecter = Phases.fixation;
+        }
+
+        async Task Fixation()
+        {
+            await new WaitUntil(() => Mathf.Abs(MMgazeX - marker.position.x) > xThreshold
+                    || Mathf.Abs(MMgazeY - marker.position.y) > yThreshold || Time.time - start_of_MMfixation >= 2);
+            float total_fix = Time.time - start_of_MMfixation;
+            if(total_fix >= 2)
+            {
+                phase_task_selecter = Phases.movement;
+            }
+        }
+
+        async Task Movement()
+        {
+            previewMarkers[4].SetActive(true);
+            for (int cycle = 0; cycle < 5; cycle++)
+            {
+                await new WaitForSeconds(4f);
+                move_direction = 1;
+                /*for (int move = 0; move < 10; move++)
+                {
+                    previewMarkers[4].transform.position += new Vector3(0.1f, 0, 0);
+                    await new WaitForSeconds(0.1f);
+                }
+                for (int move = 0; move < 20; move++)
+                {
+                    previewMarkers[4].transform.position -= new Vector3(0.1f, 0, 0);
+                    await new WaitForSeconds(0.1f);
+                }
+                for (int move = 0; move < 10; move++)
+                {
+                    previewMarkers[4].transform.position += new Vector3(0.1f, 0, 0);
+                    await new WaitForSeconds(0.1f);
+                }*/
+            }
+
+            for (int cycle = 0; cycle < 5; cycle++)
+            {
+                await new WaitForSeconds(4f);
+                move_direction = 2;
+            }
+
+            for (int cycle = 0; cycle < 5; cycle++)
+            {
+                await new WaitForSeconds(4f);
+                move_direction = 3;
+            }
+
+            for (int cycle = 0; cycle < 5; cycle++)
+            {
+                await new WaitForSeconds(4f);
+                move_direction = 4;
+            }
         }
     }
 }
