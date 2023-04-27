@@ -202,7 +202,7 @@ namespace PupilLabs
 
             StimuITI = PlayerPrefs.GetFloat("StimuITI");
             StimuTrialDur = PlayerPrefs.GetFloat("StimuTrialDur");
-            StimuStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
+            StimuStimuDur = PlayerPrefs.GetFloat("StimuStimuDur")/1000;
             StimuRewardDur = PlayerPrefs.GetFloat("StimuRewardDur");
             StimuGapMin = PlayerPrefs.GetFloat("StimuGapMin");
             StimuGapMax = PlayerPrefs.GetFloat("StimuGapMax");
@@ -782,7 +782,7 @@ namespace PupilLabs
                 print("stimu");
                 StimuStartTime.Add(tNow);
                 MicroStimuFlag = MicroStimuF.Stimulation;
-                SendMarker("m", StimuStimuDur);
+                SendMarker("m", StimuStimuDur*1000);
                 LastMarker = 5;
                 tLastStimu = tNow;
                 AudioSource.clip = StimuTest;

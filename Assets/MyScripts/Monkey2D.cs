@@ -508,7 +508,7 @@ public class Monkey2D : MonoBehaviour
         separation = PlayerPrefs.GetFloat("Separation");
         minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
-        microStimuDur = PlayerPrefs.GetFloat("StimuStimuDur");
+        microStimuDur = PlayerPrefs.GetFloat("StimuStimuDur")/1000;
         microStimuGap = PlayerPrefs.GetFloat("FFstimugap");
         stimuratio = PlayerPrefs.GetFloat("StimulationRatio");
         ptb = (int)PlayerPrefs.GetFloat("PTBType");
@@ -1029,7 +1029,7 @@ public class Monkey2D : MonoBehaviour
                 float stimr = (float)rand.NextDouble();
                 if(stimr < stimuratio)
                 {
-                    SendMarker("m", microStimuDur);
+                    SendMarker("m", microStimuDur * 1000);
                     stimulatedTrial = true;
                     timeStimuStart.Add(tNow - programT0);
                 }
