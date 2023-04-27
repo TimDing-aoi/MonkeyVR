@@ -1330,6 +1330,8 @@ public class Monkey2D : MonoBehaviour
             float angle;
             if (isDiscrete)
             {
+                player.transform.position = Vector3.up * p_height;
+                player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                 int num_lin = (int)PlayerPrefs.GetFloat("No_Linspace");
                 int num_rot = (int)PlayerPrefs.GetFloat("No_Angspace");
                 float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
