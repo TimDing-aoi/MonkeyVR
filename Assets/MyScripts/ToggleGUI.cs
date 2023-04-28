@@ -19,7 +19,6 @@ public class ToggleGUI : MonoBehaviour
     string stimulateText = "Stimulate";
     public GameObject gui;
     public GameObject stimgui;
-    public GameObject stimcanvas;
     public Texture texture;
     public CalibrationController calibrationController;
     public AudioSource AudioSource;
@@ -46,7 +45,7 @@ public class ToggleGUI : MonoBehaviour
         string stimutext = string.Format("Total Trials: {0}", calibrationController.trialNum + 1);
         if (calibrationController.flagMicroStimu)
         {
-            stimcanvas.SetActive(false);
+            stimgui.SetActive(false);
             GUI.Label(rect, stimutext, style);
         }
         else if(calibrationController.flagFuseTest)
@@ -56,6 +55,14 @@ public class ToggleGUI : MonoBehaviour
         }
         else
         {
+            if (!isRecording)
+            {
+                stimgui.SetActive(true);
+            }
+            else
+            {
+                stimgui.SetActive(false);
+            }
             if (GUI.Button(new Rect(Screen.width - 1300, Screen.height - 220, 150, 60), recordingText))
             {
                 isRecording = !isRecording;
@@ -75,7 +82,6 @@ public class ToggleGUI : MonoBehaviour
                     dataController.stopExtraRecording();
                     recordingText = "Start Recording";
                     print("Stop Recording");
-                    stimgui.SetActive(true);
                 }
             }
 
@@ -121,8 +127,6 @@ public class ToggleGUI : MonoBehaviour
         {
             marker = 4;
             GUI.contentColor = Color.red;
-
-            SendMarker("j", 11.0f);
         }
         else
         {

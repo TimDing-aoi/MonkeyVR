@@ -400,7 +400,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "StimAmp(\u03BCA)"
+  m_text: "[Don't use NumPad]\nStimAmp(\u03BCA)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8781,7 +8781,6 @@ MonoBehaviour:
   marker: 0
   gui: {fileID: 706399872}
   stimgui: {fileID: 1151096230}
-  stimcanvas: {fileID: 437328187}
   texture: {fileID: 2800000, guid: e4de7486d51114c4ab26b1465180cf3d, type: 3}
   calibrationController: {fileID: 9101047924238965392}
   AudioSource: {fileID: 5925722113478901487}
