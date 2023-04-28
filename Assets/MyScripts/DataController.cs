@@ -370,6 +370,7 @@ namespace PupilLabs
 
                 var num = PlayerPrefs.GetInt("Run Number") + 1;
                 PlayerPrefs.SetInt("Run Number", num);
+                PlayerPrefs.SetInt("RecordingNumber", 0);
 
                 Destroy(this);
 

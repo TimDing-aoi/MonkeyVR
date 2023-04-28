@@ -15,7 +15,7 @@ public class Serial : MonoBehaviour
     void OnEnable()
     {
         serial = this;
-        juiceTime = PlayerPrefs.GetFloat("Max Juice Time");
+        juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
         sp = new SerialPort("COM9", 1000000);
         sp.Open();
         sp.ReadTimeout = 1;
@@ -32,7 +32,7 @@ public class Serial : MonoBehaviour
     {
         //print(string.Format("juice time = {0}", juiceTime));
         juice = false;
-        sp.Write(string.Format("j{0}", juiceTime));
+        sp.Write(string.Format("ij{0}", juiceTime));
         await new WaitForSeconds(juiceTime / 1000.0f);
         juice = true;
     }

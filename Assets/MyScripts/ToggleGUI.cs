@@ -94,8 +94,6 @@ public class ToggleGUI : MonoBehaviour
                 lastStimulate = Time.time;
                 SendMarker("m", stimulationDuration);
                 marker = 2;
-                AudioSource.clip = StimuTest;
-                AudioSource.Play();
             }
 
             if(Time.time - lastStimulate > stimulationDuration/1000 && isStimulating)
