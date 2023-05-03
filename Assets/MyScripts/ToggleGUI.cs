@@ -25,6 +25,8 @@ public class ToggleGUI : MonoBehaviour
     public AudioClip StimuTest;
     SerialPort sp = serial.sp;
     public static ToggleGUI guiref;
+    float last_block_start;
+    float last_block_end;
 
     private void OnEnable()
     {
@@ -69,19 +71,19 @@ public class ToggleGUI : MonoBehaviour
                 if (isRecording)
                 {
                     SendMarker("f", 1000.0f);
-                    marker = 1;
                     dataController.startExtraRecording();
                     recordingText = "Recording";
                     print("Start Recording");
                     stimgui.SetActive(false);
+                    last_block_start = Time.time;
                 }
                 else
                 {
                     SendMarker("x", 1000.0f);
-                    marker = 17;
                     dataController.stopExtraRecording();
                     recordingText = "Start Recording";
                     print("Stop Recording");
+                    last_block_end = Time.time;
                 }
             }
 
@@ -147,6 +149,15 @@ public class ToggleGUI : MonoBehaviour
             GUI.contentColor = Color.black;
         }
         GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
+
+        if (Time.time - last_block_start < 0.1)
+        {
+            marker = 1;
+        }
+        else if (Time.time - last_block_end < 0.1)
+        {
+            marker = 17;
+        }
     }
 
     public async void SendMarker(string mark, float time)

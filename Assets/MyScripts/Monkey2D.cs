@@ -1036,7 +1036,7 @@ public class Monkey2D : MonoBehaviour
             }
         }
 
-        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial)
+        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
         {
             stimulating = true;
         }
@@ -2874,6 +2874,18 @@ public class Monkey2D : MonoBehaviour
 
         xmlWriter.WriteStartElement("Ratio");
         xmlWriter.WriteString(PlayerPrefs.GetFloat("Ratio").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("No_Linspace");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Linspace").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("No_Angspace");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Angspace").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("isDiscrete");
+        xmlWriter.WriteString(PlayerPrefs.GetInt("isDiscrete").ToString());
         xmlWriter.WriteEndElement();
 
         //xmlWriter.WriteStartElement("Reward");
