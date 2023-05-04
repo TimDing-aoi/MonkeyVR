@@ -2024,6 +2024,14 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("maxPhi").ToString());
         xmlWriter.WriteEndElement();
 
+        xmlWriter.WriteStartElement("minPhi2");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("minPhi2").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("maxPhi2");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("maxPhi2").ToString());
+        xmlWriter.WriteEndElement();
+
         xmlWriter.WriteStartElement("minJuiceTime");
         xmlWriter.WriteString(PlayerPrefs.GetFloat("minJuiceTime").ToString());
         xmlWriter.WriteEndElement();
