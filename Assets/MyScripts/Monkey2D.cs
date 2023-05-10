@@ -375,7 +375,7 @@ public class Monkey2D : MonoBehaviour
     bool isHuman = false;
 
     //Replay?
-    bool isReplay = false;
+    public bool isReplay = false;
 
     //On Start up, get gaze visualizer
     private void Awake()
@@ -2599,7 +2599,7 @@ public class Monkey2D : MonoBehaviour
 
     public void ReadCoord2CSV()
     {
-        StreamReader strReader = new StreamReader(path + "\\Config_2FF_2.csv");
+        StreamReader strReader = new StreamReader(PlayerPrefs.GetString("replay_cont_path"));
         bool endoffile = false;
         while (!endoffile)
         {
@@ -2619,7 +2619,7 @@ public class Monkey2D : MonoBehaviour
 
     public void ReadFFCoordDisc()
     {
-        StreamReader strReader = new StreamReader(".\\replayFF.txt");
+        StreamReader strReader = new StreamReader(PlayerPrefs.GetString("replay_disc_path"));
         bool endoffile = false;
         string data_string = strReader.ReadLine();
         while (!endoffile)

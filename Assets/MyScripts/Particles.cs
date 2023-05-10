@@ -18,7 +18,7 @@ public class Particles : MonoBehaviour
     float prevDensity;
     [HideInInspector] public float Floor_Height;
     readonly float baseH = 0.0185f;
-    uint seed;
+    int seed;
     [HideInInspector]
     public bool changedensityflag = false;
     [HideInInspector] public static Particles particles;
@@ -30,8 +30,14 @@ public class Particles : MonoBehaviour
     {
         particles = this;
 
-        seed = (uint)UnityEngine.Random.Range(1, 10000);
-        PlayerPrefs.SetInt("Optic Flow Seed", (int)seed);
+        seed = Random.Range(1, 10000);
+        bool replay = PlayerPrefs.GetInt("isReplay") == 1;
+        if (replay)
+        {
+            seed = (int)PlayerPrefs.GetFloat("replay_seed");
+        }
+        print(seed);
+        PlayerPrefs.SetInt("Optic Flow Seed", seed);
         Life_Span = PlayerPrefs.GetFloat("Life_Span");
         Draw_Distance = PlayerPrefs.GetFloat("Draw_Distance");
         Density_Low = PlayerPrefs.GetFloat("Density_Low");
@@ -43,8 +49,8 @@ public class Particles : MonoBehaviour
         particleSystem = GetComponent<ParticleSystem>();
 
         particleSystem.Stop();
-
-        if (particleSystem.isStopped) particleSystem.randomSeed = seed;
+        
+        particleSystem.randomSeed = (uint)seed;
 
         particleSystem.Play();
 

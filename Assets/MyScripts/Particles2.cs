@@ -28,7 +28,7 @@ public class Particles2 : MonoBehaviour
         particles2 = this;
 
         seed = (uint)UnityEngine.Random.Range(10000, 20000);
-        PlayerPrefs.SetInt("Optic Flow Seed", (int)seed);
+        PlayerPrefs.SetInt("Optic Flow 2 Seed", (int)seed);
         Life_Span = PlayerPrefs.GetFloat("Life_Span");
         Draw_Distance = PlayerPrefs.GetFloat("Draw_Distance");
         Density_Low = PlayerPrefs.GetFloat("Density_Low");

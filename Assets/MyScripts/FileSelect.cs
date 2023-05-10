@@ -20,4 +20,16 @@ public class FileSelect : MonoBehaviour
         input.text = path[0];
         PlayerPrefs.SetString(obj.name, path[0]);
     }
+
+    public void Select_File()
+    {
+        var extensions = new[] {
+            new ExtensionFilter("Log Files", "txt", "csv"),
+        };
+        input = this.GetComponent<TMP_InputField>();
+        obj = this.gameObject;
+        var path = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, true);
+        input.text = path[0];
+        PlayerPrefs.SetString(obj.name, path[0]);
+    }
 }
