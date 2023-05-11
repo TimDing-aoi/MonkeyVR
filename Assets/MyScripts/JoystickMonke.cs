@@ -874,7 +874,7 @@ public class JoystickMonke : MonoBehaviour
 
     public void ReadXYInputCont()
     {
-        StreamReader strReader = new StreamReader(".\\replayXY.txt");
+        StreamReader strReader = new StreamReader("replay_cont_path");
         bool endoffile = false;
         string data_string = strReader.ReadLine();
         while (!endoffile)

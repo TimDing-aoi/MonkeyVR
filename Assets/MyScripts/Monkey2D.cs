@@ -263,6 +263,7 @@ public class Monkey2D : MonoBehaviour
 
     //trial start time
     private float trial_start_time;
+    private float MoveStartTime;
 
     //Phases
     private bool isBegin = false;
@@ -369,6 +370,8 @@ public class Monkey2D : MonoBehaviour
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFTagetMatchList = new List<Tuple<float, float>>();
+    readonly public List<float> FF1historyList = new List<float>();
+    readonly public List<float> FF2historyList = new List<float>();
     int trial_count = 0;
 
     //Human subject?
@@ -519,6 +522,7 @@ public class Monkey2D : MonoBehaviour
         isCOMtest = PlayerPrefs.GetFloat("COMNormal") == 999;
         if (isCOM)
         {
+            ratio_always_on = 0;
             NumberOfFF = 2;
             FFcoordsList.Clear();
             ReadCoordCSV();
@@ -775,11 +779,11 @@ public class Monkey2D : MonoBehaviour
         if (isTrial)
         {
             //TODO: add newest Change of mind way of update here.
-            if (isCOM)
+            if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
             {
                 FF2shown = true;
                 Vector3 position;
-                int FFindex = rand.Next(FF2coordsList.Count);
+                int FFindex = 4;//rand.Next(FF2coordsList.Count);
                 //FF2s.Add(FFindex);
                 float VectorX = FF2coordsList[FFindex].Item1;
                 float VectorY = FF2coordsList[FFindex].Item2;
@@ -792,10 +796,10 @@ public class Monkey2D : MonoBehaviour
                 rotation.x += VectorX;
                 rotation.z += VectorY;
                 rotation = Quaternion.Euler(0, angle, 0) * rotation;
-                //pooledFF[1].transform.position = position + rotation;
+                Multiple_FF_List[1].transform.position = position + rotation;
                 print("Trial FF2 x:" + position.x);
                 print("Trial FF2 y:" + position.z);
-                //OnOff(pooledFF[1]);
+                OnOff(Multiple_FF_List[1]);
             }
 
             //print(string.Format("trial elapsed: {0}", tNow - trial_start_time));
@@ -972,7 +976,61 @@ public class Monkey2D : MonoBehaviour
         //FF set up, for single FF/multi/COM
         if (multiple_FF_mode == 2)
         {
-            //TODO put latest change of mind begin here
+            player.transform.position = Vector3.up * Player_Height;
+            player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            Vector3 position;
+            int FFindex = 2;//rand.Next(FFcoordsList.Count);
+            FF1historyList.Add(FFindex);
+            FF1index = FFindex;
+            float r = FFcoordsList[FFindex].Item1;
+            float angle = FFcoordsList[FFindex].Item2;
+            position = Vector3.zero - new Vector3(0.0f, Player_Height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+            position.y = 0.0001f;
+            Multiple_FF_List[0].transform.position = position;
+            Vector3 position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
+            Multiple_FF_List[1].transform.position = position1;
+            Multiple_FF_List[1].SetActive(false);
+            print("Trial FF1 r:" + r.ToString());
+            print("Trial FF1 a:" + angle.ToString());
+            float COMdecider = (float)rand.NextDouble();
+            if (COMdecider < normalRatio)
+            {
+                isNormal = true;
+                isStatic2FF = false;
+                isCOM2FF = false;
+                COMtrialtype.Add(1);
+                FF2historyList.Add(-1);
+            }
+            else if (COMdecider < normal2FFRatio)
+            {
+                isNormal = false;
+                isStatic2FF = true;
+                isCOM2FF = false;
+                COMtrialtype.Add(2);
+                FFindex = rand.Next(FF2coordsList.Count);
+                FF2historyList.Add(FFindex);
+                float VectorX = FF2coordsList[FFindex].Item1;
+                float VectorY = FF2coordsList[FFindex].Item2;
+                r = FFcoordsList[FF1index].Item1;
+                angle = FFcoordsList[FF1index].Item2;
+                position = Vector3.zero - new Vector3(0.0f, Player_Height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                position.y = 0.0001f;
+                Vector3 rotation;
+                rotation = Vector3.zero;
+                rotation.x += VectorX;
+                rotation.z += VectorY;
+                rotation = Quaternion.Euler(0, angle, 0) * rotation;
+                Multiple_FF_List[1].transform.position = position + rotation;
+                print("Trial FF2 x:" + position.x);
+                print("Trial FF2 y:" + position.z);
+            }
+            else
+            {
+                isNormal = false;
+                isStatic2FF = false;
+                isCOM2FF = true;
+                COMtrialtype.Add(3);
+            }
         }
         else if (multiple_FF_mode == 1)
         {
@@ -1026,17 +1084,13 @@ public class Monkey2D : MonoBehaviour
             FF_positions.Add(position);
         }
 
-        //Static 2FF
-        if (isStatic2FF)
-        {
-            //TODO: latest static2FF set up
-        }
-
-
         //COM2FF
         if (isCOM2FF)
         {
             //TODO: save delays in disc
+            float DelayMin = PlayerPrefs.GetFloat("FF2Delaymin");
+            float DelayMax = PlayerPrefs.GetFloat("FF2Delaymax");
+            FF2delay = DelayMin + (float)rand.NextDouble() * (DelayMax - DelayMin);
             FF2delay = PlayerPrefs.GetFloat("FF2delay");
         }
 
@@ -1199,6 +1253,7 @@ public class Monkey2D : MonoBehaviour
             FF_on_duration.Add(lifeSpan);
             if (isCOM)
             {
+                MoveStartTime = Time.realtimeSinceStartup;
                 OnOff(Multiple_FF_List[0]);
                 if (isStatic2FF)
                 {
@@ -1400,6 +1455,7 @@ public class Monkey2D : MonoBehaviour
         isCheck = true;
         rewarded_FF_trial = false;
         FF2shown = false;
+        MoveStartTime = 99999f;
         if (flagMultiFF)
         {
             foreach (GameObject FF in Multiple_FF_List)
@@ -1688,9 +1744,12 @@ public class Monkey2D : MonoBehaviour
                 break;
         }
 
-        juiceBox.Write(toSend);
+        if (!isHuman)
+        {
+            juiceBox.Write(toSend);
 
-        await new WaitForSeconds(time / 1000.0f);
+            await new WaitForSeconds(time / 1000.0f);
+        }
     }
 
     private float Tcalc(float t, float lambda)
@@ -2599,7 +2658,7 @@ public class Monkey2D : MonoBehaviour
 
     public void ReadCoord2CSV()
     {
-        StreamReader strReader = new StreamReader(PlayerPrefs.GetString("replay_cont_path"));
+        StreamReader strReader = new StreamReader(path + "\\Config_2FF_2.csv");
         bool endoffile = false;
         while (!endoffile)
         {

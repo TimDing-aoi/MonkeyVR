@@ -36,7 +36,6 @@ public class Particles : MonoBehaviour
         {
             seed = (int)PlayerPrefs.GetFloat("replay_seed");
         }
-        print(seed);
         PlayerPrefs.SetInt("Optic Flow Seed", seed);
         Life_Span = PlayerPrefs.GetFloat("Life_Span");
         Draw_Distance = PlayerPrefs.GetFloat("Draw_Distance");
@@ -49,8 +48,11 @@ public class Particles : MonoBehaviour
         particleSystem = GetComponent<ParticleSystem>();
 
         particleSystem.Stop();
-        
-        particleSystem.randomSeed = (uint)seed;
+
+        if (replay || particleSystem.isStopped)
+        {
+            particleSystem.randomSeed = (uint)seed;
+        }
 
         particleSystem.Play();
 
