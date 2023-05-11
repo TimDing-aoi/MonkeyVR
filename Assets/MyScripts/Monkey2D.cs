@@ -337,7 +337,7 @@ public class Monkey2D : MonoBehaviour
 
     public Phases currPhase;
 
-    readonly private List<GameObject> pooledFF = new List<GameObject>();
+    readonly public List<GameObject> pooledFF = new List<GameObject>();
 
     private readonly char[] toTrim = { '(', ')' };
 
@@ -420,6 +420,7 @@ public class Monkey2D : MonoBehaviour
     bool SMtrial = false;
 
     readonly List<float> COMtrialtype = new List<float>();
+    readonly List<float> FF2delays = new List<float>();
     public bool isNormal = false;
     public bool isStatic2FF = false;
     public bool isCOM2FF = false;
@@ -1498,10 +1499,14 @@ public class Monkey2D : MonoBehaviour
         }
         else if (isCOM2FF)
         {
-            //TODO: save delays in disc
             float DelayMin = PlayerPrefs.GetFloat("FF2Delaymin");
             float DelayMax = PlayerPrefs.GetFloat("FF2Delaymax");
             FF2delay = DelayMin + (float)rand.NextDouble() * (DelayMax - DelayMin);//(float)(rand.NextDouble() * FFcoordsList[FF1index].Item1/SharedJoystick.MaxSpeed);
+            FF2delays.Add(FF2delay);
+        }
+        else
+        {
+            FF2delays.Add(0);
         }
 
         player_origin = player.transform.position;
@@ -2002,9 +2007,11 @@ public class Monkey2D : MonoBehaviour
 
         if (isCOM)
         {
+            ffPosStr = string.Concat(pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            ffPosStr = string.Concat(ffPosStr, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             for (int i = 0; i < 2; i++)
             {
-                ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", "")).Substring(1);
+                print(ffPosStr);
                 if (!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
                 {
                     distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
@@ -2141,7 +2148,7 @@ public class Monkey2D : MonoBehaviour
                 if (!isTimeout && isReward && proximity)
                 {
                     distances.Add(Vector3.Distance(pPos, pooledFF[loopCount].transform.position));
-                    cPosTemp.Add(pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
+                    cPosTemp.Add(string.Format("{0},{1},{2}", pos.x, pos.y, pos.z));
                     cRotTemp.Add(rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
 
                     loopCount++;
@@ -2482,7 +2489,7 @@ public class Monkey2D : MonoBehaviour
 
                 firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,FF2delay,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
@@ -2516,7 +2523,8 @@ public class Monkey2D : MonoBehaviour
                 onDur.Count,
                 densities.Count,
                 juiceDuration.Count,
-                densities_obsRatio.Count
+                densities_obsRatio.Count,
+                FF2delays.Count
             };
 
             if (nFF > 1 && multiMode == 1)
@@ -2633,9 +2641,11 @@ public class Monkey2D : MonoBehaviour
                     line += string.Format(",{0}", COMtrialtype[i]);
                     line += string.Format(",{0}", FF1s[i]);
                     line += string.Format(",{0}", FF2s[i]);
+                    line += string.Format(",{0}", FF2delays[i]);
                 }
                 else
                 {
+                    line += string.Format(",0");
                     line += string.Format(",0");
                     line += string.Format(",0");
                     line += string.Format(",0");

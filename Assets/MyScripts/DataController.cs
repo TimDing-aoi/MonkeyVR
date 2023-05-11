@@ -163,7 +163,8 @@ namespace PupilLabs
 
                     var trial = SharedMonkey.trialNum;
                     var epoch = (int)SharedMonkey.currPhase;
-                    var onoff = firefly.activeInHierarchy ? 1 : 0;
+                    var onoff1 = SharedMonkey.pooledFF[0].activeInHierarchy ? 1 : 0;//firefly.activeInHierarchy ? 1 : 0;
+                    var onoff2 = SharedMonkey.pooledFF[1].activeInHierarchy ? 1 : 0;
                     var position = player.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
                     var rotation = player.transform.rotation.ToString("F5").Trim('(', ')').Replace(" ", "");
                     var FFlinear = SharedMonkey.velocity;
@@ -237,11 +238,12 @@ namespace PupilLabs
                     }
 #else
                     flagRecording = true;
-                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
+                    sbPacket = string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}\n",
                         trial,
                         (double)Time.realtimeSinceStartup - timeProgStart,
                         epoch,
-                        onoff,
+                        onoff1,
+                        onoff2,
                         position,
                         rotation,
                         FinalSpeed,
@@ -256,16 +258,8 @@ namespace PupilLabs
                         gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                         gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                         gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                        VKsi,
-                        VEta,
-                        RKsi,
-                        REta,
-                        CleanLV,
-                        CleanRV,
                         RawX,
-                        RawY,
-                        ObsLinNoise,
-                        ObsAngNoise);
+                        RawY);
                     sb.Append(sbPacket);
 #endif
                 }
@@ -337,7 +331,8 @@ namespace PupilLabs
                     {
                         str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
                     }
-                    sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                    sb.Append(string.Format("Trial,Time,Phase,FF1 On/Off,FF2 On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ," +
+                        "GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,RawJstX,RawJstY,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
                 }
                 else
                 {
