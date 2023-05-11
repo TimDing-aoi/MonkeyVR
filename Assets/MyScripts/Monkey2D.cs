@@ -42,6 +42,7 @@ using UnityEngine.InputSystem;
 using System.IO.Ports;
 using System.Globalization;
 using PupilLabs;
+using ViveSR.anipal.Eye;
 
 public class Monkey2D : MonoBehaviour
 {
@@ -436,6 +437,11 @@ public class Monkey2D : MonoBehaviour
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
+
+    public EyeData data = new EyeData();
+    readonly List<string> HitLocations2D = new List<string>();
+    public GameObject Marker;
+
     private void Awake()
     {
         if(PlayerPrefs.GetFloat("calib") == 1)
@@ -815,27 +821,22 @@ public class Monkey2D : MonoBehaviour
 
         if (PlayerPrefs.GetFloat("calib") == 0)
         {
+            SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
+
+            if (!XRSettings.enabled)
+            {
+                XRSettings.enabled = true;
+            }
+            XRSettings.occlusionMaskScale = 2f;
+            XRSettings.useOcclusionMesh = false;
             flagMultiFF = nFF > 1;
-            if (flagMultiFF)
+            var str = "";
+            for (int i = 0; i < SharedMonkey.nFF; i++)
             {
-                var str = "";
-                for (int i = 0; i < SharedMonkey.nFF; i++)
-                {
-                    str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
-                }
-                sb.Append(string.Format("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
             }
-            else
-            {
-                if ((int)PlayerPrefs.GetFloat("PTBType") == 2)
-                {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                }
-                else
-                {
-                    sb.Append("Trial,Time,Phase,FF On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,FFX,FFY,FFZ,FFV,MappingContext,Confidence,GazeX,GazeY,GazeZ,GazeDistance,RCenterX,RCenterY,RCenterZ,LCenterX,LCenterY,LCenterZ,RNormalX,RNormalY,RNormalZ,LNormalX,LNormalY,LNormalZ,VKsi,Veta,RotKsi,RotEta,PTBLV,PTBRV,CleanLV,CleanRV,RawX,RawY,ObsLinNoise,ObsAngNoise," + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
-                }
-            }
+            sb.Append(string.Format("Trial,Time,Phase,FF1 On/Off,FF2 On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,GazeX,GazeY,GazeZ,GazeX0,GazeY0,GazeZ0," +
+                "HitX,HitY,HitZ,ConvergeDist,LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,JstX,JstY,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
         }
     }
 
@@ -1021,118 +1022,27 @@ public class Monkey2D : MonoBehaviour
             SendMarker("s", 1000.0f);
         }
 
-        if (isCOM)
+        if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
         {
-            if (isCOM2FF && Time.realtimeSinceStartup - MoveStartTime >= FF2delay && !FF2shown)
-            {
-                if(COMmode == 1)
-                {
-                    /*FF2shown = true;
-                    Vector3 position;
-                    int FFindex = rand.Next(FFcoordsList.Count);
-                    float r = FFcoordsList[FFindex].Item1;
-                    float angle = FFcoordsList[FFindex].Item2;
-                    position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
-                    position.y = 0.0001f;
-                    pooledFF[1].transform.position = position;
-                    while (Vector3.Distance(position, pooledFF[0].transform.position) < 1.666666 * fireflyZoneRadius)
-                    {
-                        FFindex = rand.Next(FFcoordsList.Count);
-                        r = FFcoordsList[FFindex].Item1;
-                        angle = FFcoordsList[FFindex].Item2;
-                        position = player.transform.position - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
-                        position.y = 0.0001f;
-                        pooledFF[1].transform.position = position;
-                    }
-                    OnOff(pooledFF[1]);*/
-                }
-                else if(COMmode == 0)
-                {
-                    /*FF2shown = true;
-                    float r;
-                    float angle;
-                    Vector3 position;
-                    foreach (var coord in FFcoordsList)
-                    {
-                        r = coord.Item1;
-                        angle = coord.Item2;
-                        position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                        Vector3 player_vec = Quaternion.AngleAxis(player.transform.rotation.eulerAngles.y, Vector3.up) * Vector3.forward;
-                        Vector3 FF_vec = new Vector3(position.x - player.transform.position.x, 0, position.z - player.transform.position.z);
-                        float AngleBetween = Vector3.Angle(player_vec, FF_vec);
-                        //print(FF_vec);
-                        if (AngleBetween < 45 && Vector3.Distance(position, pooledFF[0].transform.position) > 1.666666 * fireflyZoneRadius)
-                        {
-                            if (!(coord.Item1 == FFcoordsList[FF1index].Item1 && coord.Item2 == FFcoordsList[FF1index].Item2))
-                            {
-
-                                FFvisibleList.Add(coord);
-                            }
-                        }
-                    }
-                    //print("possible FFs: " + FFvisibleList.Count.ToString());
-                    if (FFvisibleList.Count == 0)
-                    {
-                        print("No possible FF for COM. Converting to normal.");
-                    }
-                    else
-                    {
-                        int FFindex = rand.Next(FFvisibleList.Count);
-                        r = FFvisibleList[FFindex].Item1;
-                        angle = FFvisibleList[FFindex].Item2;
-                        position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                        position.y = 0.0001f;
-                        pooledFF[1].transform.position = position;
-                        print("Trial FF2 r:" + r.ToString());
-                        print("Trial FF2 a:" + angle.ToString());
-                        FFvisibleList.Clear();
-                        OnOff(pooledFF[1]);
-                        //ffPositions[1] = position;
-                    }*/
-                }
-                else {
-                    FF2shown = true;
-                    Vector3 position;
-                    int FFindex = rand.Next(FF2coordsList.Count);
-                    FF2s.Add(FFindex);
-                    float VectorX = FF2coordsList[FFindex].Item1;
-                    float VectorY = FF2coordsList[FFindex].Item2;
-                    float r = FFcoordsList[FF1index].Item1;
-                    float angle = FFcoordsList[FF1index].Item2;
-                    position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
-                    position.y = 0.0001f;
-                    Vector3 rotation;
-                    rotation = Vector3.zero;
-                    rotation.x += VectorX;
-                    rotation.z += VectorY;
-                    rotation = Quaternion.Euler(0, angle, 0) * rotation;
-                    pooledFF[1].transform.position = position + rotation;
-                    print("Trial FF2 x:" + position.x);
-                    print("Trial FF2 y:" + position.z);
-                    OnOff(pooledFF[1]);
-                }
-            }
-
-            if(PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && !toggle)
-            {
-                isTrial = false;
-                float stimr = (float)rand.NextDouble();
-                if(stimr < stimuratio)
-                {
-                    SendMarker("m", microStimuDur * 1000.0f);
-                    stimulatedTrial = true;
-                    timeStimuStart.Add(tNow - programT0);
-                }
-            }
-        }
-
-        if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - startTime) > trialStimuGap && (tNow - startTime) < (trialStimuGap + microStimuDur) && stimulatedTrial)
-        {
-            stimulating = true;
-        }
-        else
-        {
-            stimulating = false;
+            FF2shown = true;
+            Vector3 position;
+            int FFindex = rand.Next(FF2coordsList.Count);
+            FF2s.Add(FFindex);
+            float VectorX = FF2coordsList[FFindex].Item1;
+            float VectorY = FF2coordsList[FFindex].Item2;
+            float r = FFcoordsList[FF1index].Item1;
+            float angle = FFcoordsList[FF1index].Item2;
+            position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+            position.y = 0.0001f;
+            Vector3 rotation;
+            rotation = Vector3.zero;
+            rotation.x += VectorX;
+            rotation.z += VectorY;
+            rotation = Quaternion.Euler(0, angle, 0) * rotation;
+            pooledFF[1].transform.position = position + rotation;
+            print("Trial FF2 x:" + position.x);
+            print("Trial FF2 y:" + position.z);
+            OnOff(pooledFF[1]);
         }
 
         if (isCheck)
@@ -1194,33 +1104,68 @@ public class Monkey2D : MonoBehaviour
 
             var trial = trialNum;
             var epoch = (int)currPhase;
-            var onoff = firefly.activeInHierarchy ? 1 : 0;
+            var onoff1 = SharedMonkey.pooledFF[0].activeInHierarchy ? 1 : 0;
+            var onoff2 = SharedMonkey.pooledFF[1].activeInHierarchy ? 1 : 0;
+            var FinalSpeed = SharedJoystick.currentSpeed;
+            var FinalRot = SharedJoystick.currentRot;
             var position = player.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             var rotation = player.transform.rotation.ToString("F5").Trim('(', ')').Replace(" ", "");
-            var linear = SharedJoystick.currentSpeed;
-            var angular = SharedJoystick.currentRot;
             var FFlinear = velocity;
             var FFposition = string.Empty;
-            var VKsi = SharedJoystick.velKsi;
-            var VEta = SharedJoystick.velEta;
-            var RKsi = SharedJoystick.rotKsi;
-            var REta = SharedJoystick.rotEta;
-            var PTBLV = SharedJoystick.currentSpeed;
-            var PTBRV = SharedJoystick.currentRot;
             var RawX = SharedJoystick.rawX;
             var RawY = SharedJoystick.rawY;
-            var CleanLV = SharedJoystick.cleanVel;
-            var CleanRV = SharedJoystick.prevCleanRot;
 
-            var ptbJoyVelValueTmp = SharedJoystick.ptbJoyVelValue;
-            var ptbJoyRotValueTmp = SharedJoystick.ptbJoyRotValue;
-            var ptbJoyFlagTmp = SharedJoystick.ptbJoyFlag;
-            var currentSpeedTmp = SharedJoystick.currentSpeed;
-            var currentRotTmp = SharedJoystick.currentRot;
-            var speedPrePtbTmp = SharedJoystick.speedPrePtb;
-            var rotPrePtbTmp = SharedJoystick.rotPrePtb;
-            var ObsLinNoise = DistFlowSpeed;
-            var ObsAngNoise = DistFlowRot;
+            ViveSR.Error error = SRanipal_Eye_API.GetEyeData(ref data);
+
+            float x;
+            float y;
+            float z;
+            Vector3 location = Vector3.zero;
+            float direction = 0.0f;
+            var left = new SingleEyeData();
+            var right = new SingleEyeData();
+            var combined = new CombinedEyeData();
+
+            if (error == ViveSR.Error.WORK)
+            {
+                left = data.verbose_data.left;
+                right = data.verbose_data.right;
+                combined = data.verbose_data.combined;
+
+                x = combined.eye_data.gaze_direction_normalized.x;
+                y = combined.eye_data.gaze_direction_normalized.y;
+                z = combined.eye_data.gaze_direction_normalized.z;
+
+                var tuple = CalculateConvergenceDistanceAndCoords(player.transform.position, new Vector3(-x, y, z), ~((1 << 12) | (1 << 13)));
+
+                location = tuple.Item1;
+                direction = tuple.Item2;
+
+                if (Camera.main.gameObject.activeInHierarchy)
+                {
+                    HitLocations2D.Add(string.Join(",", 0.0f, 0.0f));
+                }
+                else
+                {
+                    HitLocations2D.Add(string.Join(",", 0.0f, 0.0f));
+                }
+
+                var alpha = Vector3.SignedAngle(player.transform.position, player.transform.position + new Vector3(-x, y, z), player.transform.forward) * Mathf.Deg2Rad;
+                var hypo = 10.0f / Mathf.Cos(alpha);
+                Marker.transform.localPosition = new Vector3(-x, y, z) * hypo;
+            }
+            else
+            {
+                //print("eye tracking error!");
+                x = 0.0f;
+                y = 0.0f;
+                z = 0.0f;
+
+                left.pupil_diameter_mm = 0.0f;
+                left.eye_openness = 0.0f;
+                right.pupil_diameter_mm = 0.0f;
+                right.eye_openness = 0.0f;
+            }
 
             if (flagMultiFF)
             {
@@ -1233,48 +1178,27 @@ public class Monkey2D : MonoBehaviour
             {
                 FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
             }
-            if (SharedJoystick.CtrlDynamicsFlag)
-            {
-                sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27}\n",
-                    trial,
-                    (double)Time.realtimeSinceStartup - timeProgStart,
-                    epoch,
-                    onoff,
-                    position,
-                    rotation,
-                    FFposition,
-                    FFlinear,
-                    0,
-                    0,
-                    "0,0,0",
-                    0,
-                    "0,0,0",
-                    "0,0,0",
-                    "0,0,0",
-                    "0,0,0",
-                    VKsi,
-                    VEta,
-                    RKsi,
-                    REta,
-                    PTBLV,
-                    PTBRV,
-                    CleanLV,
-                    CleanRV,
-                    RawX,
-                    RawY,
-                    ObsLinNoise,
-                    ObsAngNoise));
-            }
-            else
-            {
-                var lllin = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29}",
-                        trial, (double)Time.realtimeSinceStartup - timeProgStart, epoch, onoff, position, rotation,
-                        linear, angular, FFposition, FFlinear, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, ObsLinNoise, ObsAngNoise);                
-                
-                sb.AppendLine(lllin);
-            }
+            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
+                        trial,
+                        (double)Time.realtimeSinceStartup - timeProgStart,
+                        epoch,
+                        onoff1,
+                        onoff2,
+                        position,
+                        rotation,
+                        FinalSpeed,
+                        FinalRot,
+                        FFposition,
+                        FFlinear,
+                        "human",
+                        string.Join(",", x, y, z),
+                        string.Join(",", player.transform.position.x, player.transform.position.y, player.transform.position.z),
+                        location.ToString("F8").Trim(toTrim).Replace(" ", ""),
+                        direction,
+                        string.Join(",", left.pupil_diameter_mm, right.pupil_diameter_mm),
+                        string.Join(",", left.eye_openness, right.eye_openness),
+                        RawX,
+                        RawY));
         }
     }
 
@@ -3479,5 +3403,19 @@ public class Monkey2D : MonoBehaviour
             New_Coord_Tuple = new Tuple<float, float>(x,y);
             FF2coordsList.Add(New_Coord_Tuple);
         }
+    }
+
+    public (Vector3, float) CalculateConvergenceDistanceAndCoords(Vector3 origin, Vector3 direction, int layerMask)
+    {
+        Vector3 coords = Vector3.zero;
+        float hit = Mathf.Infinity;
+
+        if (Physics.Raycast(origin, Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.forward, player.transform.forward, Vector3.up), Vector3.up) * direction, out RaycastHit hitInfo, Mathf.Infinity, layerMask))
+        {
+            coords = hitInfo.point;
+            hit = hitInfo.distance;
+        }
+
+        return (coords, hit);
     }
 }
