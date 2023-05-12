@@ -480,16 +480,19 @@ public class Monkey2D : MonoBehaviour
         Lcam.ResetProjectionMatrix();
         Rcam.ResetProjectionMatrix();
 
-        lm = Lcam.projectionMatrix;
-        lm02 = lm.m02;
-        rm = Rcam.projectionMatrix;
-        rm02 = rm.m02;
-        lm.m02 = lm02 + offset;
-        Lcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
-        Lcam.projectionMatrix = lm;
-        rm.m02 = rm02 - offset;
-        Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
-        Rcam.projectionMatrix = rm;
+        if (PlayerPrefs.GetFloat("calib") != 0)
+        {
+            lm = Lcam.projectionMatrix;
+            lm02 = lm.m02;
+            rm = Rcam.projectionMatrix;
+            rm02 = rm.m02;
+            lm.m02 = lm02 + offset;
+            Lcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
+            Lcam.projectionMatrix = lm;
+            rm.m02 = rm02 - offset;
+            Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
+            Rcam.projectionMatrix = rm;
+        }
 
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
@@ -821,14 +824,6 @@ public class Monkey2D : MonoBehaviour
 
         if (PlayerPrefs.GetFloat("calib") == 0)
         {
-            SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
-
-            if (!XRSettings.enabled)
-            {
-                XRSettings.enabled = true;
-            }
-            XRSettings.occlusionMaskScale = 2f;
-            XRSettings.useOcclusionMesh = false;
             flagMultiFF = nFF > 1;
             var str = "";
             for (int i = 0; i < SharedMonkey.nFF; i++)
@@ -1156,7 +1151,7 @@ public class Monkey2D : MonoBehaviour
             }
             else
             {
-                //print("eye tracking error!");
+                print("eye tracking error!");
                 x = 0.0f;
                 y = 0.0f;
                 z = 0.0f;
@@ -1167,18 +1162,9 @@ public class Monkey2D : MonoBehaviour
                 right.eye_openness = 0.0f;
             }
 
-            if (flagMultiFF)
-            {
-                foreach (Vector3 pos in ffPositions)
-                {
-                    FFposition = string.Concat(FFposition, ",", pos.ToString("F5").Trim('(', ')').Replace(" ", "")).Substring(1);
-                }
-            }
-            else
-            {
-                FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
-            }
-            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}\n",
+            FFposition = string.Concat(pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            FFposition = string.Concat(FFposition, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19}\n",
                         trial,
                         (double)Time.realtimeSinceStartup - timeProgStart,
                         epoch,

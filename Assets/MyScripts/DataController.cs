@@ -181,15 +181,10 @@ namespace PupilLabs
                     var CleanRV = SharedJoystick.cleanRot;
                     var ObsLinNoise = SharedMonkey.DistFlowSpeed;
                     var ObsAngNoise = SharedMonkey.DistFlowRot;
-                    if (flagMultiFF)
-                    {
-                        FFposition = SharedMonkey.ffPositions[0].ToString("F5").Trim('(', ')').Replace(" ", "");
-                        FFposition = string.Concat(FFposition, ",", SharedMonkey.ffPositions[1].ToString("F5").Trim('(', ')').Replace(" ", ""));
-                    }
-                    else
-                    {
-                        FFposition = firefly.transform.position.ToString("F5").Trim('(', ')').Replace(" ", "");
-                    }
+                    
+                    char[] toTrim = { '(', ')' };
+                    FFposition = string.Concat(SharedMonkey.pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
+                    FFposition = string.Concat(FFposition, ",", SharedMonkey.pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
 #if USING_NAN
                     if (gazeDataNow != gazeNull)
                     {
