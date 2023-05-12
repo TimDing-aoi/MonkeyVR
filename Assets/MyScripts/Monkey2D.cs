@@ -406,7 +406,7 @@ public class Monkey2D : MonoBehaviour
 
     bool SMtrial = false;
 
-    readonly List<float> COMtrialtype = new List<float>();
+    readonly List<float> noisetrialtype = new List<float>();
     public bool isNormal = false;
     public bool isStatic2FF = false;
     public bool isCOM2FF = false;
@@ -1256,31 +1256,35 @@ public class Monkey2D : MonoBehaviour
         switch (randomNumber)
         {
             case 1:
-                Console.WriteLine("Case 1");
+                print("Case 1");
                 isProcessNoise = false;
                 ObsVelocityNoiseGain = 0;
                 ObsRotationNoiseGain = 0;
+                noisetrialtype.Add(1);
                 break;
             case 2:
-                Console.WriteLine("Case 2");
+                print("Case 2");
                 isProcessNoise = false;
                 ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
                 ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
+                noisetrialtype.Add(2);
                 break;
             case 3:
-                Console.WriteLine("Case 3");
+                print("Case 3");
                 isProcessNoise = true;
                 ObsVelocityNoiseGain = 0;
                 ObsRotationNoiseGain = 0;
+                noisetrialtype.Add(3);
                 break;
             case 4:
-                Console.WriteLine("Case 4");
+                print("Case 4");
                 isProcessNoise = true;
                 ObsVelocityNoiseGain = PlayerPrefs.GetFloat("ObsVelocityNoiseGain");
                 ObsRotationNoiseGain = PlayerPrefs.GetFloat("ObsRotationNoiseGain");
+                noisetrialtype.Add(4);
                 break;
             default:
-                Console.WriteLine("Invalid case");
+                print("Invalid case");
                 break;
         }
 
@@ -1358,21 +1362,21 @@ public class Monkey2D : MonoBehaviour
                 isNormal = true;
                 isStatic2FF = false;
                 isCOM2FF = false;
-                COMtrialtype.Add(1);
+                noisetrialtype.Add(1);
             }
             else if(COMdecider < normal2FFRatio)
             {
                 isNormal = false;
                 isStatic2FF = true;
                 isCOM2FF = false;
-                COMtrialtype.Add(2);
+                noisetrialtype.Add(2);
             }
             else
             {
                 isNormal = false;
                 isStatic2FF = false;
                 isCOM2FF = true;
-                COMtrialtype.Add(3);
+                noisetrialtype.Add(3);
             }
         }
         else if (nFF > 1 && multiMode == 1)
@@ -2527,7 +2531,7 @@ public class Monkey2D : MonoBehaviour
             }
             if (isCOM)
             {
-                temp.Add(COMtrialtype.Count);
+                temp.Add(noisetrialtype.Count);
             }
             //foreach (int count in temp)
             //{
@@ -2613,9 +2617,9 @@ public class Monkey2D : MonoBehaviour
                     line += string.Format(",0");
                 }
 
-                if (isCOM)
+                if (true)
                 {
-                    line += string.Format(",{0}", COMtrialtype[i]);
+                    line += string.Format(",{0}", noisetrialtype[i]);
                 }
                 else
                 {

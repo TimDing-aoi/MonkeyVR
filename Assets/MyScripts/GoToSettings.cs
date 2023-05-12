@@ -206,7 +206,6 @@ public class GoToSettings : MonoBehaviour
             {
                 if (children.gameObject.CompareTag("Setting"))
                 {
-                    print(obj.name);
                     if (children.name == "isColored" || children.name == "is2FFCOM" || children.name == "isSM" || children.name == "isDiscrete")
                     {
                         UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
