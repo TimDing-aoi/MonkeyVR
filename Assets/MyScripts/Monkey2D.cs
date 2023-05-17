@@ -463,6 +463,7 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     void OnEnable()
     {
+        Application.targetFrameRate = 90;
         PlayerPrefs.SetFloat("FixedYSpeed", 0);
         PlayerPrefs.SetFloat("MovingFFmode", 0);
         Application.runInBackground = true;
@@ -1001,6 +1002,9 @@ public class Monkey2D : MonoBehaviour
             SendMarker("x", 1000.0f);
 
             juiceBox.Close();
+
+            var num = PlayerPrefs.GetInt("Run Number") + 1;
+            PlayerPrefs.SetInt("Run Number", num);
 
             SceneManager.LoadScene("MainMenu");
         }
