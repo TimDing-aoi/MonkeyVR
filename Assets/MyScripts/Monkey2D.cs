@@ -434,6 +434,7 @@ public class Monkey2D : MonoBehaviour
     float COM2FFRatio;
     float COMmode; 
     int FF1index;
+    int FF2index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
@@ -1025,10 +1026,8 @@ public class Monkey2D : MonoBehaviour
         {
             FF2shown = true;
             Vector3 position;
-            int FFindex = rand.Next(FF2coordsList.Count);
-            FF2s.Add(FFindex);
-            float VectorX = FF2coordsList[FFindex].Item1;
-            float VectorY = FF2coordsList[FFindex].Item2;
+            float VectorX = FF2coordsList[FF2index].Item1;
+            float VectorY = FF2coordsList[FF2index].Item2;
             float r = FFcoordsList[FF1index].Item1;
             float angle = FFcoordsList[FF1index].Item2;
             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
@@ -1269,11 +1268,10 @@ public class Monkey2D : MonoBehaviour
             player.transform.position = Vector3.up * p_height;
             player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             Vector3 position;
-            int FFindex = rand.Next(FFcoordsList.Count);
-            FF1s.Add(FFindex);
-            FF1index = FFindex;
-            float r = FFcoordsList[FFindex].Item1;
-            float angle = FFcoordsList[FFindex].Item2;
+            FF1index = rand.Next(FFcoordsList.Count);
+            FF1s.Add(FF1index);
+            float r = FFcoordsList[FF1index].Item1;
+            float angle = FFcoordsList[FF1index].Item2;
             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
             position.y = 0.0001f;
             pooledFF[0].transform.position = position;
@@ -1297,6 +1295,8 @@ public class Monkey2D : MonoBehaviour
                 isStatic2FF = true;
                 isCOM2FF = false;
                 COMtrialtype.Add(2);
+                FF2index = rand.Next(FF2coordsList.Count);
+                FF2s.Add(FF2index);
             }
             else
             {
@@ -1304,6 +1304,8 @@ public class Monkey2D : MonoBehaviour
                 isStatic2FF = false;
                 isCOM2FF = true;
                 COMtrialtype.Add(3);
+                FF2index = rand.Next(FF2coordsList.Count);
+                FF2s.Add(FF2index);
             }
         }
         else if (nFF > 1 && multiMode == 1)
@@ -1623,10 +1625,8 @@ public class Monkey2D : MonoBehaviour
                         }
                         else if(isCOM && isStatic2FF){
                             Vector3 position;
-                            int FFindex = rand.Next(FF2coordsList.Count);
-                            FF2s.Add(FFindex);
-                            float VectorX = FF2coordsList[FFindex].Item1;
-                            float VectorY = FF2coordsList[FFindex].Item2;
+                            float VectorX = FF2coordsList[FF2index].Item1;
+                            float VectorY = FF2coordsList[FF2index].Item2;
                             r = FFcoordsList[FF1index].Item1;
                             float angle = FFcoordsList[FF1index].Item2;
                             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
