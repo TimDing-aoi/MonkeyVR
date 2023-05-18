@@ -927,7 +927,7 @@ public class Monkey2D : MonoBehaviour
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
         float StartThreshold = PlayerPrefs.GetFloat("StartThreshold");
-        await new WaitUntil(() => Mathf.Abs(SharedJoystick.rawX) < StartThreshold && Mathf.Abs(SharedJoystick.rawY) < StartThreshold);
+        await new WaitUntil(() => Mathf.Abs(SharedJoystick.rawX) <= StartThreshold && Mathf.Abs(SharedJoystick.rawY) <= StartThreshold);
         isBegin = true;
 
         //Randomize player max speeds based on given trial control dynamics flag
