@@ -1121,6 +1121,7 @@ public class Monkey2D : MonoBehaviour
             float y;
             float z;
             Vector3 location = Vector3.zero;
+            Vector3 locationHorizVert = Vector3.zero;
             float direction = 0.0f;
             var left = new SingleEyeData();
             var right = new SingleEyeData();
@@ -1136,10 +1137,11 @@ public class Monkey2D : MonoBehaviour
                 y = combined.eye_data.gaze_direction_normalized.y;
                 z = combined.eye_data.gaze_direction_normalized.z;
 
-                var tuple = CalculateConvergenceDistanceAndCoords(player.transform.position, new Vector3(-x, y, z), ~((1 << 12) | (1 << 13)));
-
+                var tuple = CalculateConvergenceDistanceAndCoordsFloor(player.transform.position, new Vector3(-x, y, z));
+                var horizvertTuple = CalculateConvergenceDistanceAndCoords(player.transform.position, new Vector3(-x, y, z), ~((1 << 12) | (1 << 13)));
                 location = tuple.Item1;
                 direction = tuple.Item2;
+                locationHorizVert = horizvertTuple.Item1;
 
                 if (Camera.main.gameObject.activeInHierarchy)
                 {
@@ -1166,10 +1168,10 @@ public class Monkey2D : MonoBehaviour
                 right.pupil_diameter_mm = 0.0f;
                 right.eye_openness = 0.0f;
             }
-            eye_point.transform.position = location;
+            eye_point.transform.position = locationHorizVert;
             FFposition = string.Concat(pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             FFposition = string.Concat(FFposition, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19}\n",
+            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}\n",
                         trial,
                         (double)Time.realtimeSinceStartup - timeProgStart,
                         epoch,
@@ -1189,7 +1191,8 @@ public class Monkey2D : MonoBehaviour
                         string.Join(",", left.pupil_diameter_mm, right.pupil_diameter_mm),
                         string.Join(",", left.eye_openness, right.eye_openness),
                         RawX,
-                        RawY));
+                        RawY,
+                        locationHorizVert.ToString("F8").Trim(toTrim).Replace(" ", "")));
         }
     }
 
@@ -3403,6 +3406,20 @@ public class Monkey2D : MonoBehaviour
         float hit = Mathf.Infinity;
 
         if (Physics.Raycast(origin, Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.forward, player.transform.forward, Vector3.up), Vector3.up) * direction, out RaycastHit hitInfo, Mathf.Infinity, layerMask))
+        {
+            coords = hitInfo.point;
+            hit = hitInfo.distance;
+        }
+
+        return (coords, hit);
+    }
+
+    public (Vector3, float) CalculateConvergenceDistanceAndCoordsFloor(Vector3 origin, Vector3 direction)
+    {
+        Vector3 coords = Vector3.zero;
+        float hit = Mathf.Infinity;
+        int floor_layer = ~((1 << 12) | (1 << 13) | (1 << 2));
+        if (Physics.Raycast(origin, Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.forward, player.transform.forward, Vector3.up), Vector3.up) * direction, out RaycastHit hitInfo, Mathf.Infinity, floor_layer))
         {
             coords = hitInfo.point;
             hit = hitInfo.distance;
