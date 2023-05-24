@@ -49,6 +49,7 @@ public class Monkey2D : MonoBehaviour
     public static Monkey2D SharedMonkey;
 
     public GameObject firefly;
+    public GameObject eye_point;
     private float timeCounter = 0;
     //public GameObject marker;
     //public GameObject panel;
@@ -494,6 +495,7 @@ public class Monkey2D : MonoBehaviour
             rm.m02 = rm02 - offset;
             Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
             Rcam.projectionMatrix = rm;
+            eye_point.SetActive(false);
         }
 
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
@@ -1164,7 +1166,7 @@ public class Monkey2D : MonoBehaviour
                 right.pupil_diameter_mm = 0.0f;
                 right.eye_openness = 0.0f;
             }
-
+            eye_point.transform.position = location;
             FFposition = string.Concat(pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             FFposition = string.Concat(FFposition, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19}\n",
