@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 32881938}
   - component: {fileID: 32881937}
   - component: {fileID: 32881936}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fixation Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -835,7 +835,7 @@ public class Monkey2D : MonoBehaviour
                 str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
             }
             sb.Append(string.Format("Trial,Time,Phase,FF1 On/Off,FF2 On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,GazeX,GazeY,GazeZ,GazeX0,GazeY0,GazeZ0," +
-                "HitX,HitY,HitZ,ConvergeDist,LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,JstX,JstY,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                "HitX,HitY,HitZ,ConvergeDist,LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,JstX,JstY,ProjectedX,ProjectedY,ProjectedZ,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
         }
     }
 
