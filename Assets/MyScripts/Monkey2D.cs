@@ -632,15 +632,12 @@ public class Monkey2D : MonoBehaviour
         minJuiceTime = PlayerPrefs.GetFloat("Min Juice Time");
         maxJuiceTime = PlayerPrefs.GetFloat("Max Juice Time");
         LR = 0.5f;
-        if (LR == 0.5f)
+        maxPhi = PlayerPrefs.GetFloat("Max Angle");
+        minPhi = PlayerPrefs.GetFloat("Min Angle");
+        if (LR == 0.5f && maxPhi != minPhi)
         {
             maxPhi = PlayerPrefs.GetFloat("Max Angle");
             minPhi = -maxPhi;
-        }
-        else
-        {
-            maxPhi = PlayerPrefs.GetFloat("Max Angle");
-            minPhi = PlayerPrefs.GetFloat("Min Angle");
         }
         fireflyZoneRadius = PlayerPrefs.GetFloat("Reward Zone Radius");
         fireflySize = PlayerPrefs.GetFloat("RadiusFF") * 2;
@@ -1002,6 +999,9 @@ public class Monkey2D : MonoBehaviour
 
             juiceBox.Close();
 
+            var num = PlayerPrefs.GetInt("Run Number") + 1;
+            PlayerPrefs.SetInt("Run Number", num);
+
             SceneManager.LoadScene("MainMenu");
         }
 
@@ -1251,7 +1251,7 @@ public class Monkey2D : MonoBehaviour
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
 
-        int randomNumber = rand.Next(1, 5); // Generates a random integer between 1 and 4 (inclusive)
+        int randomNumber = 1; // Generates a random integer between 1 and 4 (inclusive)
 
         switch (randomNumber)
         {
@@ -1448,9 +1448,10 @@ public class Monkey2D : MonoBehaviour
                 int randomRot = rand.Next(1, num_rot + 1);
                 r = linspace[randomLin - 1];
                 angle = rotspace[randomRot - 1];
-                print(r);
-                print(angle);
             }
+
+            print(r);
+            print(angle);
 
             if (LR != 0.5f)
             {
