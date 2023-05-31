@@ -43,6 +43,7 @@ using System.IO.Ports;
 using System.Globalization;
 using PupilLabs;
 using ViveSR.anipal.Eye;
+using TMPro;
 
 public class Monkey2D : MonoBehaviour
 {
@@ -58,6 +59,10 @@ public class Monkey2D : MonoBehaviour
     public GameObject FP;
     public GameObject leftMask;
     public GameObject rightMask;
+    public GameObject humanscoringL;
+    public GameObject humanscoringR;
+    public float trial_score;
+    readonly List<int> humanscore = new List<int>();
     [HideInInspector] public GazeVisualizer gazeVisualizer;
     //public GameObject Marker;
     // public GameObject inner;
@@ -75,7 +80,7 @@ public class Monkey2D : MonoBehaviour
     [Tooltip("Diameter of firefly")]
     [HideInInspector] public float fireflySize;
     [Tooltip("Maximum distance allowed from center of firefly")]
-    [HideInInspector] public float fireflyZoneRadius;
+    [HideInInspector] public float RewardZoneRadius;
     // Enumerable experiment mode selector
     private enum Modes
     {
@@ -441,7 +446,6 @@ public class Monkey2D : MonoBehaviour
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
 
     public EyeData data = new EyeData();
-    readonly List<string> HitLocations2D = new List<string>();
     public GameObject Marker;
 
     private void Awake()
@@ -650,7 +654,7 @@ public class Monkey2D : MonoBehaviour
             maxPhi = PlayerPrefs.GetFloat("Max Angle");
             minPhi = PlayerPrefs.GetFloat("Min Angle");
         }
-        fireflyZoneRadius = PlayerPrefs.GetFloat("Reward Zone Radius");
+        RewardZoneRadius = PlayerPrefs.GetFloat("Reward Zone Radius");
         fireflySize = PlayerPrefs.GetFloat("RadiusFF") * 2;
         firefly.transform.localScale = new Vector3(fireflySize, fireflySize, 1);
         ratio = PlayerPrefs.GetFloat("Ratio");
@@ -835,7 +839,7 @@ public class Monkey2D : MonoBehaviour
                 str = string.Concat(str, string.Format("FFX{0},FFY{0},FFZ{0},", i));
             }
             sb.Append(string.Format("Trial,Time,Phase,FF1 On/Off,FF2 On/Off,MonkeyX,MonkeyY,MonkeyZ,MonkeyRX,MonkeyRY,MonkeyRZ,MonkeyRW,Linear Velocity,Angular Velocity,{0}FFV,MappingContext,GazeX,GazeY,GazeZ,GazeX0,GazeY0,GazeZ0," +
-                "HitX,HitY,HitZ,ConvergeDist,LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,JstX,JstY,ProjectedX,ProjectedY,ProjectedZ,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
+                "HitX,HitY,HitZ,ConvergeDist,LeftPupilDiam,RightPupilDiam,LeftOpen,RightOpen,JstX,JstY,ProjectedX,ProjectedY,ProjectedZ,GazeXL,GazeYL,GazeZL,GazeX0L,GazeY0L,GazeZ0L,GazeXR,GazeYR,GazeZR,GazeX0R,GazeY0R,GazeZ0R,", str) + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3") + "\n");
         }
     }
 
@@ -1082,11 +1086,15 @@ public class Monkey2D : MonoBehaviour
             {
                 rightMask.SetActive(true);
                 leftMask.SetActive(true);
+                humanscoringL.SetActive(true);
+                humanscoringR.SetActive(true);
             }
             else
             {
                 rightMask.SetActive(false);
                 leftMask.SetActive(false);
+                humanscoringL.SetActive(false);
+                humanscoringR.SetActive(false);
             }
         }
 
@@ -1120,6 +1128,10 @@ public class Monkey2D : MonoBehaviour
             float x;
             float y;
             float z;
+            float xL = 0, yL = 0, zL = 0;
+            float xR = 0, yR = 0, zR = 0;
+            float xL0 = 0, yL0 = 0, zL0 = 0;
+            float xR0 = 0, yR0 = 0, zR0 = 0;
             Vector3 location = Vector3.zero;
             Vector3 locationHorizVert = Vector3.zero;
             float direction = 0.0f;
@@ -1143,18 +1155,22 @@ public class Monkey2D : MonoBehaviour
                 direction = tuple.Item2;
                 locationHorizVert = horizvertTuple.Item1;
 
-                if (Camera.main.gameObject.activeInHierarchy)
-                {
-                    HitLocations2D.Add(string.Join(",", 0.0f, 0.0f));
-                }
-                else
-                {
-                    HitLocations2D.Add(string.Join(",", 0.0f, 0.0f));
-                }
-
                 var alpha = Vector3.SignedAngle(player.transform.position, player.transform.position + new Vector3(-x, y, z), player.transform.forward) * Mathf.Deg2Rad;
                 var hypo = 10.0f / Mathf.Cos(alpha);
                 Marker.transform.localPosition = new Vector3(-x, y, z) * hypo;
+
+                xL = left.gaze_direction_normalized.x;
+                yL = left.gaze_direction_normalized.y;
+                zL = left.gaze_direction_normalized.z; 
+                xR = right.gaze_direction_normalized.x;
+                yR = right.gaze_direction_normalized.y;
+                zR = right.gaze_direction_normalized.z;
+                xL0 = left.gaze_origin_mm.x;
+                yL0 = left.gaze_origin_mm.y;
+                zL0 = left.gaze_origin_mm.z;
+                xR0 = right.gaze_origin_mm.x;
+                yR0 = right.gaze_origin_mm.y;
+                zR0 = right.gaze_origin_mm.z;
             }
             else
             {
@@ -1171,7 +1187,7 @@ public class Monkey2D : MonoBehaviour
             eye_point.transform.position = locationHorizVert;
             FFposition = string.Concat(pooledFF[0].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             FFposition = string.Concat(FFposition, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
-            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}\n",
+            sb.Append(string.Format("{0},{1, 4:F9},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24}\n",
                         trial,
                         (double)Time.realtimeSinceStartup - timeProgStart,
                         epoch,
@@ -1192,7 +1208,11 @@ public class Monkey2D : MonoBehaviour
                         string.Join(",", left.eye_openness, right.eye_openness),
                         RawX,
                         RawY,
-                        locationHorizVert.ToString("F8").Trim(toTrim).Replace(" ", "")));
+                        locationHorizVert.ToString("F8").Trim(toTrim).Replace(" ", ""),
+                        string.Join(",", xL, yL, zL),
+                        string.Join(",", xL0, yL0, zL0),
+                        string.Join(",", xR, yR, zR),
+                        string.Join(",", xR0, yR0, zR0)));
         }
     }
 
@@ -1834,7 +1854,7 @@ public class Monkey2D : MonoBehaviour
         {
             if (nFF > 1 && multiMode == 1)
             {
-                if (isTimeout || Vector3.Distance(player.transform.position, pooledFF[loopCount].transform.position) > fireflyZoneRadius)
+                if (isTimeout || Vector3.Distance(player.transform.position, pooledFF[loopCount].transform.position) > RewardZoneRadius)
                 {
                     foreach (GameObject FF in pooledFF)
                     {
@@ -1935,7 +1955,7 @@ public class Monkey2D : MonoBehaviour
                 {
                     distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
                     //print(distance);
-                    if (distance <= fireflyZoneRadius && distance < curdistance)
+                    if (distance <= RewardZoneRadius && distance < curdistance)
                     {
                         curdistance = distance;
                         proximity = true;
@@ -1951,7 +1971,7 @@ public class Monkey2D : MonoBehaviour
             distance = Vector3.Distance(pPos, pooledFF[loopCount].transform.position);
             //print(distance);
             distances.Add(distance);
-            if (distances[loopCount] <= fireflyZoneRadius)
+            if (distances[loopCount] <= RewardZoneRadius)
             {
                 proximity = true;
             }
@@ -1963,7 +1983,7 @@ public class Monkey2D : MonoBehaviour
                 ffPosStr = string.Concat(ffPosStr, ",", pooledFF[i].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
                 distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
                 //print(distance);
-                if (distance <= fireflyZoneRadius && distance < curdistance)
+                if (distance <= RewardZoneRadius && distance < curdistance)
                 {
                     curdistance = distance;
                     proximity = true;
@@ -1974,7 +1994,7 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            if (Vector3.Distance(pPos, firefly.transform.position) <= fireflyZoneRadius) proximity = true;
+            if (Vector3.Distance(pPos, firefly.transform.position) <= RewardZoneRadius) proximity = true;
             distance = Vector3.Distance(pPos, firefly.transform.position);
             ffPosStr = firefly.transform.position.ToString("F5").Trim(toTrim).Replace(" ", "");
             distances.Add(distance);
@@ -1990,6 +2010,14 @@ public class Monkey2D : MonoBehaviour
                 audioSource.clip = winSound;
                 juiceDuration.Add(juiceTime);
                 audioSource.Play();
+                if (distance <= RewardZoneRadius / 2)
+                {
+                    trial_score = 2;
+                }
+                else
+                {
+                    trial_score = 1;
+                }
                 points++;
                 SendMarker("j", juiceTime);
                 await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
@@ -1998,11 +2026,18 @@ public class Monkey2D : MonoBehaviour
             else if (isCOM)
             {
                 audioSource.clip = winSound;
-                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
+                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                 //print(juiceTime);
                 juiceDuration.Add(juiceTime);
                 audioSource.Play();
-
+                if(distance <= RewardZoneRadius / 2)
+                {
+                    trial_score = 2;
+                }
+                else
+                {
+                    trial_score = 1;
+                }
                 points++;
                 SendMarker("j", juiceTime);
 
@@ -2012,7 +2047,7 @@ public class Monkey2D : MonoBehaviour
             {
                 if (loopCount + 1 < nFF)
                 {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
+                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                     //Debug.Log(string.Format("Firefly {0} Hit.", loopCount + 1));
                     audioSource.clip = neutralSound;
                     audioSource.Play();
@@ -2021,7 +2056,7 @@ public class Monkey2D : MonoBehaviour
                 }
                 else
                 {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
+                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                     //Debug.Log(string.Format("Firefly {0} Hit. Reward: {1}", loopCount + 1, juiceTime));
                     audioSource.clip = winSound;
                     //print(juiceTime);
@@ -2037,7 +2072,7 @@ public class Monkey2D : MonoBehaviour
             else
             {
                 audioSource.clip = winSound;
-                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, fireflyZoneRadius, distance));
+                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                 //print(juiceTime);
                 juiceDuration.Add(juiceTime);
                 audioSource.Play();
@@ -2052,6 +2087,7 @@ public class Monkey2D : MonoBehaviour
         else
         {
             audioSource.clip = loseSound;
+            trial_score = 0;
             juiceDuration.Add(0.0f);
             rewardTime.Add(0.0f);
             audioSource.Play();
@@ -2059,6 +2095,12 @@ public class Monkey2D : MonoBehaviour
             await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
         }
 
+        TMP_Text scoreText;
+        scoreText = humanscoringL.transform.GetComponent<TMP_Text>();
+        scoreText.text = string.Format("{0} point" , trial_score);
+        scoreText = humanscoringR.transform.GetComponent<TMP_Text>();
+        scoreText.text = string.Format("{0} point", trial_score);
+        humanscore.Add((int)trial_score);
 
         if (nFF > 1 && multiMode == 1)
         {
@@ -2408,7 +2450,7 @@ public class Monkey2D : MonoBehaviour
 
                 firstLine = string.Format("n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,{0}pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,{1}rewarded,", ffPosStr, distStr) +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,FF2delay,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,FF1index,FF2index,FF2delay,HumanScore,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             else
@@ -2470,7 +2512,9 @@ public class Monkey2D : MonoBehaviour
                 temp.Add(COMtrialtype.Count);
                 temp.Add(FF1s.Count);
                 temp.Add(FF2s.Count);
+                temp.Add(humanscore.Count);
             }
+
             foreach (int count in temp)
             {
                 print(count);
@@ -2561,9 +2605,11 @@ public class Monkey2D : MonoBehaviour
                     line += string.Format(",{0}", FF1s[i]);
                     line += string.Format(",{0}", FF2s[i]);
                     line += string.Format(",{0}", FF2delays[i]);
+                    line += string.Format(",{0}", humanscore[i]);
                 }
                 else
                 {
+                    line += string.Format(",0");
                     line += string.Format(",0");
                     line += string.Format(",0");
                     line += string.Format(",0");
