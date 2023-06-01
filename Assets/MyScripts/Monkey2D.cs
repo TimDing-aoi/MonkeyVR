@@ -2097,9 +2097,9 @@ public class Monkey2D : MonoBehaviour
 
         TMP_Text scoreText;
         scoreText = humanscoringL.transform.GetComponent<TMP_Text>();
-        scoreText.text = string.Format("{0} point" , trial_score);
+        scoreText.text = string.Format("{0} points" , trial_score);
         scoreText = humanscoringR.transform.GetComponent<TMP_Text>();
-        scoreText.text = string.Format("{0} point", trial_score);
+        scoreText.text = string.Format("{0} points", trial_score);
         humanscore.Add((int)trial_score);
 
         if (nFF > 1 && multiMode == 1)
