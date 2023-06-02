@@ -822,4 +822,10 @@ public class GoToSettings : MonoBehaviour
             + "," + PlayerPrefs.GetFloat("StimuAmp").ToString() + "," + PlayerPrefs.GetFloat("StimuStimuDur").ToString());
         File.WriteAllText(stimPath, stimConf.ToString());
     }
+
+    public void HumanCalib()
+    {
+        int result = ViveSR.anipal.Eye.SRanipal_Eye_API.LaunchEyeCalibration(System.IntPtr.Zero);
+        print(result);
+    }
 }
