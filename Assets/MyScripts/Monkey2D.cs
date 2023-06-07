@@ -534,7 +534,7 @@ public class Monkey2D : MonoBehaviour
         rotMin = PlayerPrefs.GetFloat("Min Angular Speed");
         rotMax = PlayerPrefs.GetFloat("Max Angular Speed");
         nFF = PlayerPrefs.GetFloat("Number of Fireflies");
-        multiMode = PlayerPrefs.GetInt("Multiple Firefly Mode");
+        multiMode = 2;// PlayerPrefs.GetInt("Multiple Firefly Mode");
         separation = PlayerPrefs.GetFloat("Separation");
         minDrawDistance = PlayerPrefs.GetFloat("Minimum Firefly Distance");
         maxDrawDistance = PlayerPrefs.GetFloat("Maximum Firefly Distance");
