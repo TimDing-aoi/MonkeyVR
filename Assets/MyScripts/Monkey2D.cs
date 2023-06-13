@@ -443,6 +443,7 @@ public class Monkey2D : MonoBehaviour
     int FF2index;
     readonly List<Tuple<float, float>> FFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FF2coordsList = new List<Tuple<float, float>>();
+    readonly List<Tuple<float, float>> SingleFFcoordsList = new List<Tuple<float, float>>();
     readonly List<Tuple<float, float>> FFvisibleList = new List<Tuple<float, float>>();
 
     public EyeData data = new EyeData();
@@ -555,8 +556,25 @@ public class Monkey2D : MonoBehaviour
             nFF = 2;
             FFcoordsList.Clear();
             FF2coordsList.Clear();
+            SingleFFcoordsList.Clear();
             ReadCoordCSV();
             ReadCoord2CSV();
+            foreach (var coordinate in FFcoordsList)
+            {
+                SingleFFcoordsList.Add(coordinate);
+                foreach (var coordinate2 in FF2coordsList)
+                {
+                    Tuple<float, float> New_Coord_Tuple;
+                    float Xcombined = coordinate.Item1 + coordinate2.Item1;
+                    float Ycombined = coordinate.Item2 + coordinate2.Item2;
+                    New_Coord_Tuple = new Tuple<float, float>(Xcombined, Ycombined);
+                    if (!SingleFFcoordsList.Contains(New_Coord_Tuple))
+                    {
+                        SingleFFcoordsList.Add(New_Coord_Tuple);
+                    }
+                }
+            }
+
         }
         normalRatio = PlayerPrefs.GetFloat("COMNormal");
         normal2FFRatio = PlayerPrefs.GetFloat("Sta2FF");
@@ -1294,7 +1312,6 @@ public class Monkey2D : MonoBehaviour
             player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             Vector3 position;
             FF1index = rand.Next(FFcoordsList.Count);
-            FF1s.Add(FF1index);
             float r = FFcoordsList[FF1index].Item1;
             float angle = FFcoordsList[FF1index].Item2;
             position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
@@ -1303,8 +1320,6 @@ public class Monkey2D : MonoBehaviour
             Vector3 position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
             pooledFF[1].transform.position = position1;
             pooledFF[1].SetActive(false);
-            print("Trial FF1 r:" + r.ToString());
-            print("Trial FF1 a:" + angle.ToString());
             float COMdecider = (float)rand.NextDouble();
             if(COMdecider < normalRatio)
             {
@@ -1313,6 +1328,15 @@ public class Monkey2D : MonoBehaviour
                 isCOM2FF = false;
                 COMtrialtype.Add(1);
                 FF2s.Add(-1);
+                FF1index = rand.Next(SingleFFcoordsList.Count);
+                r = SingleFFcoordsList[FF1index].Item1;
+                angle = SingleFFcoordsList[FF1index].Item2;
+                position = Vector3.zero - new Vector3(0.0f, p_height, 0.0f) + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward * r;
+                position.y = 0.0001f;
+                pooledFF[0].transform.position = position;
+                position1 = player.transform.position - new Vector3(0.0f, 0.0f, 10.0f);
+                pooledFF[1].transform.position = position1;
+                pooledFF[1].SetActive(false);
             }
             else if(COMdecider < normal2FFRatio)
             {
@@ -1332,6 +1356,10 @@ public class Monkey2D : MonoBehaviour
                 FF2index = rand.Next(FF2coordsList.Count);
                 FF2s.Add(FF2index);
             }
+
+            FF1s.Add(FF1index);
+            print("Trial FF1 r:" + r.ToString());
+            print("Trial FF1 a:" + angle.ToString());
         }
         else if (nFF > 1 && multiMode == 1)
         {
