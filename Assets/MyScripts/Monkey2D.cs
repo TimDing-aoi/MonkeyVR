@@ -2111,11 +2111,22 @@ public class Monkey2D : MonoBehaviour
         }
 
         TMP_Text scoreText;
-        scoreText = humanscoringL.transform.GetComponent<TMP_Text>();
-        scoreText.text = string.Format("{0} points" , trial_score);
-        scoreText = humanscoringR.transform.GetComponent<TMP_Text>();
-        scoreText.text = string.Format("{0} points", trial_score);
-        humanscore.Add((int)trial_score);
+        if (PlayerPrefs.GetFloat("calib") == 0)
+        {
+            scoreText = humanscoringL.transform.GetComponent<TMP_Text>();
+            scoreText.text = string.Format("{0} points", trial_score);
+            scoreText = humanscoringR.transform.GetComponent<TMP_Text>();
+            scoreText.text = string.Format("{0} points", trial_score);
+            humanscore.Add((int)trial_score);
+        }
+        else
+        {
+            scoreText = humanscoringL.transform.GetComponent<TMP_Text>();
+            scoreText.text = string.Format("");
+            scoreText = humanscoringR.transform.GetComponent<TMP_Text>();
+            scoreText.text = string.Format("");
+            humanscore.Add((int)trial_score);
+        }
 
         if (nFF > 1 && multiMode == 1)
         {
