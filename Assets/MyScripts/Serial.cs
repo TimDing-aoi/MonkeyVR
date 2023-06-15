@@ -16,7 +16,7 @@ public class Serial : MonoBehaviour
     {
         serial = this;
         juiceTime = PlayerPrefs.GetFloat("Calibration Juice Time");
-        sp = new SerialPort("COM9", 1000000);
+        sp = new SerialPort("COM7", 1000000);
         sp.Open();
         sp.ReadTimeout = 1;
     }
