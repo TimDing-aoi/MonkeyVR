@@ -323,8 +323,10 @@ public class Monkey2D : MonoBehaviour
     [HideInInspector] public float points = 0;
     [Tooltip("How long the juice valve is open")]
     [HideInInspector] public float juiceTime;
-    private float minJuiceTime;
-    private float maxJuiceTime;
+    private float HighminJuiceTime;
+    private float HighmaxJuiceTime; 
+    private float LowminJuiceTime;
+    private float LowmaxJuiceTime;
 
     [Tooltip("Maximum number of trials before quitting (0 for infinity)")]
     [HideInInspector] public int ntrials;
@@ -644,8 +646,10 @@ public class Monkey2D : MonoBehaviour
         //    print(range);
         //}
 
-        minJuiceTime = PlayerPrefs.GetFloat("Min Juice Time");
-        maxJuiceTime = PlayerPrefs.GetFloat("Max Juice Time");
+        HighminJuiceTime = PlayerPrefs.GetFloat("HighJuiceMin");
+        HighmaxJuiceTime = PlayerPrefs.GetFloat("HighJuiceMax");
+        LowminJuiceTime = PlayerPrefs.GetFloat("LowJuiceMin");
+        LowmaxJuiceTime = PlayerPrefs.GetFloat("LowJuiceMax");
         LR = 0.5f;
         if (LR == 0.5f)
         {
@@ -1047,8 +1051,8 @@ public class Monkey2D : MonoBehaviour
             rotation.z += VectorY;
             rotation = Quaternion.Euler(0, angle, 0) * rotation;
             pooledFF[1].transform.position = position + rotation;
-            print("Trial FF2 x:" + position.x);
-            print("Trial FF2 y:" + position.z);
+            //print("Trial FF2 x:" + position.x);
+            //print("Trial FF2 y:" + position.z);
             OnOff(pooledFF[1]);
         }
 
@@ -1345,8 +1349,8 @@ public class Monkey2D : MonoBehaviour
             }
 
             FF1s.Add(FF1index);
-            print("Trial FF1 r:" + r.ToString());
-            print("Trial FF1 a:" + angle.ToString());
+            //print("Trial FF1 r:" + r.ToString());
+            //print("Trial FF1 a:" + angle.ToString());
         }
         else if (nFF > 1 && multiMode == 1)
         {
@@ -1677,8 +1681,8 @@ public class Monkey2D : MonoBehaviour
                             rotation.z += VectorY;
                             rotation = Quaternion.Euler(0, angle, 0) * rotation;
                             pooledFF[1].transform.position = position + rotation;
-                            print("Trial FF2 x:" + position.x);
-                            print("Trial FF2 y:" + position.z);
+                            //print("Trial FF2 x:" + position.x);
+                            //print("Trial FF2 y:" + position.z);
                             OnOff2(pooledFF[0], pooledFF[1]);
                         }
                         else
@@ -1965,7 +1969,7 @@ public class Monkey2D : MonoBehaviour
             ffPosStr = string.Concat(ffPosStr, ",", pooledFF[1].transform.position.ToString("F5").Trim(toTrim).Replace(" ", ""));
             for (int i = 0; i < 2; i++)
             {
-                print(ffPosStr);
+                //print(ffPosStr);
                 if (!(pooledFF[i].transform.position.x == 0 && pooledFF[i].transform.position.z == 0))
                 {
                     distance = Vector3.Distance(pPos, pooledFF[i].transform.position);
@@ -2041,18 +2045,20 @@ public class Monkey2D : MonoBehaviour
             else if (isCOM)
             {
                 audioSource.clip = winSound;
-                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
-                //print(juiceTime);
-                juiceDuration.Add(juiceTime);
                 audioSource.Play();
-                if(distance <= RewardZoneRadius / 2)
+                if(curdistance <= RewardZoneRadius / 2)
                 {
+                    juiceTime = Mathf.Lerp(HighmaxJuiceTime, HighminJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, curdistance));
                     trial_score = 2;
                 }
                 else
                 {
+                    juiceTime = Mathf.Lerp(LowmaxJuiceTime, LowminJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, curdistance));
                     trial_score = 1;
                 }
+                print(juiceTime);
+                print(curdistance);
+                juiceDuration.Add(juiceTime);
                 points++;
                 SendMarker("j", juiceTime);
 
@@ -2062,7 +2068,7 @@ public class Monkey2D : MonoBehaviour
             {
                 if (loopCount + 1 < nFF)
                 {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
+                    juiceTime += Mathf.Lerp(HighmaxJuiceTime, HighminJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                     //Debug.Log(string.Format("Firefly {0} Hit.", loopCount + 1));
                     audioSource.clip = neutralSound;
                     audioSource.Play();
@@ -2071,7 +2077,7 @@ public class Monkey2D : MonoBehaviour
                 }
                 else
                 {
-                    juiceTime += Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
+                    juiceTime += Mathf.Lerp(HighmaxJuiceTime, HighminJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                     //Debug.Log(string.Format("Firefly {0} Hit. Reward: {1}", loopCount + 1, juiceTime));
                     audioSource.clip = winSound;
                     //print(juiceTime);
@@ -2087,7 +2093,7 @@ public class Monkey2D : MonoBehaviour
             else
             {
                 audioSource.clip = winSound;
-                juiceTime = Mathf.Lerp(maxJuiceTime, minJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
+                juiceTime = Mathf.Lerp(HighmaxJuiceTime, HighminJuiceTime, Mathf.InverseLerp(0.0f, RewardZoneRadius, distance));
                 //print(juiceTime);
                 juiceDuration.Add(juiceTime);
                 audioSource.Play();
@@ -2872,12 +2878,20 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Angle").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MinJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Min Juice Time").ToString());
+        xmlWriter.WriteStartElement("HighJuiceMin");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("HighJuiceMin").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("MaxJuiceTime");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("Max Juice Time").ToString());
+        xmlWriter.WriteStartElement("HighJuiceMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("HighJuiceMax").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("LowJuiceMin");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LowJuiceMin").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("LowJuiceMax");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LowJuiceMax").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("Ratio");
