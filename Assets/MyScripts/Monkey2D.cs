@@ -1243,6 +1243,13 @@ public class Monkey2D : MonoBehaviour
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
 
+        if (PlayerPrefs.GetFloat("calib") == 0)
+        {
+            float startthreshold = PlayerPrefs.GetFloat("JoystickStartThreshold");
+            await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold
+            && (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
+        }
+
         SharedJoystick.MaxSpeed = RandomizeSpeeds(velMin, velMax);
         SharedJoystick.RotSpeed = RandomizeSpeeds(rotMin, rotMax);
 
@@ -2340,7 +2347,8 @@ public class Monkey2D : MonoBehaviour
             {
                 player.transform.position = Vector3.up * p_height;
                 player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold && (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
+                await new WaitUntil(() => Mathf.Abs(SharedJoystick.currentSpeed) < velStopThreshold && Mathf.Abs(SharedJoystick.currentRot) < rotStopThreshold 
+                && (float)Math.Abs(SharedJoystick.rawX) <= startthreshold && (float)Math.Abs(SharedJoystick.rawY) <= startthreshold);
                 await new WaitForSeconds(wait);
             }
             else
