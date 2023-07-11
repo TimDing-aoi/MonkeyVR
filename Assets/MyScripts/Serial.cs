@@ -17,7 +17,7 @@ public class Serial : MonoBehaviour
     {
         serial = this;
         juiceTime = PlayerPrefs.GetFloat("maxJuiceTime");
-        sp = new SerialPort("COM4", 1000000);
+        sp = new SerialPort("COM9", 1000000);
         isMonkey = PlayerPrefs.GetInt("isHuman") == 0;
         if (isMonkey)
         {
