@@ -15,7 +15,7 @@ public class Serial : MonoBehaviour
     void OnEnable()
     {
         serial = this;
-        juiceTime = PlayerPrefs.GetFloat("Max Juice Time");
+        juiceTime = PlayerPrefs.GetFloat("LowJuiceMin");
         sp = new SerialPort("COM9", 1000000);
         sp.Open();
         sp.ReadTimeout = 1;
