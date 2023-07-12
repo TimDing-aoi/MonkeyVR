@@ -30,6 +30,7 @@ using UnityEngine.InputSystem;
 using System.IO.Ports;
 using System.Globalization;
 using PupilLabs;
+using System.Linq;
 
 public class Monkey2D : MonoBehaviour
 {
@@ -1072,14 +1073,35 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            bool UsePhi1 = (float)rand.NextDouble() < PhiRatio;
+            bool isDiscrete = PlayerPrefs.GetInt("isDiscrete") == 1;
             Vector3 position;
-            float r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
-            float angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
-            //Two Dist. training
-            if(!UsePhi1)
+            float r;
+            float angle;
+            if (isDiscrete)
             {
-                angle = (float)rand.NextDouble() * (maxPhi2 - minPhi2) + minPhi2;
+                player.transform.position = Vector3.up * Player_Height;
+                player.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                int num_lin = (int)PlayerPrefs.GetFloat("NumDiscreteDistances");
+                int num_rot = (int)PlayerPrefs.GetFloat("NumDiscreteAngles");
+                float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
+                float[] rotspace = Enumerable.Range(0, num_rot).Select(i => minPhi + (maxPhi - minPhi) * i / (num_rot - 1)).ToArray();
+                int randomLin = rand.Next(1, num_lin + 1);
+                int randomRot = rand.Next(1, num_rot + 1);
+                r = linspace[randomLin - 1];
+                angle = rotspace[randomRot - 1];
+            }
+            else
+            {
+
+                bool UsePhi1 = (float)rand.NextDouble() < PhiRatio;
+                r = minDrawDistance + (maxDrawDistance - minDrawDistance) * Mathf.Sqrt((float)rand.NextDouble());
+                angle = (float)rand.NextDouble() * (maxPhi - minPhi) + minPhi;
+
+                //Two Dist. training
+                if (!UsePhi1)
+                {
+                    angle = (float)rand.NextDouble() * (maxPhi2 - minPhi2) + minPhi2;
+                }
             }
             position = (player.transform.position - new Vector3(0.0f, Player_Height, 0.0f)) + Quaternion.AngleAxis(angle, Vector3.up) * player.transform.forward * r;
             position.y = 0.0001f;
