@@ -2124,12 +2124,12 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("maxJuiceTime").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("No_Linspace");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Linspace").ToString());
+        xmlWriter.WriteStartElement("NumDiscreteDistances");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("NumDiscreteDistances").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("No_Angspace");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Angspace").ToString());
+        xmlWriter.WriteStartElement("NumDiscreteAngles");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("NumDiscreteAngles").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("isDiscrete");
