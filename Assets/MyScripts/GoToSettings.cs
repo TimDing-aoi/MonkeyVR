@@ -65,7 +65,8 @@ public class GoToSettings : MonoBehaviour
                         int LastValue = PlayerPrefs.GetInt(children.name);
                         drop.value = LastValue;
                     }
-                    else if (children.name == "GaussianPTB" || children.name == "isFlashing")
+                    else if (children.name == "GaussianPTB" || children.name == "isFlashing" || children.name == "Perturbation On" || children.name == "Moving ON" || children.name == "Feedback ON" || children.name == "AboveBelow" 
+                        || children.name == "VertHor" || children.name == "Full ON" || children.name == "isDiscrete")
                     {
                         UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                         bool LastValue = PlayerPrefs.GetInt(children.name) == 1;
@@ -361,7 +362,8 @@ public class GoToSettings : MonoBehaviour
                                 }
                             }
                         }
-                        else if (children.name == "GaussianPTB" || children.name == "isFlashing")
+                        else if (children.name == "GaussianPTB" || children.name == "isFlashing" || children.name == "Perturbation On" || children.name == "Moving ON" || children.name == "Feedback ON" || children.name == "AboveBelow" || children.name == "VertHor" || 
+                            children.name == "Full ON" || children.name == "isDiscrete")
                         {
                             UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                             foreach (XmlNode node in doc.DocumentElement.ChildNodes)

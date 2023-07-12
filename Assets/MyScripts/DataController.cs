@@ -102,7 +102,7 @@ namespace PupilLabs
             if (extraRecording)
             {
                 int marker = guiref.marker;
-                sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9}\n",
+                sbPacket = string.Format("{0},{1},{2, 4:F9},{3},{4},{5},{6},{7},{8},{9},{10}\n",
                             (double)Time.time,
                             gazeDataNow.MappingContext,
                             gazeDataNow.Confidence,
@@ -112,7 +112,8 @@ namespace PupilLabs
                             gazeDataNow.EyeCenter1.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeNormal0.ToString("F5").Trim('(', ')').Replace(" ", ""),
                             gazeDataNow.GazeNormal1.ToString("F5").Trim('(', ')').Replace(" ", ""),
-                            marker);
+                            marker,
+                            calibrationController.targetIdx);
                 extrasb.Append(sbPacket);
             }
             if (flagPlaying && !calibrationController.IsCalibrating && calibrationController.subsCtrl.IsConnected)
@@ -292,6 +293,7 @@ namespace PupilLabs
 
                 var num = PlayerPrefs.GetInt("Run Number") + 1;
                 PlayerPrefs.SetInt("Run Number", num);
+                PlayerPrefs.SetInt("RecordingNumber", 1);
 
                 Destroy(this);
 
@@ -318,7 +320,7 @@ namespace PupilLabs
                 PlayerPrefs.SetInt("RecordingNumber", runnum + 1);
             }
             extrasb.Append("Timestamp,Mapping Context,Confidence,GazeX,GazeY,GazeZ,Gaze Distance,CenterRX,CenterRY,CenterRZ,CenterLX,CenterLY" +
-                ",CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker," + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " +
+                ",CenterLZ,NormRX,NormRY,NormRZ,NormLX,NormLY,NormLZ,Marker,TargetID" + PlayerPrefs.GetString("Name") + ", " + PlayerPrefs.GetString("Date") + ", " +
                 PlayerPrefs.GetInt("Run Number").ToString("D3") + "_" + PlayerPrefs.GetInt("RecordingNumber").ToString("D3") + "\n");
             extraRecording = true;
         }

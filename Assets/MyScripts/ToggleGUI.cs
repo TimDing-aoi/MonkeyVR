@@ -19,13 +19,14 @@ public class ToggleGUI : MonoBehaviour
     string stimulateText = "Stimulate";
     public GameObject gui;
     public GameObject stimgui;
-    public GameObject stimcanvas;
     public Texture texture;
     public CalibrationController calibrationController;
     public AudioSource AudioSource;
     public AudioClip StimuTest;
     SerialPort sp = serial.sp;
     public static ToggleGUI guiref;
+    float last_block_start;
+    float last_block_end;
 
     private void OnEnable()
     {
@@ -46,7 +47,7 @@ public class ToggleGUI : MonoBehaviour
         string stimutext = string.Format("Total Trials: {0}", calibrationController.trialNum + 1);
         if (calibrationController.flagMicroStimu)
         {
-            stimcanvas.SetActive(false);
+            stimgui.SetActive(false);
             GUI.Label(rect, stimutext, style);
         }
         else if(calibrationController.flagFuseTest)
@@ -56,26 +57,33 @@ public class ToggleGUI : MonoBehaviour
         }
         else
         {
+            if (!isRecording)
+            {
+                stimgui.SetActive(true);
+            }
+            else
+            {
+                stimgui.SetActive(false);
+            }
             if (GUI.Button(new Rect(Screen.width - 1300, Screen.height - 220, 150, 60), recordingText))
             {
                 isRecording = !isRecording;
                 if (isRecording)
                 {
                     SendMarker("f", 1000.0f);
-                    marker = 1;
                     dataController.startExtraRecording();
                     recordingText = "Recording";
                     print("Start Recording");
                     stimgui.SetActive(false);
+                    last_block_start = Time.time;
                 }
                 else
                 {
                     SendMarker("x", 1000.0f);
-                    marker = 17;
                     dataController.stopExtraRecording();
                     recordingText = "Start Recording";
                     print("Stop Recording");
-                    stimgui.SetActive(true);
+                    last_block_end = Time.time;
                 }
             }
 
@@ -88,8 +96,6 @@ public class ToggleGUI : MonoBehaviour
                 lastStimulate = Time.time;
                 SendMarker("m", stimulationDuration);
                 marker = 2;
-                AudioSource.clip = StimuTest;
-                AudioSource.Play();
             }
 
             if(Time.time - lastStimulate > stimulationDuration/1000 && isStimulating)
@@ -121,8 +127,6 @@ public class ToggleGUI : MonoBehaviour
         {
             marker = 4;
             GUI.contentColor = Color.red;
-
-            SendMarker("j", 11.0f);
         }
         else
         {
@@ -145,6 +149,15 @@ public class ToggleGUI : MonoBehaviour
             GUI.contentColor = Color.black;
         }
         GUI.Box(new Rect(1000f, 30f, 50f, 50f), texture);
+
+        if (Time.time - last_block_start < 0.1)
+        {
+            marker = 1;
+        }
+        else if (Time.time - last_block_end < 0.1)
+        {
+            marker = 17;
+        }
     }
 
     public async void SendMarker(string mark, float time)

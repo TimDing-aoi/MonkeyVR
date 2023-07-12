@@ -479,6 +479,7 @@ public class Monkey2D : MonoBehaviour
         firefly.transform.localScale = new Vector3(fireflySize, fireflySize, 1);
         ratio_always_on = PlayerPrefs.GetFloat("ratio_always_on");
 
+        //Selfmotion Task
         SMtrial = PlayerPrefs.GetInt("isSM") == 1;
 
         //Observation Noise?
@@ -2099,6 +2100,18 @@ public class Monkey2D : MonoBehaviour
 
         xmlWriter.WriteStartElement("maxJuiceTime");
         xmlWriter.WriteString(PlayerPrefs.GetFloat("maxJuiceTime").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("No_Linspace");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Linspace").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("No_Angspace");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("No_Angspace").ToString());
+        xmlWriter.WriteEndElement();
+
+        xmlWriter.WriteStartElement("isDiscrete");
+        xmlWriter.WriteString(PlayerPrefs.GetInt("isDiscrete").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteStartElement("ratio_always_on");
