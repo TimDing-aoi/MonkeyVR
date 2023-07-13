@@ -1396,8 +1396,8 @@ public class Monkey2D : MonoBehaviour
         //not using control dynamics
         else
         {
-            float JstLinStopThresh = PlayerPrefs.GetFloat("JstLinStopThresh");
-            float JstAngStopThresh = PlayerPrefs.GetFloat("JstAngStopThresh");
+            float LinVelStopThresh = PlayerPrefs.GetFloat("LinVelStopThresh");
+            float AngVelStopThresh = PlayerPrefs.GetFloat("AngVelStopThresh");
 
             //Wait until start moving
             var started_moving = Task.Run(async () => {
@@ -1413,7 +1413,7 @@ public class Monkey2D : MonoBehaviour
             if (await Task.WhenAny(started_moving, time_out) == started_moving || player == null)
             {
                 //Only wait for stopped moving here, or time out
-                await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= JstLinStopThresh && Mathf.Abs(SharedJoystick.currentRot) <= JstAngStopThresh && 
+                await new WaitUntil(() => ((Mathf.Abs(SharedJoystick.currentSpeed) <= LinVelStopThresh && Mathf.Abs(SharedJoystick.currentRot) <= AngVelStopThresh && 
                 !SharedJoystick.isCtrlDynamics)) || time_out.IsCompleted);
                 //Timed out
                 if (time_out.IsCompleted)
@@ -1426,6 +1426,7 @@ public class Monkey2D : MonoBehaviour
                     print("Stopped moving");
                 }
             }
+            //Timed out without moving
             else
             {
                 print("Timed out without moving");
@@ -2071,12 +2072,12 @@ public class Monkey2D : MonoBehaviour
         xmlWriter.WriteString(PlayerPrefs.GetFloat("GaussianPTBRatio").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("JstLinStopThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("JstLinStopThresh").ToString());
+        xmlWriter.WriteStartElement("LinVelStopThresh");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("LinVelStopThresh").ToString());
         xmlWriter.WriteEndElement();
 
-        xmlWriter.WriteStartElement("JstAngStopThresh");
-        xmlWriter.WriteString(PlayerPrefs.GetFloat("JstAngStopThresh").ToString());
+        xmlWriter.WriteStartElement("AngVelStopThresh");
+        xmlWriter.WriteString(PlayerPrefs.GetFloat("AngVelStopThresh").ToString());
         xmlWriter.WriteEndElement();
 
         xmlWriter.WriteEndElement();

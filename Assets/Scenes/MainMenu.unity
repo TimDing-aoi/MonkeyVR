@@ -34526,7 +34526,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 568, y: -388}
+  m_AnchoredPosition: {x: 540, y: -388}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &664214293
@@ -35724,7 +35724,7 @@ GameObject:
   - component: {fileID: 684887763}
   - component: {fileID: 684887762}
   m_Layer: 5
-  m_Name: JstLinStopThresh
+  m_Name: LinVelStopThresh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44925,7 +44925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 322, y: -461.0001}
+  m_AnchoredPosition: {x: 294, y: -461.0001}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &891659143
@@ -45435,7 +45435,7 @@ GameObject:
   - component: {fileID: 899553444}
   - component: {fileID: 899553443}
   m_Layer: 5
-  m_Name: JstAngStopThresh
+  m_Name: AngVelStopThresh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54481,8 +54481,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 245, y: -319}
-  m_SizeDelta: {x: 400, y: 50}
+  m_AnchoredPosition: {x: 338, y: -319}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1053733420
 MonoBehaviour:
@@ -54566,7 +54566,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -16.037064, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -64366,8 +64366,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 245, y: -381.99997}
-  m_SizeDelta: {x: 400, y: 50}
+  m_AnchoredPosition: {x: 343, y: -381.99997}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1259943478
 MonoBehaviour:
@@ -64451,7 +64451,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -69.47895, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -69868,7 +69868,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 568, y: -324.99994}
+  m_AnchoredPosition: {x: 540, y: -324.99994}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1366852011
@@ -90708,7 +90708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 570, y: -458}
+  m_AnchoredPosition: {x: 542, y: -458}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1809877637
@@ -95834,7 +95834,7 @@ GameObject:
   - component: {fileID: 1905545831}
   - component: {fileID: 1905545830}
   m_Layer: 5
-  m_Name: JstAngStopThresh
+  m_Name: AngVelStopThresh
   m_TagString: Setting
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96041,7 +96041,7 @@ GameObject:
   - component: {fileID: 1905692300}
   - component: {fileID: 1905692299}
   m_Layer: 5
-  m_Name: JstLinStopThresh
+  m_Name: LinVelStopThresh
   m_TagString: Setting
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104408,7 +104408,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: X Threshold (deg)
+  m_text: Y Threshold (deg)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
