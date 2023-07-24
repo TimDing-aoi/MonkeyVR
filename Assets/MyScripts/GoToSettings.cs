@@ -207,7 +207,7 @@ public class GoToSettings : MonoBehaviour
         {
             if (obj.name == "GaussianPTB" || obj.name == "isFlashing"
                 || obj.name == "is2FFCOM" || obj.name == "isColored" || obj.name == "isSM" || obj.name == "isFFstimu" || obj.name == "isMoving" || obj.name == "isLeftRightnotForBack"
-                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor" || obj.name == "isHuman" || obj.name == "isReplay")
+                || obj.name == "isProcessNoise" || obj.name == "isObsNoise" || obj.name == "isAuto" || obj.name == "TauColoredFloor" || obj.name == "isHuman" || obj.name == "isReplay" || obj.name == "isDiscrete")
             {
                 PlayerPrefs.SetInt(obj.name, obj.GetComponent<UnityEngine.UI.Toggle>().isOn ? 1 : 0);
             }

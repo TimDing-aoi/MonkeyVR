@@ -761,6 +761,13 @@ public class Monkey2D : MonoBehaviour
             Save();
             SendMarker("x", 1000.0f);
             juiceBox.Close();
+
+            if(PlayerPrefs.GetFloat("calib") == 0)
+            {
+                var num = PlayerPrefs.GetInt("Run Number") + 1;
+                PlayerPrefs.SetInt("Run Number", num);
+            }
+
             SceneManager.LoadScene("MainMenu");
         }
 
