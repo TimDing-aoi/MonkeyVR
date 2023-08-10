@@ -1250,6 +1250,7 @@ public class Monkey2D : MonoBehaviour
         }
         else if (isFlashing)
         {
+            firefly.SetActive(true);
             flashing_FF_on = true;
             flashTask = Flash(firefly);
         }
@@ -1724,7 +1725,7 @@ public class Monkey2D : MonoBehaviour
     /// </summary>
     public async Task Flash(GameObject obj)
     {
-        while (flashing_FF_on)
+        while (flashing_FF_on && obj.activeInHierarchy)
         {
             if (is_always_on_trial && !obj.activeInHierarchy)
             {
