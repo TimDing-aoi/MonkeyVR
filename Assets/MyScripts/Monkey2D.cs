@@ -1507,14 +1507,14 @@ public class Monkey2D : MonoBehaviour
         float current_smallest_distance = 9999f;
 
         Vector3 player_check_pos;
-        Quaternion playe_check_rot;
+        Quaternion player_check_rot;
 
         //Player plane position
         player_position = player.transform.position - new Vector3(0.0f, Player_Height, 0.0f);
 
         //Player save positions
         player_check_pos = player.transform.position;
-        playe_check_rot = player.transform.rotation;
+        player_check_rot = player.transform.rotation;
 
         //Did not time out
         if (!isTimeout)
@@ -1612,7 +1612,8 @@ public class Monkey2D : MonoBehaviour
 
         //Save general final position values
         player_final_position.Add(player_check_pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
-        player_final_rotation.Add(playe_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        player_final_rotation.Add(player_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
+        print(player_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
         score.Add(rewarded_FF_trial ? 1 : 0);
         timedout.Add(isTimeout ? 1 : 0);
         FF_final_positions.Add(ffPosStr);
