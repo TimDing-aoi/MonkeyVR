@@ -1250,9 +1250,8 @@ public class Monkey2D : MonoBehaviour
     {
         //Debug.Log("Begin Phase start.");
         await new WaitForEndOfFrame();
-
-        int randomNumber = 1; // Generates a random integer between 1 and 4 (inclusive)
-
+        System.Random random = new System.Random();
+        int randomNumber = random.Next(1, 5); // Generates a random integer between 1 and 4 (inclusive)
         switch (randomNumber)
         {
             case 1:
@@ -2481,7 +2480,7 @@ public class Monkey2D : MonoBehaviour
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,ProcessNoiseOn,DistractorFlowRatio,ColoredOpticFlow,NoiseTrialType,"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -2602,11 +2601,11 @@ public class Monkey2D : MonoBehaviour
 
                 if (isObsNoise)
                 {
-                    line += string.Format(",{0},{1},{2},{3}", ObsNoiseTau, ObsVelocityNoiseGain, ObsRotationNoiseGain, densities_obsRatio[i]);
+                    line += string.Format(",{0},{1},{2},{3},{4}", ObsNoiseTau, ObsVelocityNoiseGain, ObsRotationNoiseGain, densities_obsRatio[i],isProcessNoise ? 1:0);
                 }
                 else
                 {
-                    line += string.Format(",0,0,0,0");
+                    line += string.Format(",0,0,0,0,0");
                 }
 
                 if (PlayerPrefs.GetInt("isColored") == 1)
