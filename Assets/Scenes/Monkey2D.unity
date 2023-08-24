@@ -2253,7 +2253,7 @@ GameObject:
   - component: {fileID: 1558289035}
   - component: {fileID: 1558289036}
   - component: {fileID: 1558289037}
-  m_Layer: 12
+  m_Layer: 15
   m_Name: Left Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2269,7 +2269,7 @@ RectTransform:
   m_GameObject: {fileID: 1558289034}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 99, y: 99, z: 99}
   m_Children: []
   m_Father: {fileID: 3311308389968972413}
   m_RootOrder: 6
@@ -2348,7 +2348,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 24
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!1 &1588712467 stripped
 GameObject:
@@ -2401,7 +2401,7 @@ GameObject:
   - component: {fileID: 1985536044}
   - component: {fileID: 1985536045}
   - component: {fileID: 1985536046}
-  m_Layer: 11
+  m_Layer: 16
   m_Name: Right Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2417,7 +2417,7 @@ RectTransform:
   m_GameObject: {fileID: 1985536043}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 99, y: 99, z: 99}
   m_Children: []
   m_Father: {fileID: 3311308389968972413}
   m_RootOrder: 5
@@ -2496,7 +2496,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 24
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!43 &2013251406
 Mesh:
@@ -2671,7 +2671,7 @@ PrefabInstance:
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 255799
+      value: 163639
       objectReference: {fileID: 0}
     - target: {fileID: 3293024713595439195, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
@@ -2698,6 +2698,11 @@ PrefabInstance:
       propertyPath: m_ClearFlags
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3293024713960399563, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 68887
+      objectReference: {fileID: 0}
     - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: far clip plane
@@ -2712,6 +2717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ClearFlags
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293024714790952184, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 46359
       objectReference: {fileID: 0}
     - target: {fileID: 3311308388822267717, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
