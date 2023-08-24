@@ -381,6 +381,10 @@ public class Monkey2D : MonoBehaviour
     //Replay?
     public bool isReplay = false;
 
+    //Masks for VR each eye
+    public GameObject leftMask;
+    public GameObject rightMask;
+
     //On Start up, get gaze visualizer
     private void Awake()
     {
@@ -769,6 +773,28 @@ public class Monkey2D : MonoBehaviour
             }
 
             SceneManager.LoadScene("MainMenu");
+        }
+        else if(Input.GetKeyUp(KeyCode.Q))
+        {
+            if (leftMask.activeInHierarchy)
+            {
+                leftMask.SetActive(false);
+            }
+            else
+            {
+                leftMask.SetActive(true);
+            }
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+        {
+            if (rightMask.activeInHierarchy)
+            {
+                rightMask.SetActive(false);
+            }
+            else
+            {
+                rightMask.SetActive(true);
+            }
         }
 
         //Trial begin marker
