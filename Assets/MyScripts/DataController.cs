@@ -181,6 +181,7 @@ namespace PupilLabs
                     var CleanRV = SharedJoystick.cleanRot;
                     var ObsLinNoise = SharedDrunkstick.DistFlowSpeed;
                     var ObsAngNoise = SharedDrunkstick.DistFlowRot;
+                    
                     if (flagMultiFF)
                     {
                         foreach (Vector3 pos in SharedMonkey.ffPositions)

@@ -47,14 +47,16 @@ public class JoystickDrunk : MonoBehaviour
     {
         currentSpeed = SharedJoystick.currentSpeed;
         currentRot = SharedJoystick.currentRot;
-
-        //print(string.Format("current speed:{0}", currentSpeed));
-        //print(string.Format("current rotation:{0}", currentRot));
         DistFlowSpeed = observationNoiseVel(ObsNoiseTau, ObsVelocityNoiseGain);
         DistFlowRot = observationNoiseRot(ObsNoiseTau, ObsRotationNoiseGain);
-        //print(DistFlowSpeed);
-        //print(DistFlowRot);
-        //print(transform.position);
+        if (SharedMonkey.ObsRotationNoiseGain == 0)
+        {
+            DistFlowRot = 0;
+        }
+        if (SharedMonkey.ObsVelocityNoiseGain == 0)
+        {
+            DistFlowSpeed = 0;
+        }
         transform.position = transform.position + transform.forward * (currentSpeed + DistFlowSpeed) * Time.fixedDeltaTime;
         transform.Rotate(0f, (currentRot + DistFlowRot) * Time.fixedDeltaTime, 0f);
     }

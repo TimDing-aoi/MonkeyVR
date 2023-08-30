@@ -378,6 +378,7 @@ public class Monkey2D : MonoBehaviour
     //observation noise
     public float DistFlowSpeed = 0;
     public float DistFlowRot = 0;
+    bool isDiscrete = false;
 
     float separation;
 
@@ -407,6 +408,8 @@ public class Monkey2D : MonoBehaviour
     bool SMtrial = false;
 
     readonly List<float> noisetrialtype = new List<float>();
+    readonly List<float> lintrialtype = new List<float>();
+    readonly List<float> angtrialtype = new List<float>();
     public bool isNormal = false;
     public bool isStatic2FF = false;
     public bool isCOM2FF = false;
@@ -1339,7 +1342,7 @@ public class Monkey2D : MonoBehaviour
         currPhase = Phases.begin;
         isBegin = true;
 
-        bool isDiscrete = PlayerPrefs.GetInt("isDiscrete") == 1;
+        isDiscrete = PlayerPrefs.GetInt("isDiscrete") == 1;
         if (isCOM)
         {
             Vector3 position;
@@ -1441,12 +1444,15 @@ public class Monkey2D : MonoBehaviour
             {
                 int num_lin = (int)PlayerPrefs.GetFloat("No_Linspace");
                 int num_rot = (int)PlayerPrefs.GetFloat("No_Angspace");
-                float[] linspace = Enumerable.Range(0, num_lin).Select(i => minDrawDistance + (maxDrawDistance - minDrawDistance) * i / (num_lin - 1)).ToArray();
-                float[] rotspace = Enumerable.Range(0, num_rot).Select(i => minPhi + (maxPhi - minPhi) * i / (num_rot - 1)).ToArray();
+                float[] linspace = GenerateLinearArray(minDrawDistance, maxDrawDistance, num_lin);
+                float[] rotspace = GenerateLinearArray(minPhi, maxPhi, num_rot);
                 int randomLin = rand.Next(1, num_lin + 1);
                 int randomRot = rand.Next(1, num_rot + 1);
                 r = linspace[randomLin - 1];
                 angle = rotspace[randomRot - 1];
+
+                lintrialtype.Add(randomLin);
+                angtrialtype.Add(randomRot);
             }
 
             print(r);
@@ -2480,7 +2486,7 @@ public class Monkey2D : MonoBehaviour
             {
                 firstLine = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,ProcessNoiseOn,DistractorFlowRatio,ColoredOpticFlow,NoiseTrialType,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,ProcessNoiseOn,DistractorFlowRatio,ColoredOpticFlow,NoiseTrialType,LinTrialType,AngTrialType"
                     + PlayerPrefs.GetString("Name") + "," + PlayerPrefs.GetString("Date") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(firstLine);
@@ -2529,9 +2535,11 @@ public class Monkey2D : MonoBehaviour
                 temp.Add(timeStimuStart.Count);
                 temp.Add(trialStimuDur.Count);
             }
-            if (isCOM)
+            if (isDiscrete)
             {
                 temp.Add(noisetrialtype.Count);
+                temp.Add(angtrialtype.Count);
+                temp.Add(lintrialtype.Count);
             }
             //foreach (int count in temp)
             //{
@@ -2624,6 +2632,15 @@ public class Monkey2D : MonoBehaviour
                 else
                 {
                     line += string.Format(",0");
+                }
+
+                if (isDiscrete)
+                {
+                    line += string.Format(",{0},{1}", lintrialtype[i],angtrialtype[i]);
+                }
+                else
+                {
+                    line += string.Format(",0,0");
                 }
 
                 csvDisc.AppendLine(line);
@@ -3412,5 +3429,23 @@ public class Monkey2D : MonoBehaviour
             New_Coord_Tuple = new Tuple<float, float>(x, y);
             FFTagetMatchList.Add(New_Coord_Tuple);
         }
+    }
+
+    static float[] GenerateLinearArray(float minValue, float maxValue, int numValues)
+    {
+        if (numValues <= 0)
+        {
+            return new float[0]; // Return an empty array for numValues <= 0
+        }
+        else if (numValues == 1)
+        {
+            return new float[] { (minValue + maxValue)/2 }; // Return an array with the single value for numValues == 1
+        }
+
+        float[] result = Enumerable.Range(0, numValues)
+            .Select(i => minValue + (maxValue - minValue) * i / (numValues - 1))
+            .ToArray();
+
+        return result;
     }
 }
