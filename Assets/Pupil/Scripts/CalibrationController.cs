@@ -208,6 +208,8 @@ namespace PupilLabs
         float start_of_MMfixation;
         int move_direction = 0;
 
+        float MarkerSeperationMultiplier = 1;
+
         void OnEnable()
         {
             runNumber = PlayerPrefs.GetInt("Fusion Run Number");
@@ -240,6 +242,11 @@ namespace PupilLabs
             RewardThresh = (float)(RewardThreshMin + random.NextDouble() * (RewardThreshMax - RewardThreshMin));
 
             TotalTrials = PlayerPrefs.GetFloat("StimNumTrials");
+
+            if(PlayerPrefs.GetFloat("MarkerSeperationMultiplier") != 0)
+            {
+                MarkerSeperationMultiplier = PlayerPrefs.GetFloat("MarkerSeperationMultiplier");
+            }
 
             sizeX = scale * xThreshold;
             sizeY = scale * yThreshold;
@@ -1335,7 +1342,7 @@ namespace PupilLabs
                 var target = targets.GetLocalTargetPosAt(i);
                 var previewMarker = Instantiate<GameObject>(marker.gameObject);
                 previewMarker.transform.parent = previewMarkerParent.transform;
-                previewMarker.transform.localPosition = target;
+                previewMarker.transform.localPosition = target * MarkerSeperationMultiplier;
                 //previewMarker.transform.LookAt(camera.transform.position);
                 previewMarker.SetActive(true);
                 previewMarkers.Add(previewMarker);
@@ -1350,7 +1357,7 @@ namespace PupilLabs
             {
                 var target = targets.GetLocalTargetPosAt(i) * scale;
                 previewMarkers[i].transform.localScale = Vector3.one * markerSize * scale;
-                previewMarkers[i].transform.localPosition = new Vector3(target.x, target.y, scale);
+                previewMarkers[i].transform.localPosition = new Vector3(target.x * MarkerSeperationMultiplier, target.y * MarkerSeperationMultiplier, scale);
             }
         }
 
