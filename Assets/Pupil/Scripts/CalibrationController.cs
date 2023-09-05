@@ -536,6 +536,15 @@ namespace PupilLabs
                 }
             }
 
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                PlayerPrefs.SetFloat("MarkerSeperationMultiplier", MarkerSeperationMultiplier + 0.1f);
+            }
+            else if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                PlayerPrefs.SetFloat("MarkerSeperationMultiplier", MarkerSeperationMultiplier - 0.1f);
+            }
+
             if (PlayerPrefs.GetFloat("MarkerSeperationMultiplier") != 0)
             {
                 MarkerSeperationMultiplier = PlayerPrefs.GetFloat("MarkerSeperationMultiplier");
