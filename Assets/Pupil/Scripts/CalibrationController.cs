@@ -535,6 +535,12 @@ namespace PupilLabs
                     window.transform.position = previewMarkers[targetIdx].transform.position;
                 }
             }
+
+            if (PlayerPrefs.GetFloat("MarkerSeperationMultiplier") != 0)
+            {
+                MarkerSeperationMultiplier = PlayerPrefs.GetFloat("MarkerSeperationMultiplier");
+                UpdatePreviewMarkers();
+            }
         }
 
         public void ToggleFuseTest()
@@ -1211,8 +1217,8 @@ namespace PupilLabs
                         if (autoIdx < 17)
                         {
                             print("auto");
-                            autoIdx++;
                             targetIdx = order[autoIdx];
+                            autoIdx++;
                             tStartITI = Time.time;
                         }
                         else
