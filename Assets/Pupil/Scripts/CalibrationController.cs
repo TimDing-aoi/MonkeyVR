@@ -540,7 +540,7 @@ namespace PupilLabs
             {
                 PlayerPrefs.SetFloat("MarkerSeperationMultiplier", MarkerSeperationMultiplier + 0.1f);
             }
-            else if (Input.GetKeyUp(KeyCode.UpArrow))
+            else if (Input.GetKeyUp(KeyCode.DownArrow))
             {
                 PlayerPrefs.SetFloat("MarkerSeperationMultiplier", MarkerSeperationMultiplier - 0.1f);
             }
