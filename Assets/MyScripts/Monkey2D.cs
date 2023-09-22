@@ -78,7 +78,7 @@ public class Monkey2D : MonoBehaviour
     //Cameras
     public Camera Lcam;
     public Camera Rcam;
-    public float offset = 0.01f;
+    public float CamOffset = -0.3f;
     private float lm02;
     private float rm02;
     private Matrix4x4 lm;
@@ -421,19 +421,30 @@ public class Monkey2D : MonoBehaviour
         XRSettings.useOcclusionMesh = false;
         Lcam.ResetProjectionMatrix();
         Rcam.ResetProjectionMatrix();
+        print(CamOffset);
+        print(Lcam.projectionMatrix);
+        print(Rcam.projectionMatrix);
         if (!isHuman)
         {
             lm = Lcam.projectionMatrix;
             lm02 = lm.m02;
             rm = Rcam.projectionMatrix;
             rm02 = rm.m02;
-            lm.m02 = lm02 + offset;
+            lm.m02 = lm02 + CamOffset;
             Lcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, lm);
             Lcam.projectionMatrix = lm;
-            rm.m02 = rm02 - offset;
+            print(Lcam.projectionMatrix);
+            rm.m02 = rm02 - CamOffset;
             Rcam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, rm);
             Rcam.projectionMatrix = rm;
         }
+        var Leye = Camera.StereoscopicEye.Left;
+        var LMatrix = Lcam.GetStereoProjectionMatrix(Leye);
+        var Reye = Camera.StereoscopicEye.Right;
+        var RMatrix = Rcam.GetStereoProjectionMatrix(Reye);
+        print(LMatrix);
+        print(RMatrix);
+
         List<XRDisplaySubsystem> displaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(displaySubsystems);
         foreach(XRDisplaySubsystem system in displaySubsystems)
@@ -447,6 +458,17 @@ public class Monkey2D : MonoBehaviour
         //Get basic variables from settings
         timeout = PlayerPrefs.GetFloat("Timeout");
         path = PlayerPrefs.GetString("Path");
+
+        // Specify the file path for saving the TXT file
+        string filePath = path + "/LRmatrix_post.txt";
+        // Write the matrices to the TXT file
+        WriteMatricesToTxtFile(filePath, LMatrix, RMatrix);
+
+        // Specify the file path for saving the TXT file
+        filePath = path + "/LRmatrix_pre.txt";
+        // Write the matrices to the TXT file
+        WriteMatricesToTxtFile(filePath, Lcam.projectionMatrix, Rcam.projectionMatrix);
+
         Num_Trials = (int)PlayerPrefs.GetFloat("Num_Trials");
         if (Num_Trials == 0) Num_Trials = 9999;
         isReplay = PlayerPrefs.GetInt("isReplay") == 1;
@@ -2768,6 +2790,26 @@ public class Monkey2D : MonoBehaviour
             New_Coord_Tuple = new Tuple<float, float>(x, y);
             FFTagetMatchList.Add(New_Coord_Tuple);
             print(New_Coord_Tuple);
+        }
+    }
+
+    static void WriteMatricesToTxtFile(string filePath, params Matrix4x4[] matrices)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            foreach (var matrix in matrices)
+            {
+                // Write matrix data
+                for (int row = 0; row < 4; row++)
+                {
+                    for (int col = 0; col < 4; col++)
+                    {
+                        writer.Write(matrix[row, col]);
+                        writer.Write(" "); // Separate values with a space or another delimiter
+                    }
+                    writer.WriteLine(); // Move to the next row
+                }
+            }
         }
     }
 }
