@@ -2143,6 +2143,14 @@ MonoBehaviour:
   isReplay: 0
   leftMask: {fileID: 1558289034}
   rightMask: {fileID: 1985536043}
+  fixation_dot: {fileID: 1588712467}
+  isHumanStimulation: 0
+  StimulationHumanRatio: 0
+  dot_duration: 0
+  dot_gap: 0
+  dot_postions: 0
+  dot_postion_min: 0
+  dot_postion_max: 0
 --- !u!114 &1242841537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2743,6 +2751,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 736695271}
+    - target: {fileID: 3311308389256978024, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3311308389256978024, guid: a3dbc6553f0bda34997ec6362583f7a3,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3311308389262613973, guid: a3dbc6553f0bda34997ec6362583f7a3,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

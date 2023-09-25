@@ -98,7 +98,7 @@ public class GoToSettings : MonoBehaviour
             {
                 if (children.gameObject.CompareTag("Setting"))
                 {
-                    if (children.name == "is2FFCOM" || children.name == "isColored" || children.name == "isSM" || children.name == "isFFstimu" || children.name == "isMoving" || children.name == "isLeftRightnotForBack")
+                    if (children.name == "is2FFCOM" || children.name == "isColored" || children.name == "isSM" || children.name == "isFFstimu" || children.name == "isMoving" || children.name == "isLeftRightnotForBack" || children.name == "isHumanStimulation")
                     {
                         UnityEngine.UI.Toggle toggle = children.GetComponent<UnityEngine.UI.Toggle>();
                         bool LastValue = PlayerPrefs.GetInt(children.name) == 1;

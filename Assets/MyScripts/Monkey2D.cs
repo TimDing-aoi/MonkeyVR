@@ -858,7 +858,7 @@ public class Monkey2D : MonoBehaviour
             }
 
 
-            if (isHumanStimulation && isHuman && (tNow - trial_start_time) > dot_gap && !trialStimulated && (float)rand.NextDouble() < StimulationHumanRatio)
+            if (isHumanStimulation && isHuman && (tNow - trial_start_time) > dot_gap && !trialStimulated && (float)rand.NextDouble() < StimulationHumanRatio && !trialStimulated)
             {
                 trialStimulated = true;
                 float[] linspace = Enumerable.Range(0, dot_postions).Select(i => dot_postion_min + (dot_postion_max - dot_postion_min) * i / (dot_postions - 1)).ToArray();
@@ -867,7 +867,7 @@ public class Monkey2D : MonoBehaviour
                 fixation_dot.SetActive(true);
                 fixation_dot.transform.position = new Vector3(dot_position, 0.0f, 10.0f);
             }
-            else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !trialStimulated)
+            else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !trialStimulated && !isHuman)
             {
                 trialStimulated = true;
                 float stimr = (float)rand.NextDouble();
@@ -885,7 +885,7 @@ public class Monkey2D : MonoBehaviour
         {
             isStimulating = true;
         }
-        else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial)
+        else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial && !isHuman)
         {
             isStimulating = true;
         }
