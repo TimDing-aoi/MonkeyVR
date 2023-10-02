@@ -53,7 +53,7 @@ public class Monkey2D : MonoBehaviour
     public float minPhi2;
     public float maxPhi2;
     //Lifespan of the FF, if applicable
-    public float lifeSpan;
+    public float FFLifeSpan;
     //possible Lifespans and ratios
     readonly public List<float> lifespan_durations = new List<float>();
     readonly public List<float> lifespan_ratios = new List<float>();
@@ -387,13 +387,19 @@ public class Monkey2D : MonoBehaviour
 
     //Fixation dot for stimulation simulation
     public GameObject fixation_dot;
+    List<GameObject> fixation_dots = new List<GameObject>();
+    public int current_dot;
     public bool isHumanStimulation;
     public float StimulationHumanRatio;
     public float dot_duration;
     public float dot_gap;
-    public int dot_postions;
+    public float trial_dot_gap;
+    public float dot_postions;
     public float dot_postion_min;
     public float dot_postion_max;
+    readonly List<float> human_trial_stimulated = new List<float>();
+    readonly List<float> human_trial_stimulation_time = new List<float>();
+    readonly List<float> human_trial_dot_deg = new List<float>();
 
     //On Start up, get gaze visualizer
     private void Awake()
@@ -418,12 +424,12 @@ public class Monkey2D : MonoBehaviour
         minJuiceTime = PlayerPrefs.GetFloat("minJuiceTime");
         maxJuiceTime = PlayerPrefs.GetFloat("maxJuiceTime");
 
-        //Send block start marker
+        //Send block start marker (only when not human)
+        isHuman = PlayerPrefs.GetInt("isHuman") == 1;
         SendMarker("f", 1000.0f);
         programT0 = Time.realtimeSinceStartup;
 
         //VR cameras set up, and tilt cameras if monkey
-        isHuman = PlayerPrefs.GetInt("isHuman") == 1;
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Lcam, true);
         UnityEngine.XR.XRDevice.DisableAutoXRCameraTracking(Rcam, true);
@@ -683,9 +689,20 @@ public class Monkey2D : MonoBehaviour
         StimulationHumanRatio = PlayerPrefs.GetFloat("StimulationHumanRatio");
         dot_duration = PlayerPrefs.GetFloat("FixationDotDuration");
         dot_gap = PlayerPrefs.GetFloat("DotGap");
-        dot_postions = PlayerPrefs.GetInt("DotLinsapceNum");
+        dot_postions = PlayerPrefs.GetFloat("DotLinsapceNum");
         dot_postion_min = PlayerPrefs.GetFloat("DotMin");
         dot_postion_max = PlayerPrefs.GetFloat("DotMax");
+
+        //Dots set up
+        float[] linspace = Enumerable.Range(0, (int)dot_postions)
+            .Select(i => dot_postion_min + (dot_postion_max - dot_postion_min) * i / (dot_postions - 1))
+            .ToArray();
+        for (int i = 0; i < linspace.Length; i++)
+        {
+            GameObject spawnedObject = Instantiate(fixation_dot, player.transform);
+            spawnedObject.transform.localPosition = Quaternion.AngleAxis(linspace[i], Vector3.up) * player.transform.forward * 10;//new Vector3((float)(10 * (1/Math.Tan(linspace[i]))), 0f, 10f);
+            fixation_dots.Add(spawnedObject);
+        }
 
         //Set up for first trial
         trialNum = 0;
@@ -831,6 +848,7 @@ public class Monkey2D : MonoBehaviour
 
         //Update stuff for COM and stimulation, depending on task.
         var tNow = Time.realtimeSinceStartup;
+        float dot_position = 0;
         if (isTrial)
         {
             //TODO: add newest Change of mind way of update here.
@@ -857,15 +875,11 @@ public class Monkey2D : MonoBehaviour
                 OnOff(Multiple_FF_List[1]);
             }
 
-
-            if (isHumanStimulation && isHuman && (tNow - trial_start_time) > dot_gap && !trialStimulated && (float)rand.NextDouble() < StimulationHumanRatio && !trialStimulated)
+            //print(trial_dot_gap);
+            if (isHumanStimulation && isHuman && (tNow - trial_start_time) > trial_dot_gap && !trialStimulated && (float)rand.NextDouble() < StimulationHumanRatio && !trialStimulated && !is_always_on_trial)
             {
                 trialStimulated = true;
-                float[] linspace = Enumerable.Range(0, dot_postions).Select(i => dot_postion_min + (dot_postion_max - dot_postion_min) * i / (dot_postions - 1)).ToArray();
-                int dotLin = rand.Next(1, dot_postions + 1);
-                float dot_position = linspace[dotLin - 1];
-                fixation_dot.SetActive(true);
-                fixation_dot.transform.position = new Vector3(dot_position, 0.0f, 10.0f);
+                stimulatedTrial = true;
             }
             else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && !trialStimulated && !isHuman)
             {
@@ -881,8 +895,9 @@ public class Monkey2D : MonoBehaviour
         }
 
         //Status check for stimulation
-        if(isHuman && isHumanStimulation && (tNow - trial_start_time) > dot_gap && (tNow - trial_start_time) < (dot_gap + dot_duration) && stimulatedTrial)
+        if(isHuman && isHumanStimulation && (tNow - trial_start_time) > trial_dot_gap && (tNow - trial_start_time) < (trial_dot_gap + dot_duration) && stimulatedTrial && !is_always_on_trial)
         {
+            fixation_dots[current_dot].SetActive(true);
             isStimulating = true;
         }
         else if (PlayerPrefs.GetInt("isFFstimu") == 1 && (tNow - trial_start_time) > trialStimuGap && (tNow - trial_start_time) < (trialStimuGap + microStimuDur/1000.0f) && stimulatedTrial && !isHuman)
@@ -891,7 +906,7 @@ public class Monkey2D : MonoBehaviour
         }
         else
         {
-            fixation_dot.SetActive(false);
+            fixation_dots[current_dot].SetActive(false);
             isStimulating = false;
         }
 
@@ -1321,29 +1336,28 @@ public class Monkey2D : MonoBehaviour
             if (r <= lifespan_ratios[0])
             {
                 // duration 1
-                lifeSpan = lifespan_durations[0];
+                FFLifeSpan = lifespan_durations[0];
             }
             else if (r > lifespan_ratios[0] && r <= lifespan_ratios[1])
             {
                 // duration 2
-                lifeSpan = lifespan_durations[1];
+                FFLifeSpan = lifespan_durations[1];
             }
             else if (r > lifespan_ratios[1] && r <= lifespan_ratios[2])
             {
                 // duration 3
-                lifeSpan = lifespan_durations[2];
+                FFLifeSpan = lifespan_durations[2];
             }
             else if (r > lifespan_ratios[2] && r <= lifespan_ratios[3])
             {
                 // duration 4
-                lifeSpan = lifespan_durations[3];
+                FFLifeSpan = lifespan_durations[3];
             }
             else
             {
                 // duration 5
-                lifeSpan = lifespan_durations[4];
+                FFLifeSpan = lifespan_durations[4];
             }
-            FF_on_duration.Add(lifeSpan);
             if (isCOM)
             {
                 MoveStartTime = Time.realtimeSinceStartup;
@@ -1364,13 +1378,34 @@ public class Monkey2D : MonoBehaviour
             {
                 OnOff();
             }
-            FF_on_duration.Add(lifeSpan);
+            FF_on_duration.Add(FFLifeSpan);
         }
         // Debug.Log("Begin Phase End.");.
 
         if (flagFFstimulation)
         {
-            trialStimuGap = microStimuGap * (float)rand.NextDouble() + lifeSpan;
+            trialStimuGap = microStimuGap * (float)rand.NextDouble() + FFLifeSpan;
+        }
+
+        if(isHumanStimulation)
+        {
+            if((float)rand.NextDouble() < StimulationHumanRatio && !is_always_on_trial)
+            {
+                human_trial_stimulated.Add(1);
+                trial_dot_gap = dot_gap + FFLifeSpan/1000; //randomized dot_gap in the future
+                human_trial_stimulation_time.Add(trial_dot_gap);
+                current_dot = rand.Next(0, (int)(dot_postions));
+                float[] linspace = Enumerable.Range(0, (int)dot_postions)
+            .Select(i => dot_postion_min + (dot_postion_max - dot_postion_min) * i / (dot_postions - 1))
+            .ToArray();
+                human_trial_dot_deg.Add(linspace[current_dot]);
+            }
+            else
+            {
+                human_trial_stimulated.Add(0);
+                human_trial_stimulation_time.Add(0);
+                human_trial_dot_deg.Add(-99);
+            }
         }
 
         phase_task_selecter = Phases.trial;
@@ -1654,9 +1689,9 @@ public class Monkey2D : MonoBehaviour
             juiceDuration.Add(juiceTime);
             audioSource.Play();
             good_trial_count++;
+            SendMarker("j", juiceTime);
             if (!isHuman)
             {
-                SendMarker("j", juiceTime);
                 await new WaitForSeconds((juiceTime / 1000.0f) + 0.25f);
             }
         }
@@ -1673,7 +1708,6 @@ public class Monkey2D : MonoBehaviour
         //Save general final position values
         player_final_position.Add(player_check_pos.ToString("F5").Trim(toTrim).Replace(" ", ""));
         player_final_rotation.Add(player_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
-        print(player_check_rot.ToString("F5").Trim(toTrim).Replace(" ", ""));
         score.Add(rewarded_FF_trial ? 1 : 0);
         timedout.Add(isTimeout ? 1 : 0);
         FF_final_positions.Add(ffPosStr);
@@ -1714,20 +1748,20 @@ public class Monkey2D : MonoBehaviour
         //nff
         if (multiple_FF_mode != 0)
         {
-            distance_to_FF.Add(string.Format(",{0}",current_smallest_distance));
+            distance_to_FF.Add(string.Format("{0}",current_smallest_distance));
             if (isColored)
             {
-                FF_color.Add(string.Format(",{0},{1}", colorchosen[0], colorchosen[1]));
+                FF_color.Add(string.Format("{0},{1}", colorchosen[0], colorchosen[1]));
                 colorchosen.Clear();
             }
             else
             {
-                FF_color.Add(",0,0");
+                FF_color.Add("0,0");
             }
         }
         else
         {
-            distance_to_FF.Add(string.Format(",{0}", distance));
+            distance_to_FF.Add(string.Format("{0}", distance));
         }
 
         //Stimulation
@@ -1774,6 +1808,7 @@ public class Monkey2D : MonoBehaviour
         }
 
         isTimeout = false;
+        trialStimulated = false;
         //Debug.Log("Check Phase End.");
         phase_task_selecter = Phases.begin;
         currPhase = Phases.begin;
@@ -1807,7 +1842,7 @@ public class Monkey2D : MonoBehaviour
     {
         //print(string.Format("blinking for {0}",lifeSpan));
         firefly.SetActive(true);
-        await new WaitForSeconds(lifeSpan/1000);
+        await new WaitForSeconds(FFLifeSpan/1000);
         firefly.SetActive(false);
     }
 
@@ -1815,7 +1850,7 @@ public class Monkey2D : MonoBehaviour
     public async void OnOff(GameObject obj)
     {
         obj.SetActive(true);
-        await new WaitForSeconds(lifeSpan/1000);
+        await new WaitForSeconds(FFLifeSpan/1000);
         obj.SetActive(false);
     }
 
@@ -1890,7 +1925,8 @@ public class Monkey2D : MonoBehaviour
             {
                 disc_header = "n,max_v,max_w,ffv,onDuration,density,PosX0,PosY0,PosZ0,RotX0,RotY0,RotZ0,RotW0,ffX,ffY,ffZ,pCheckX,pCheckY,pCheckZ,rCheckX,rCheckY,rCheckZ,rCheckW,distToFF,rewarded," +
                     "timeout,juiceDuration,beginTime,checkTime,rewardTime,endTime,checkWait,interWait,CurrentTau,PTBType,SessionTauTau,ProcessNoiseTau,ProcessNoiseVelGain,ProcessNoiseRotGain,nTaus,minTaus,maxTaus,MeanDist," +
-                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow,COMTrialType,"
+                    "MeanTravelTime,VelStopThresh,RotStopThresh,VelBrakeThresh,RotBrakeThresh,StimulationTime,StimulationDuration,StimulationRatio,ObsNoiseTau,ObsNoiseVelGain,ObsNoiseRotGain,DistractorFlowRatio,ColoredOpticFlow," +
+                    "COMTrialType,HumanFixationTrial,HumAppTime,HumDotDeg,"
                     + PlayerPrefs.GetString("Name") + "," + DateTime.Today.ToString("MMddyyyy") + "," + PlayerPrefs.GetInt("Run Number").ToString("D3");
             }
             csvDisc.AppendLine(disc_header);
@@ -1940,12 +1976,17 @@ public class Monkey2D : MonoBehaviour
             {
                 temp.Add(CurrentTau.Count);
             }
-            //foreach (int count in temp)
-            //{
-            //    print(count);
-            //}
+            if (isHumanStimulation)
+            {
+                temp.Add(human_trial_stimulated.Count);
+                temp.Add(human_trial_stimulation_time.Count);
+                temp.Add(human_trial_dot_deg.Count);
+            }
+            foreach (var item in temp)
+            {
+                print(item);
+            }
             temp.Sort();
-
             //Score count
             var totalScore = 0;
 
@@ -2021,6 +2062,15 @@ public class Monkey2D : MonoBehaviour
                 else
                 {
                     line += string.Format(",0");
+                }
+
+                if (isHumanStimulation)
+                {
+                    line += string.Format(",{0},{1},{2}", human_trial_stimulated[i], human_trial_stimulation_time[i], human_trial_dot_deg[i]);
+                }
+                else
+                {
+                    line += string.Format(",0,0,0");
                 }
 
                 csvDisc.AppendLine(line);
